@@ -69,6 +69,8 @@ of the local-disk items is automatic when the instance is terminated.
     fp32 weights).
   - 2026-10-17, at the user's request (pre-download in case it's used): google/gemma-2-27b (108.91 GB, 24 shards, gated,
     fp32 weights, revision 938270f527). Cache total now 196 GB.
+  - 2026-10-17: google/gemma-2-27b **deleted** (user decision; freed 108.9 GB via `huggingface_hub.scan_cache_dir()
+    .delete_revisions(...)`). Cache total now 95 GB. Gemma-2-9B (37 GB) remains but is unused (Llama-3.1-8B was chosen).
 - **Login:** the user ran `huggingface-cli login` on the instance themselves; the token stays at its default location
   (`~/.cache/huggingface/token`, local disk), and the code only points `HF_TOKEN_PATH` at it. To remove it:
   `huggingface-cli logout` (or terminate the instance).

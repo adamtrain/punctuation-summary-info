@@ -624,6 +624,16 @@ binary property).
   *size* effects from *model-family* effects. Caveat: in 160M the shared negative adjectives are stronger than the positive
   ones (mean valence 2.5 vs 1.7); footnote its mixed-majority result. Fillers: the 64 fillers closest to each model's median
   valence, averaged over the six sizes, so one filler set serves the whole ladder.
+- **2026-10-17 (user decisions):** **Gemma-2-27B is dropped** (the optional bf16 behavior + knockout step won't be run).
+  **Llama-3.1-8B is the modern 7–9B model** (not Gemma-2-9B). Timing so far on the H100 (full protocol): Pythia-160M ≈
+  14 min (patching 458 s, probes 194 s, everything else ≈ 160 s); Pythia-410M patching 1,224 s. Probes run on the CPU
+  (GPU idle), and patching cost grows with model size, so the full protocol would take roughly 6 h at 6.9B and 10 h at 12B.
+- **2026-10-17 (user decisions, continued):** **Pythia-12B dropped**: the ladder is 160M, 410M, 1.4B, 2.8B, 6.9B (43×
+  range), and Llama-3.1-8B covers the ~8B scale. **Full frozen protocol for every remaining model** (the user declined a
+  lean protocol). **Gemma-2-27B weights deleted** from the persistent share (re-downloadable). Pythia-410M timings: calib
+  19 s, behavior 84 s, knockout 176 s, accept 8 s, patching 1,224 s, probes 441 s (CPU-bound). **Implementation change (not
+  a method change):** the probe step now caches activations on the GPU and fits the probes (same sklearn code and settings)
+  in a separate CPU process, so the GPU moves on to the next model instead of idling during fitting.
 - **2026-10-17 (side session with the user, relayed to this session; no files were changed there):** Scaling decisions
   recorded in Section 5.2: one 80 GB cloud GPU; finish GPT-2 through patching and freeze the method first; Pythia ladder
   (160M–12B) then one modern 7–9B model (Llama-3.1-8B or Gemma-2-9B) with full internals; optional Gemma-2-27B behavior +
@@ -1065,6 +1075,37 @@ fillers 0.01–0.05; clean-corrupted gap ≈ 8–10.7 logits.
   are, but the intact model routes mostly through those at true boundaries.
 - **Country is lookback-dominated in every condition** (the city's own position carries ~80% at L7; summary routes ≤ 7%),
   confirming the knockout. The property type decides whether summary points are used at all.
+
+### 10.12 Pythia ladder: 160M and 410M (2026-10-17)
+`scripts/m6_scale.py run`, shared ladder items (decision log, option 2); outputs in `outputs/models/pythia-{160m,410m}/`
+(behavior_summary.json, knockout_summary.json, accept.json, patching_summary.json, patching/, probes/, run_log.json).
+Same measures as GPT-2 (10.5–10.7, 10.11); k ∈ {1, 4, 16}. GPT-2 small values in brackets for comparison.
+
+| measure | GPT-2 small | Pythia-160M | Pythia-410M |
+|---|---|---|---|
+| country P margin (question readout) | +3.38 (all 5 k) | +4.02 | +3.50 |
+| U Δ vs P (pooled) | −0.45 | −0.26 | −0.28 |
+| U Δ at k = 1 / 4 / 16 | −0.35 / −0.40 / −0.60 | −0.15 / −0.26 / −0.37 | −0.04 / −0.37 / −0.42 |
+| C_mid Δ (matched control) | −0.06 | −0.17 | −0.11 |
+| M Δ / K Δ | −0.49 / −0.17 | −1.09 / −0.25 | −0.52 / −0.23 |
+| mood P s0words retention | 0.51 | 0.27 | 0.53 |
+| mood s0-punctuation share | 0.38 | 0.09 | 0.37 |
+| mood U retention | 0.09 | 0.10 | 0.16 |
+| patching: s0 punct span, P (k=1/4/16) | 0.15 / 0.20 / 0.16 | 0.02 / 0.01 / 0.01 | 0.10 / 0.12 / 0.16 |
+| patching: post-property passage, U | 0.03 / 0.05 / 0.07 | 0.03 / 0.04 / 0.08 | 0.04 / 0.05 / 0.06 |
+| mixed-mood acceptance (AUC; C1/C2) | 0.755; fail/pass | 0.767; fail/fail | **0.819; pass/pass** |
+
+**First observations (two sizes; trends need the rest of the ladder):**
+- **Pythia-160M barely uses a punctuation hub** (punctuation share 0.09, patching ≤ 0.02), whereas GPT-2 small, at a similar size
+  (124M), uses it strongly (0.38, up to 0.20). So the summary hub isn't simply a function of size: model family or
+  training data matters. That's exactly the comparison 160M was kept for.
+- **Pythia-410M has a GPT-2-like hub** (share 0.37, patching up to 0.16, at a late layer, L11 of 24). Within Pythia the
+  hub appears between 160M and 410M.
+- **Bypass holds in both** (U retention 0.10–0.16; post-property passage ≤ 0.08 under patching).
+- **Behavior:** removing punctuation costs less than in GPT-2 (−0.26 / −0.28), but the matched control costs more (−0.17
+  / −0.11), so the punctuation-specific part is smaller. The distance effect is clear in both (cost grows with k).
+- **Pythia-410M passes the mixed-majority test** (AUC 0.819) that GPT-2 small failed: the "bonus" outcome. 160M fails, with
+  the caveat that its shared negative adjectives are stronger than its positive ones.
 
 ## 11. Future research directions
 

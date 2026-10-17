@@ -16,6 +16,7 @@ import argparse
 import csv
 import json
 import time
+from pathlib import Path
 
 import matplotlib
 
@@ -118,6 +119,18 @@ def plot(acc, sig, names, examples, n_test, title, path):
     plt.close(fig)
 
 
+def cached_activations(model, pairs: list[dict], cond: str, k: int, cache: Path):
+    """Load landmark activations from `cache`, or collect them with `model` (GPU) and save them there. With a cache
+    present, `model` may be None (used by the scaling driver to fit probes in a separate CPU process)."""
+    if cache.exists():
+        z = np.load(cache, allow_pickle=True)
+        return (z["acts"], z["mask"], list(z["names"]), z["y"], z["pid"], z["split"], json.loads(str(z["examples"])))
+    acts, mask, names, y, pid, split, examples = collect(model, pairs, cond, k)
+    cache.parent.mkdir(parents=True, exist_ok=True)
+    np.savez(cache, acts=acts, mask=mask, names=np.array(names), y=y, pid=pid, split=split, examples=json.dumps(examples))
+    return acts, mask, names, y, pid, split, examples
+
+
 def run(model, prop: str, k: int, cond: str, check_c: bool = False, pairs: list[dict] | None = None,
         out=None) -> None:
     """pairs / out default to the GPT-2 setup (outputs/m3); scaling runs pass their own."""
@@ -125,16 +138,7 @@ def run(model, prop: str, k: int, cond: str, check_c: bool = False, pairs: list[
     t0 = time.time()
     pairs = [p for p in (pairs if pairs is not None else load_pairs(prop)) if p["k"] == k]
     tag = f"{prop}_k{k}_{cond}"
-    cache = out / "acts" / f"{tag}.npz"
-    if cache.exists():
-        z = np.load(cache, allow_pickle=True)
-        acts, mask, names, y, pid, split = z["acts"], z["mask"], list(z["names"]), z["y"], z["pid"], z["split"]
-        examples = json.loads(str(z["examples"]))
-    else:
-        acts, mask, names, y, pid, split, examples = collect(model, pairs, cond, k)
-        cache.parent.mkdir(parents=True, exist_ok=True)
-        np.savez(cache, acts=acts, mask=mask, names=np.array(names), y=y, pid=pid, split=split,
-                 examples=json.dumps(examples))
+    acts, mask, names, y, pid, split, examples = cached_activations(model, pairs, cond, k, out / "acts" / f"{tag}.npz")
     print(f"[{tag}] activations {acts.shape} ({acts.nbytes / 1e9:.2f} GB) at {time.time() - t0:.0f}s", flush=True)
 
     counts = {n: (int((mask[:, i] & (split == "train")).sum()), int((mask[:, i] & (split == "test")).sum()))

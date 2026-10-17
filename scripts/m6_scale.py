@@ -321,12 +321,30 @@ def step_patch(model, name, out):
 
 
 def step_probe(model, name, out):
-    """Mood probes, P and U at k=16 (presence only; probes saturate)."""
+    """Mood probes, P and U at k=16 (presence only; probes saturate). The GPU part (caching activations) runs here; the
+    fitting (same code as GPT-2: m3_probes.run on the cache) runs in a separate CPU process, so the GPU can move on."""
+    import subprocess
+
+    from m3_probes import cached_activations
+
+    pairs = [p for p in ladder_pairs(name, "mood") if p["k"] == 16]
+    for c in ("P", "U"):
+        cached_activations(model, pairs, c, 16, out / "probes" / "acts" / f"mood_k16_{c}.npz")
+    log = open(out / "probes_fit.log", "w")
+    subprocess.Popen([sys.executable, __file__, "fitprobes", name], stdout=log, stderr=subprocess.STDOUT,
+                     start_new_session=True)
+    print(f"[{name}] probe activations cached; fitting started in a separate CPU process (log: probes_fit.log)", flush=True)
+
+
+def fit_probes(name: str) -> None:
     from m3_probes import run as probe_run
 
+    out = out_dir(name)
+    t = time.time()
     pairs = ladder_pairs(name, "mood")
     for c in ("P", "U"):
-        probe_run(model, "mood", 16, c, pairs=pairs, out=out / "probes")
+        probe_run(None, "mood", 16, c, pairs=pairs, out=out / "probes")
+    (out / "probes_fit_seconds.txt").write_text(f"{time.time() - t:.0f}\n")
 
 
 STEPS = {"calib": step_calib, "behavior": step_behavior, "knockout": step_knockout, "accept": step_accept,
@@ -357,4 +375,4 @@ if __name__ == "__main__":
         run(sys.argv[2], sys.argv[3:] or list(STEPS))
     else:
         for n in sys.argv[2:]:
-            {"verify": verify, "screen": screen}[cmd](n)
+            {"verify": verify, "screen": screen, "fitprobes": fit_probes}[cmd](n)
