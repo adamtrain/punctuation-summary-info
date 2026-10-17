@@ -665,6 +665,12 @@ binary property).
   that checks the item bar and stops if it fails. **Bar clarified:** ≥ 10 adjectives per valence (the configuration approved as
   option 2, with 3 held out for testing; the original ≥ 12 assumed a 25% hold-out) and ≥ 8 pairable cities per side. The ladder
   passes (15/10 adjectives, 22 cities).
+- **2026-10-17 (Llama queued; approved by the user):** Llama-3.1-8B uses the same item rule as the ladder (strength floor
+  only, 3 held-out adjectives per valence), on its own screen and tokenizer, and stops if its items fail the bar. It is queued on
+  the H100 to start automatically after the ladder queue: verify → bf16 check → screen → items (bar) → long-distance pairs →
+  full protocol + long-distance. CPU-only pre-check of its tokenizer: answer words (France, Japan, great, terrible) are single
+  tokens; the start token `<|begin_of_text|>` is added only on request, matching our code; every token maps to exactly one
+  word or punctuation piece in P, U, M and K.
 - **2026-10-17 (side session with the user, relayed to this session; no files were changed there):** Scaling decisions
   recorded in Section 5.2: one 80 GB cloud GPU; finish GPT-2 through patching and freeze the method first; Pythia ladder
   (160M–12B) then one modern 7–9B model (Llama-3.1-8B or Gemma-2-9B) with full internals; optional Gemma-2-27B behavior +
