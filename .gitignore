@@ -1,0 +1,12 @@
+# Environments and caches (rebuildable; see INSTALL_LOG.md)
+.venv/
+.hf_cache/
+__pycache__/
+*.pyc
+.DS_Store
+
+# Cached activations: large (GBs) and regenerable with the scripts that wrote them
+outputs/**/acts/
+
+# Rule: files over 10 MB are not committed without checking with the user first
+# (see BRIEF.md decision log, 2026-10-17).

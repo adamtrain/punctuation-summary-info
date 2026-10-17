@@ -1,0 +1,92 @@
+W1017 13:52:10.662000 87819 torch/distributed/elastic/multiprocessing/redirects.py:35] NOTE: Redirects are currently not supported in MacOs.
+Loading weights:   0%|          | 0/148 [00:00<?, ?it/s]Loading weights: 100%|██████████| 148/148 [00:00<00:00, 24646.91it/s]
+[mood_k1_P] activations (800, 26, 13, 768) (0.42 GB) at 0s
+[mood_k1_P] null p95 range 0.500..0.625; significant cells 314/338; runtime 3s; peak RSS 3.26 GB
+[mood_k1_U] activations (800, 21, 13, 768) (0.34 GB) at 0s
+[mood_k1_U] null p95 range 0.500..0.625; significant cells 254/273; runtime 2s; peak RSS 3.26 GB
+[mood_k1_Ucap] activations (800, 21, 13, 768) (0.34 GB) at 0s
+[mood_k1_Ucap] null p95 range 0.500..0.625; significant cells 254/273; runtime 2s; peak RSS 3.26 GB
+[mood_k1_M] activations (800, 37, 13, 768) (0.59 GB) at 0s
+[mood_k1_M] rows dropped (train/test passages): s0.pre_mis4 (54, 8), s0.mis4 (54, 8), f1.pre_mis3 (50, 22), f1.pre_mis4 (6, 0), f1.mis3 (50, 22), f1.mis4 (6, 0)
+[mood_k1_M] null p95 range 0.500..0.650; significant cells 372/403; runtime 3s; peak RSS 4.35 GB
+[mood_k1_K] activations (800, 26, 13, 768) (0.42 GB) at 9s
+[mood_k1_K] null p95 range 0.500..0.625; significant cells 315/338; runtime 12s; peak RSS 5.99 GB
+[mood_k1_C_mid] activations (800, 26, 13, 768) (0.42 GB) at 9s
+[mood_k1_C_mid] null p95 range 0.500..0.625; significant cells 314/338; runtime 12s; peak RSS 5.99 GB
+[mood_k1_C_hi] activations (800, 26, 13, 768) (0.42 GB) at 9s
+[mood_k1_C_hi] null p95 range 0.500..0.625; significant cells 314/338; runtime 12s; peak RSS 6.02 GB
+[mood_k4_P] activations (800, 32, 13, 768) (0.51 GB) at 0s
+[mood_k4_P] null p95 range 0.500..0.636; significant cells 382/416; runtime 3s; peak RSS 6.02 GB
+[mood_k4_U] activations (800, 25, 13, 768) (0.40 GB) at 0s
+[mood_k4_U] null p95 range 0.500..0.641; significant cells 297/325; runtime 3s; peak RSS 6.02 GB
+[mood_k4_Ucap] activations (800, 25, 13, 768) (0.40 GB) at 13s
+[mood_k4_Ucap] null p95 range 0.500..0.636; significant cells 298/325; runtime 15s; peak RSS 6.75 GB
+[mood_k4_M] activations (800, 63, 13, 768) (1.01 GB) at 21s
+[mood_k4_M] rows dropped (train/test passages): s0.pre_mis6 (4, 0), s0.pre_mis5 (32, 8), s0.mis6 (4, 0), s0.mis5 (32, 8), s0.pre_mis7 (2, 0), s0.mis7 (2, 0), f1.pre_mis3 (72, 22), f1.pre_mis4 (6, 2), f1.mis3 (72, 22), f1.pre_mis5 (2, 0), f1.mis4 (6, 2), f1.mis5 (2, 0), f1.pre_mis6 (2, 0), f1.mis6 (2, 0), flast.pre_mis3 (72, 16), flast.pre_mis4 (24, 0), flast.mis3 (72, 16), flast.mis4 (24, 0), flast.pre_mis5 (8, 0), flast.mis5 (8, 0), flast.pre_mis6 (2, 0), flast.mis6 (2, 0)
+[mood_k4_M] null p95 range 0.500..0.673; significant cells 491/533; runtime 26s; peak RSS 6.75 GB
+[mood_k4_K] activations (800, 32, 13, 768) (0.51 GB) at 19s
+[mood_k4_K] null p95 range 0.500..0.628; significant cells 385/416; runtime 23s; peak RSS 6.75 GB
+[mood_k4_C_mid] activations (800, 32, 13, 768) (0.51 GB) at 20s
+[mood_k4_C_mid] null p95 range 0.500..0.628; significant cells 385/416; runtime 23s; peak RSS 6.75 GB
+[mood_k4_C_hi] activations (800, 32, 13, 768) (0.51 GB) at 19s
+[mood_k4_C_hi] null p95 range 0.500..0.641; significant cells 384/416; runtime 23s; peak RSS 6.75 GB
+[mood_k16_P] activations (800, 32, 13, 768) (0.51 GB) at 42s
+[mood_k16_P] null p95 range 0.500..0.625; significant cells 380/416; runtime 45s; peak RSS 7.43 GB
+[mood_k16_U] activations (800, 25, 13, 768) (0.40 GB) at 39s
+[mood_k16_U] null p95 range 0.500..0.625; significant cells 296/325; runtime 42s; peak RSS 7.43 GB
+[mood_k16_Ucap] activations (800, 25, 13, 768) (0.40 GB) at 29s
+[mood_k16_Ucap] null p95 range 0.500..0.625; significant cells 297/325; runtime 32s; peak RSS 7.43 GB
+[mood_k16_M] activations (800, 59, 13, 768) (0.94 GB) at 37s
+[mood_k16_M] rows dropped (train/test passages): s0.pre_mis5 (38, 18), s0.mis5 (38, 18), s0.pre_mis6 (6, 2), s0.mis6 (6, 2), s0.pre_mis7 (2, 0), s0.mis7 (2, 0), f1.pre_mis3 (88, 32), f1.mis3 (88, 32), f1.pre_mis4 (20, 4), f1.mis4 (20, 4), f1.pre_mis5 (6, 0), f1.mis5 (6, 0), flast.pre_mis3 (86, 30), flast.mis3 (86, 30), flast.pre_mis5 (4, 0), flast.pre_mis4 (28, 6), flast.mis5 (4, 0), flast.mis4 (28, 6)
+[mood_k16_M] null p95 range 0.500..0.655; significant cells 484/533; runtime 42s; peak RSS 7.43 GB
+[mood_k16_K] activations (800, 32, 13, 768) (0.51 GB) at 48s
+[mood_k16_K] null p95 range 0.500..0.625; significant cells 381/416; runtime 52s; peak RSS 7.43 GB
+[mood_k16_C_mid] activations (800, 32, 13, 768) (0.51 GB) at 48s
+[mood_k16_C_mid] null p95 range 0.500..0.625; significant cells 379/416; runtime 52s; peak RSS 7.43 GB
+[mood_k16_C_hi] activations (800, 32, 13, 768) (0.51 GB) at 43s
+[mood_k16_C_hi] null p95 range 0.500..0.625; significant cells 385/416; runtime 47s; peak RSS 7.43 GB
+[country_k1_P] activations (800, 22, 13, 768) (0.35 GB) at 9s
+[country_k1_P] null p95 range 0.500..0.625; significant cells 259/286; runtime 11s; peak RSS 7.43 GB
+[country_k1_U] activations (800, 18, 13, 768) (0.29 GB) at 9s
+[country_k1_U] null p95 range 0.500..0.617; significant cells 213/234; runtime 11s; peak RSS 7.43 GB
+[country_k1_Ucap] activations (800, 18, 13, 768) (0.29 GB) at 8s
+[country_k1_Ucap] null p95 range 0.500..0.617; significant cells 213/234; runtime 11s; peak RSS 7.43 GB
+[country_k1_M] activations (800, 30, 13, 768) (0.48 GB) at 9s
+[country_k1_M] rows dropped (train/test passages): s0.pre_mis3 (20, 10), s0.mis3 (20, 10), f1.pre_mis3 (40, 14), f1.mis3 (40, 14)
+[country_k1_M] null p95 range 0.500..0.673; significant cells 306/338; runtime 12s; peak RSS 7.43 GB
+[country_k1_K] activations (800, 22, 13, 768) (0.35 GB) at 7s
+[country_k1_K] null p95 range 0.500..0.617; significant cells 263/286; runtime 10s; peak RSS 7.43 GB
+[country_k1_C_mid] activations (800, 22, 13, 768) (0.35 GB) at 7s
+[country_k1_C_mid] null p95 range 0.500..0.628; significant cells 262/286; runtime 9s; peak RSS 7.43 GB
+[country_k1_C_hi] activations (800, 22, 13, 768) (0.35 GB) at 7s
+[country_k1_C_hi] null p95 range 0.500..0.628; significant cells 262/286; runtime 9s; peak RSS 7.43 GB
+[country_k4_P] activations (800, 28, 13, 768) (0.45 GB) at 0s
+[country_k4_P] null p95 range 0.500..0.620; significant cells 329/364; runtime 3s; peak RSS 7.43 GB
+[country_k4_U] activations (800, 22, 13, 768) (0.35 GB) at 0s
+[country_k4_U] null p95 range 0.500..0.620; significant cells 259/286; runtime 3s; peak RSS 7.43 GB
+[country_k4_Ucap] activations (800, 22, 13, 768) (0.35 GB) at 10s
+[country_k4_Ucap] null p95 range 0.500..0.622; significant cells 257/286; runtime 13s; peak RSS 7.43 GB
+[country_k4_M] activations (800, 48, 13, 768) (0.77 GB) at 12s
+[country_k4_M] rows dropped (train/test passages): s0.pre_mis3 (54, 30), s0.mis3 (54, 30), s0.pre_mis4 (12, 10), s0.mis4 (12, 10), s0.pre_mis5 (0, 2), s0.mis5 (0, 2), f1.pre_mis3 (86, 28), f1.mis3 (86, 28), f1.pre_mis4 (16, 12), f1.mis4 (16, 12), flast.pre_mis4 (10, 4), flast.pre_mis3 (70, 22), flast.mis4 (10, 4), flast.mis3 (70, 22)
+[country_k4_M] null p95 range 0.500..0.643; significant cells 403/442; runtime 16s; peak RSS 7.43 GB
+[country_k4_K] activations (800, 28, 13, 768) (0.45 GB) at 12s
+[country_k4_K] null p95 range 0.500..0.622; significant cells 334/364; runtime 16s; peak RSS 7.43 GB
+[country_k4_C_mid] activations (800, 28, 13, 768) (0.45 GB) at 12s
+[country_k4_C_mid] null p95 range 0.500..0.622; significant cells 327/364; runtime 16s; peak RSS 7.43 GB
+[country_k4_C_hi] activations (800, 28, 13, 768) (0.45 GB) at 12s
+[country_k4_C_hi] null p95 range 0.500..0.622; significant cells 333/364; runtime 16s; peak RSS 7.43 GB
+[country_k16_P] activations (800, 28, 13, 768) (0.45 GB) at 35s
+[country_k16_P] null p95 range 0.500..0.618; significant cells 320/364; runtime 38s; peak RSS 7.91 GB
+[country_k16_U] activations (800, 22, 13, 768) (0.35 GB) at 29s
+[country_k16_U] null p95 range 0.500..0.618; significant cells 252/286; runtime 32s; peak RSS 7.91 GB
+[country_k16_Ucap] activations (800, 22, 13, 768) (0.35 GB) at 29s
+[country_k16_Ucap] null p95 range 0.500..0.618; significant cells 256/286; runtime 32s; peak RSS 7.91 GB
+[country_k16_M] activations (800, 52, 13, 768) (0.83 GB) at 34s
+[country_k16_M] rows dropped (train/test passages): s0.pre_mis3 (58, 32), s0.mis3 (58, 32), s0.pre_mis5 (0, 2), s0.pre_mis4 (12, 6), s0.mis5 (0, 2), s0.mis4 (12, 6), f1.pre_mis3 (94, 28), f1.mis3 (94, 28), f1.pre_mis4 (30, 8), f1.mis4 (30, 8), f1.pre_mis5 (6, 0), f1.mis5 (6, 0), flast.pre_mis5 (8, 2), flast.mis5 (8, 2), flast.pre_mis3 (82, 24), flast.pre_mis4 (22, 4), flast.mis3 (82, 24), flast.mis4 (22, 4)
+[country_k16_M] null p95 range 0.500..0.635; significant cells 389/442; runtime 38s; peak RSS 7.91 GB
+[country_k16_K] activations (800, 28, 13, 768) (0.45 GB) at 37s
+[country_k16_K] null p95 range 0.500..0.612; significant cells 320/364; runtime 41s; peak RSS 7.91 GB
+[country_k16_C_mid] activations (800, 28, 13, 768) (0.45 GB) at 36s
+[country_k16_C_mid] null p95 range 0.500..0.618; significant cells 322/364; runtime 39s; peak RSS 8.03 GB
+[country_k16_C_hi] activations (800, 28, 13, 768) (0.45 GB) at 35s
+[country_k16_C_hi] null p95 range 0.500..0.618; significant cells 324/364; runtime 39s; peak RSS 8.04 GB

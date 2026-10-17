@@ -1,0 +1,35 @@
+W1017 14:09:10.431000 88128 torch/distributed/elastic/multiprocessing/redirects.py:35] NOTE: Redirects are currently not supported in MacOs.
+Loading weights:   0%|          | 0/148 [00:00<?, ?it/s]Loading weights: 100%|██████████| 148/148 [00:00<00:00, 22196.05it/s]
+[mood_k1_P] 50 pairs, 32 rows; mean clean-corrupted gap +4.51; runtime 60s; peak RSS 1.07 GB
+[mood_k1_U] 50 pairs, 25 rows; mean clean-corrupted gap +5.55; runtime 43s; peak RSS 1.21 GB
+[mood_k1_Ucap] 50 pairs, 25 rows; mean clean-corrupted gap +5.00; runtime 42s; peak RSS 1.23 GB
+[mood_k1_M] 50 pairs, 41 rows; mean clean-corrupted gap +5.14; runtime 65s; peak RSS 1.31 GB
+[mood_k1_K] 50 pairs, 32 rows; mean clean-corrupted gap +4.59; runtime 65s; peak RSS 1.31 GB
+Traceback (most recent call last):
+  File "/Users/at/repos/experiments/punctuation-summary-info/scripts/m5_patching.py", line 196, in <module>
+    main()
+    ~~~~^^
+  File "/Users/at/repos/experiments/punctuation-summary-info/scripts/m5_patching.py", line 190, in main
+    run(model, prop, k, cond, args.n_pairs)
+    ~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/at/repos/experiments/punctuation-summary-info/scripts/m5_patching.py", line 128, in run
+    plot(rec_mean, lo > 0, names, examples, n_used, tag, gap.mean(), OUT / f"patching_{tag}.png")
+    ~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/at/repos/experiments/punctuation-summary-info/scripts/m5_patching.py", line 161, in plot
+    prop, k, cond = tag.split("_")
+    ^^^^^^^^^^^^^
+ValueError: too many values to unpack (expected 3)
+W1017 14:15:05.232000 88234 torch/distributed/elastic/multiprocessing/redirects.py:35] NOTE: Redirects are currently not supported in MacOs.
+Loading weights:   0%|          | 0/148 [00:00<?, ?it/s]Loading weights: 100%|██████████| 148/148 [00:00<00:00, 12741.06it/s]
+[mood_k1_P] exists, skipped
+[mood_k1_U] exists, skipped
+[mood_k1_Ucap] exists, skipped
+[mood_k1_M] exists, skipped
+[mood_k1_K] exists, skipped
+[mood_k1_C_mid] 50 pairs, 32 rows; mean clean-corrupted gap +4.39; runtime 60s; peak RSS 1.07 GB
+[mood_k1_C_hi] 50 pairs, 32 rows; mean clean-corrupted gap +4.20; runtime 58s; peak RSS 1.10 GB
+[mood_k4_P] exists, skipped
+[mood_k4_U] exists, skipped
+[mood_k4_Ucap] 50 pairs, 29 rows; mean clean-corrupted gap +3.57; runtime 71s; peak RSS 1.33 GB
+[mood_k4_M] 50 pairs, 53 rows; mean clean-corrupted gap +3.65; runtime 120s; peak RSS 1.33 GB
+[mood_k4_K] 50 pairs, 38 rows; mean clean-corrupted gap +3.40; runtime 109s; peak RSS 1.33 GB

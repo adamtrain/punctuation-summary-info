@@ -1,0 +1,16 @@
+[project]
+name = "punctsum"
+version = "0.1.0"
+description = "Where does summary information go when punctuation is removed?"
+requires-python = ">=3.13,<3.14"
+dependencies = [
+    "transformer-lens",
+    "torch",
+    "scikit-learn",
+    "matplotlib",
+    "numpy",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"

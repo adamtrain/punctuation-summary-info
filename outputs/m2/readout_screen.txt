@@ -1,0 +1,8 @@
+100 training pairs; pair-level mean logit diff (true - other) and pair accuracy
+
+'\n\nQuestion: Which country was this in?\nAnswer:'  P: +3.36 (acc 1.00)   U: +2.93 (acc 1.00)
+' and all of this happened in the country of'        P: +4.56 (acc 1.00)   U: +4.30 (acc 1.00)
+' and all of this was in the country of'             P: +4.83 (acc 1.00)   U: +4.59 (acc 1.00)
+' which all took place in the country of'            P: +4.43 (acc 1.00)   U: +4.26 (acc 1.00)
+' all of it happened in the country of'              P: +4.51 (acc 1.00)   U: +3.89 (acc 1.00)
+' and the country where all of this happened is'     P: +3.89 (acc 1.00)   U: +3.93 (acc 1.00)

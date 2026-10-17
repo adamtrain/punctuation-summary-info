@@ -1,0 +1,28 @@
+== 1. City screen (knowledge prompt logit diff, threshold 2.0) ==
+France: kept 23/27
+  kept:    Versailles(3t,+6.5), Nantes(2t,+6.3), Rennes(2t,+6.2), Calais(1t,+5.7), Bordeaux(3t,+5.7), Toulouse(3t,+5.4), Strasbourg(2t,+4.9), Marseille(2t,+4.7), Paris(1t,+4.2), Lyon(1t,+4.1), Grenoble(3t,+4.1), Rouen(2t,+3.9), Toulon(3t,+3.8), Cannes(1t,+3.7), Montpellier(3t,+3.7), Lourdes(3t,+3.5), Dijon(3t,+3.3), Le Havre(3t,+3.2), Amiens(2t,+3.1), Lille(2t,+3.1), Chamonix(3t,+2.8), Avignon(3t,+2.5), Biarritz(3t,+2.1)
+  dropped: Limoges(+1.8), Reims(+1.3), Metz(+0.2), Perpignan(-0.3)
+Japan: kept 27/28
+  kept:    Nagasaki(2t,+7.8), Sapporo(2t,+7.7), Shizuoka(3t,+7.6), Kamakura(2t,+7.4), Yokosuka(3t,+7.4), Osaka(1t,+7.3), Kumamoto(2t,+7.3), Yokohama(3t,+7.1), Kawasaki(2t,+7.1), Kanazawa(3t,+7.1), Otaru(2t,+7.0), Okayama(2t,+7.0), Kagoshima(3t,+6.9), Fukuoka(3t,+6.9), Hiroshima(1t,+6.7), Matsuyama(3t,+6.7), Nagoya(2t,+6.6), Tokyo(1t,+6.6), Kitakyushu(4t,+6.5), Chiba(2t,+6.3), Kyoto(1t,+6.3), Niigata(3t,+5.9), Sendai(2t,+5.8), Hamamatsu(3t,+4.8), Kobe(1t,+3.4), Hakodate(3t,+3.3), Nikko(2t,+2.5)
+  dropped: Nara(+0.8)
+train cities by token count: 1 tok: France Lyon, Paris, Calais | Japan Osaka, Tokyo, Kobe, Kyoto; 2 tok: France Strasbourg, Amiens, Lille, Rennes, Marseille | Japan Kawasaki, Sapporo, Kumamoto, Nagasaki, Nagoya, Otaru, Sendai, Nikko; 3 tok: France Toulon, Toulouse, Biarritz, Dijon, Montpellier, Le Havre, Versailles, Lourdes, Grenoble | Japan Kagoshima, Yokohama, Kanazawa, Niigata, Hakodate, Matsuyama, Hamamatsu, Fukuoka
+test cities by token count: 1 tok: France Cannes | Japan Hiroshima; 2 tok: France Rouen, Nantes | Japan Kamakura, Okayama, Chiba; 3 tok: France Chamonix, Bordeaux, Avignon | Japan Shizuoka, Yokosuka
+
+== 2. Template split (stratified by clause count) ==
+s0 templates: 18 train / 6 test
+fillers:      60 train / 20 test
+
+== 3. Generated 2000 pairs (4000 passages); checked 32000 renderings ==
+All renderings tokenize cleanly; pair members match in token count and roles in every condition.
+Split: train=1500 pairs, test=500 pairs
+City token counts used: {3: 976, 2: 637, 1: 387}
+
+Mean tokens (passage + 13 readout + BOS) by filler length:
+    k      P      U   Ucap      M      K   C_lo  C_mid   C_hi
+    1   37.1   34.1   34.1   37.1   37.4   37.1   37.1   37.1
+    2   46.0   41.6   41.6   46.0   46.5   46.0   46.0   46.0
+    4   62.9   55.5   55.5   62.9   63.7   62.9   62.9   62.9
+    8   97.4   83.9   83.9   97.4   98.6   97.4   97.4   97.4
+   16  166.9  141.4  141.4  166.9  169.1  166.9  166.9  166.9
+
+Peak RSS: 2.68 GB

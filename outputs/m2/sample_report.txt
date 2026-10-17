@@ -1,0 +1,262 @@
+== 1. City screen (knowledge prompt logit diff, threshold 2.0) ==
+France: kept 23/27
+  kept:    Versailles(3t,+6.5), Nantes(2t,+6.3), Rennes(2t,+6.2), Calais(1t,+5.7), Bordeaux(3t,+5.7), Toulouse(3t,+5.4), Strasbourg(2t,+4.9), Marseille(2t,+4.7), Paris(1t,+4.2), Lyon(1t,+4.1), Grenoble(3t,+4.1), Rouen(2t,+3.9), Toulon(3t,+3.8), Cannes(1t,+3.7), Montpellier(3t,+3.7), Lourdes(3t,+3.5), Dijon(3t,+3.3), Le Havre(3t,+3.2), Amiens(2t,+3.1), Lille(2t,+3.1), Chamonix(3t,+2.8), Avignon(3t,+2.5), Biarritz(3t,+2.1)
+  dropped: Limoges(+1.8), Reims(+1.3), Metz(+0.2), Perpignan(-0.3)
+Japan: kept 27/28
+  kept:    Nagasaki(2t,+7.8), Sapporo(2t,+7.7), Shizuoka(3t,+7.6), Kamakura(2t,+7.4), Yokosuka(3t,+7.4), Osaka(1t,+7.3), Kumamoto(2t,+7.3), Yokohama(3t,+7.1), Kawasaki(2t,+7.1), Kanazawa(3t,+7.1), Otaru(2t,+7.0), Okayama(2t,+7.0), Kagoshima(3t,+6.9), Fukuoka(3t,+6.9), Hiroshima(1t,+6.7), Matsuyama(3t,+6.7), Nagoya(2t,+6.6), Tokyo(1t,+6.6), Kitakyushu(4t,+6.5), Chiba(2t,+6.3), Kyoto(1t,+6.3), Niigata(3t,+5.9), Sendai(2t,+5.8), Hamamatsu(3t,+4.8), Kobe(1t,+3.4), Hakodate(3t,+3.3), Nikko(2t,+2.5)
+  dropped: Nara(+0.8)
+train cities by token count: 1 tok: France Lyon, Paris, Calais | Japan Osaka, Tokyo, Kobe, Kyoto; 2 tok: France Strasbourg, Amiens, Lille, Rennes, Marseille | Japan Kawasaki, Sapporo, Kumamoto, Nagasaki, Nagoya, Otaru, Sendai, Nikko; 3 tok: France Toulon, Toulouse, Biarritz, Dijon, Montpellier, Le Havre, Versailles, Lourdes, Grenoble | Japan Kagoshima, Yokohama, Kanazawa, Niigata, Hakodate, Matsuyama, Hamamatsu, Fukuoka
+test cities by token count: 1 tok: France Cannes | Japan Hiroshima; 2 tok: France Rouen, Nantes | Japan Kamakura, Okayama, Chiba; 3 tok: France Chamonix, Bordeaux, Avignon | Japan Shizuoka, Yokosuka
+
+== 2. Template split (stratified by clause count) ==
+s0 templates: 18 train / 6 test
+fillers:      60 train / 20 test
+
+== 3. Generated 40 pairs (80 passages); checked 640 renderings ==
+All renderings tokenize cleanly; pair members match in token count and roles in every condition.
+Split: train=30 pairs, test=10 pairs
+City token counts used: {3: 16, 2: 14, 1: 10}
+
+Mean tokens (passage + 13 readout + BOS) by filler length:
+    k      P      U   Ucap      M      K   C_lo  C_mid   C_hi
+    1   37.6   34.5   34.5   37.6   38.1   37.6   37.6   37.6
+    2   47.4   42.5   42.5   47.4   48.1   47.4   47.4   47.4
+    4   60.0   53.2   53.2   60.0   61.0   60.0   60.0   60.0
+    8   99.0   85.1   85.1   99.0   99.9   99.0   99.0   99.0
+   16  165.6  140.6  140.6  165.6  167.9  165.6  165.6  165.6
+
+Behavior: mean logit diff (true country - other) at the readout, 16 passages per cell:
+    k      P      U   Ucap      M      K   C_lo  C_mid   C_hi
+    1  +3.17  +2.86  +2.95  +2.80  +3.06  +3.21  +3.18  +2.98
+    2  +3.81  +3.43  +3.51  +3.34  +3.66  +3.72  +3.61  +3.52
+    4  +3.12  +2.79  +2.80  +2.66  +2.93  +3.03  +3.09  +2.87
+    8  +3.30  +2.70  +2.74  +2.67  +3.18  +3.28  +3.00  +2.99
+   16  +3.33  +2.67  +3.04  +2.72  +3.03  +3.35  +3.18  +3.29
+  share correct (diff > 0) by k, P only: k=1: 1.00, k=2: 1.00, k=4: 1.00, k=8: 1.00, k=16: 1.00
+
+== 4. Example pair k2-00000 (split=test, cities {'France': 'Bordeaux', 'Japan': 'Shizuoka'}) ==
+  [P    |Fr] Our flight landed in Bordeaux right on time, so we caught the early bus. The teacher graded the tests. The parcel arrived, but the box was damaged.
+  [P    |Ja] Our flight landed in Shizuoka right on time, so we caught the early bus. The teacher graded the tests. The parcel arrived, but the box was damaged.
+  [U    |Fr] our flight landed in Bordeaux right on time so we caught the early bus the teacher graded the tests the parcel arrived but the box was damaged
+  [U    |Ja] our flight landed in Shizuoka right on time so we caught the early bus the teacher graded the tests the parcel arrived but the box was damaged
+  [Ucap |Fr] Our flight landed in Bordeaux right on time so we caught the early bus The teacher graded the tests The parcel arrived but the box was damaged
+  [Ucap |Ja] Our flight landed in Shizuoka right on time so we caught the early bus The teacher graded the tests The parcel arrived but the box was damaged
+  [M    |Fr] our flight landed in Bordeaux right on. time so. we caught the early bus the, teacher, graded the. tests the parcel arrived but the box was damaged
+  [M    |Ja] our flight landed in Shizuoka right on. time so. we caught the early bus the, teacher, graded the. tests the parcel arrived but the box was damaged
+  [K    |Fr] Our flight landed In Bordeaux right on time, So we Caught the early bus. The teacher graded the tests. The parcel arrived, but the box was damaged.
+  [K    |Ja] Our flight landed In Shizuoka right on time, So we Caught the early bus. The teacher graded the tests. The parcel arrived, but the box was damaged.
+  [C_lo |Fr] Our flight landed in Bordeaux right on time, so we caught the early bus. The teacher graded the tests. The parcel arrived, but the box was damaged.
+  [C_lo |Ja] Our flight landed in Shizuoka right on time, so we caught the early bus. The teacher graded the tests. The parcel arrived, but the box was damaged.
+  [C_mid|Fr] Our flight lesson in Bordeaux right on time, so we caught violin early borrow. The teacher graded the tests. The parcel arrived, but the box was damaged.
+  [C_mid|Ja] Our flight lesson in Shizuoka right on time, so we caught violin early borrow. The teacher graded the tests. The parcel arrived, but the box was damaged.
+  [C_hi |Fr] Our flight landed in Bordeaux right on time, so we caught the carpet bus. The teacher graded gentle tests. The parcel ribbon, but the box was damaged.
+  [C_hi |Ja] Our flight landed in Shizuoka right on time, so we caught the carpet bus. The teacher graded gentle tests. The parcel ribbon, but the box was damaged.
+
+== 5. Role table: P, France ==
+    t token            role                     wf aft flags
+    0 '<|endoftext|>'  bos.bos                  y  -   
+    1 'Our'            s0.initial               y  -   
+    2 ' flight'        s0.content               y  -   
+    3 ' landed'        s0.content               y  -   
+    4 ' in'            s0.content               y  -   
+    5 ' B'             s0.city                  -  -   
+    6 'orde'           s0.city                  -  -   
+    7 'aux'            s0.city                  y  -   
+    8 ' right'         s0.content               y  y   
+    9 ' on'            s0.content               y  y   
+   10 ' time'          s0.clause_final          y  y   before_punct
+   11 ','              s0.comma                 y  y   first_punct
+   12 ' so'            s0.clause_initial        y  y   conj
+   13 ' we'            s0.content               y  y   
+   14 ' caught'        s0.content               y  y   
+   15 ' the'           s0.content               y  y   
+   16 ' early'         s0.content               y  y   
+   17 ' bus'           s0.sent_final            y  y   before_punct
+   18 '.'              s0.period                y  y   
+   19 ' The'           f1.initial               y  y   
+   20 ' teacher'       f1.content               y  y   
+   21 ' graded'        f1.content               y  y   
+   22 ' the'           f1.content               y  y   
+   23 ' tests'         f1.sent_final            y  y   before_punct
+   24 '.'              f1.period                y  y   
+   25 ' The'           f2.initial               y  y   
+   26 ' parcel'        f2.content               y  y   
+   27 ' arrived'       f2.clause_final          y  y   before_punct
+   28 ','              f2.comma                 y  y   
+   29 ' but'           f2.clause_initial        y  y   conj
+   30 ' the'           f2.content               y  y   
+   31 ' box'           f2.content               y  y   
+   32 ' was'           f2.content               y  y   
+   33 ' damaged'       f2.sent_final            y  y   before_punct
+   34 '.'              f2.period                y  y   
+   35 '\n'             readout.q0               y  y   
+   36 '\n'             readout.q1               y  y   
+   37 'Question'       readout.q2               y  y   
+   38 ':'              readout.q3               y  y   
+   39 ' Which'         readout.q4               y  y   
+   40 ' country'       readout.q5               y  y   
+   41 ' was'           readout.q6               y  y   
+   42 ' this'          readout.q7               y  y   
+   43 ' in'            readout.q8               y  y   
+   44 '?'              readout.q9               y  y   
+   45 '\n'             readout.q10              y  y   
+   46 'Answer'         readout.q11              y  y   
+   47 ':'              readout.final            y  y   
+
+== 5. Role table: U, France ==
+    t token            role                     wf aft flags
+    0 '<|endoftext|>'  bos.bos                  y  -   
+    1 'our'            s0.initial               y  -   
+    2 ' flight'        s0.content               y  -   
+    3 ' landed'        s0.content               y  -   
+    4 ' in'            s0.content               y  -   
+    5 ' B'             s0.city                  -  -   
+    6 'orde'           s0.city                  -  -   
+    7 'aux'            s0.city                  y  -   
+    8 ' right'         s0.content               y  y   
+    9 ' on'            s0.content               y  y   
+   10 ' time'          s0.clause_final          y  y   
+   11 ' so'            s0.clause_initial        y  y   conj
+   12 ' we'            s0.content               y  y   
+   13 ' caught'        s0.content               y  y   
+   14 ' the'           s0.content               y  y   
+   15 ' early'         s0.content               y  y   
+   16 ' bus'           s0.sent_final            y  y   
+   17 ' the'           f1.initial               y  y   
+   18 ' teacher'       f1.content               y  y   
+   19 ' graded'        f1.content               y  y   
+   20 ' the'           f1.content               y  y   
+   21 ' tests'         f1.sent_final            y  y   
+   22 ' the'           f2.initial               y  y   
+   23 ' parcel'        f2.content               y  y   
+   24 ' arrived'       f2.clause_final          y  y   
+   25 ' but'           f2.clause_initial        y  y   conj
+   26 ' the'           f2.content               y  y   
+   27 ' box'           f2.content               y  y   
+   28 ' was'           f2.content               y  y   
+   29 ' damaged'       f2.sent_final            y  y   
+   30 '\n'             readout.q0               y  y   
+   31 '\n'             readout.q1               y  y   
+   32 'Question'       readout.q2               y  y   
+   33 ':'              readout.q3               y  y   
+   34 ' Which'         readout.q4               y  y   
+   35 ' country'       readout.q5               y  y   
+   36 ' was'           readout.q6               y  y   
+   37 ' this'          readout.q7               y  y   
+   38 ' in'            readout.q8               y  y   
+   39 '?'              readout.q9               y  y   
+   40 '\n'             readout.q10              y  y   
+   41 'Answer'         readout.q11              y  y   
+   42 ':'              readout.final            y  y   
+
+== 5. Role table: M, France ==
+    t token            role                     wf aft flags
+    0 '<|endoftext|>'  bos.bos                  y  -   
+    1 'our'            s0.initial               y  -   
+    2 ' flight'        s0.content               y  -   
+    3 ' landed'        s0.content               y  -   
+    4 ' in'            s0.content               y  -   
+    5 ' B'             s0.city                  -  -   
+    6 'orde'           s0.city                  -  -   
+    7 'aux'            s0.city                  y  -   
+    8 ' right'         s0.content               y  y   
+    9 ' on'            s0.content               y  y   before_punct
+   10 '.'              s0.misplaced_period      y  y   first_punct
+   11 ' time'          s0.clause_final          y  y   
+   12 ' so'            s0.clause_initial        y  y   before_punct,conj
+   13 '.'              s0.misplaced_period      y  y   
+   14 ' we'            s0.content               y  y   
+   15 ' caught'        s0.content               y  y   
+   16 ' the'           s0.content               y  y   
+   17 ' early'         s0.content               y  y   
+   18 ' bus'           s0.sent_final            y  y   
+   19 ' the'           f1.initial               y  y   before_punct
+   20 ','              f1.misplaced_comma       y  y   
+   21 ' teacher'       f1.content               y  y   before_punct
+   22 ','              f1.misplaced_comma       y  y   
+   23 ' graded'        f1.content               y  y   
+   24 ' the'           f1.content               y  y   before_punct
+   25 '.'              f1.misplaced_period      y  y   
+   26 ' tests'         f1.sent_final            y  y   
+   27 ' the'           f2.initial               y  y   
+   28 ' parcel'        f2.content               y  y   
+   29 ' arrived'       f2.clause_final          y  y   
+   30 ' but'           f2.clause_initial        y  y   conj
+   31 ' the'           f2.content               y  y   
+   32 ' box'           f2.content               y  y   
+   33 ' was'           f2.content               y  y   
+   34 ' damaged'       f2.sent_final            y  y   
+   35 '\n'             readout.q0               y  y   
+   36 '\n'             readout.q1               y  y   
+   37 'Question'       readout.q2               y  y   
+   38 ':'              readout.q3               y  y   
+   39 ' Which'         readout.q4               y  y   
+   40 ' country'       readout.q5               y  y   
+   41 ' was'           readout.q6               y  y   
+   42 ' this'          readout.q7               y  y   
+   43 ' in'            readout.q8               y  y   
+   44 '?'              readout.q9               y  y   
+   45 '\n'             readout.q10              y  y   
+   46 'Answer'         readout.q11              y  y   
+   47 ':'              readout.final            y  y   
+
+== 5. Role table: K, France ==
+    t token            role                     wf aft flags
+    0 '<|endoftext|>'  bos.bos                  y  -   
+    1 'Our'            s0.initial               y  -   
+    2 ' flight'        s0.content               y  -   
+    3 ' landed'        s0.content               y  -   before_cap
+    4 ' In'            s0.content               y  -   capitalized
+    5 ' B'             s0.city                  -  -   
+    6 'orde'           s0.city                  -  -   
+    7 'aux'            s0.city                  y  -   
+    8 ' right'         s0.content               y  y   
+    9 ' on'            s0.content               y  y   
+   10 ' time'          s0.clause_final          y  y   before_punct
+   11 ','              s0.comma                 y  y   first_punct
+   12 ' So'            s0.clause_initial        y  y   capitalized,conj
+   13 ' we'            s0.content               y  y   before_cap
+   14 ' C'             s0.content               -  y   capitalized
+   15 'aught'          s0.content               y  y   capitalized
+   16 ' the'           s0.content               y  y   
+   17 ' early'         s0.content               y  y   
+   18 ' bus'           s0.sent_final            y  y   before_punct
+   19 '.'              s0.period                y  y   
+   20 ' The'           f1.initial               y  y   
+   21 ' teacher'       f1.content               y  y   
+   22 ' graded'        f1.content               y  y   
+   23 ' the'           f1.content               y  y   
+   24 ' tests'         f1.sent_final            y  y   before_punct
+   25 '.'              f1.period                y  y   
+   26 ' The'           f2.initial               y  y   
+   27 ' parcel'        f2.content               y  y   
+   28 ' arrived'       f2.clause_final          y  y   before_punct
+   29 ','              f2.comma                 y  y   
+   30 ' but'           f2.clause_initial        y  y   conj
+   31 ' the'           f2.content               y  y   
+   32 ' box'           f2.content               y  y   
+   33 ' was'           f2.content               y  y   
+   34 ' damaged'       f2.sent_final            y  y   before_punct
+   35 '.'              f2.period                y  y   
+   36 '\n'             readout.q0               y  y   
+   37 '\n'             readout.q1               y  y   
+   38 'Question'       readout.q2               y  y   
+   39 ':'              readout.q3               y  y   
+   40 ' Which'         readout.q4               y  y   
+   41 ' country'       readout.q5               y  y   
+   42 ' was'           readout.q6               y  y   
+   43 ' this'          readout.q7               y  y   
+   44 ' in'            readout.q8               y  y   
+   45 '?'              readout.q9               y  y   
+   46 '\n'             readout.q10              y  y   
+   47 'Answer'         readout.q11              y  y   
+   48 ':'              readout.final            y  y   
+
+== 6. P examples at each filler length ==
+  k=1  Our flight landed in Yokosuka right on time, so we caught the early bus. The kids watched a movie.
+  k=2  Our flight landed in Shizuoka right on time, so we caught the early bus. The teacher graded the tests. The parcel arrived, but the box was damaged.
+  k=4  My sister flew to Chiba for a work conference last month. Our car needed new tires. The tea was too hot, so I waited a minute. The kids watched a movie. The radio played old songs.
+  k=8  My sister flew to Yokosuka for a work conference last month. We washed the dishes, and dried them by hand. I fixed the shelf, and hung a picture above it. My phone needed a charge. The soup needed more salt. The radio played old songs. The tea was too hot, so I waited a minute. The kids watched a movie. We watched the news, and went to bed.
+  k=16 I rented a car in Shizuoka at the airport, then drove to the office. The kids watched a movie. The neighbors had a party. The game was close, but our team lost. The radio played old songs. The soup needed more salt. The restaurant was full, but they found us a table. We moved the couch, and swept underneath it. The bread was a bit stale. The parcel arrived, but the box was damaged. I opened the window, and the noise came in. We washed the dishes, and dried them by hand. The teacher graded the tests. The cake was too sweet. My phone needed a charge. I fixed the shelf, and hung a picture above it. We ate lunch, then went back.
+
+Peak RSS: 2.68 GB

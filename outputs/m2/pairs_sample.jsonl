@@ -1,0 +1,40 @@
+{"pair_id": "k1-00000", "k": 1, "split": "test", "s0": 17, "fillers": [2], "city_ntok": 3, "cities": {"France": "Bordeaux", "Japan": "Yokosuka"}}
+{"pair_id": "k1-00001", "k": 1, "split": "test", "s0": 8, "fillers": [55], "city_ntok": 2, "cities": {"France": "Nantes", "Japan": "Chiba"}}
+{"pair_id": "k1-00002", "k": 1, "split": "train", "s0": 0, "fillers": [37], "city_ntok": 3, "cities": {"France": "Biarritz", "Japan": "Hakodate"}}
+{"pair_id": "k1-00003", "k": 1, "split": "train", "s0": 3, "fillers": [46], "city_ntok": 1, "cities": {"France": "Paris", "Japan": "Tokyo"}}
+{"pair_id": "k1-00004", "k": 1, "split": "train", "s0": 2, "fillers": [52], "city_ntok": 2, "cities": {"France": "Lille", "Japan": "Nikko"}}
+{"pair_id": "k1-00005", "k": 1, "split": "train", "s0": 23, "fillers": [4], "city_ntok": 3, "cities": {"France": "Le Havre", "Japan": "Niigata"}}
+{"pair_id": "k1-00006", "k": 1, "split": "train", "s0": 16, "fillers": [66], "city_ntok": 3, "cities": {"France": "Grenoble", "Japan": "Hakodate"}}
+{"pair_id": "k1-00007", "k": 1, "split": "train", "s0": 20, "fillers": [44], "city_ntok": 1, "cities": {"France": "Lyon", "Japan": "Osaka"}}
+{"pair_id": "k2-00000", "k": 2, "split": "test", "s0": 17, "fillers": [23, 55], "city_ntok": 3, "cities": {"France": "Bordeaux", "Japan": "Shizuoka"}}
+{"pair_id": "k2-00001", "k": 2, "split": "test", "s0": 15, "fillers": [11, 5], "city_ntok": 3, "cities": {"France": "Avignon", "Japan": "Shizuoka"}}
+{"pair_id": "k2-00002", "k": 2, "split": "train", "s0": 7, "fillers": [56, 34], "city_ntok": 2, "cities": {"France": "Rennes", "Japan": "Sapporo"}}
+{"pair_id": "k2-00003", "k": 2, "split": "train", "s0": 18, "fillers": [78, 37], "city_ntok": 1, "cities": {"France": "Paris", "Japan": "Osaka"}}
+{"pair_id": "k2-00004", "k": 2, "split": "train", "s0": 19, "fillers": [35, 63], "city_ntok": 2, "cities": {"France": "Marseille", "Japan": "Otaru"}}
+{"pair_id": "k2-00005", "k": 2, "split": "train", "s0": 20, "fillers": [19, 56], "city_ntok": 3, "cities": {"France": "Grenoble", "Japan": "Hakodate"}}
+{"pair_id": "k2-00006", "k": 2, "split": "train", "s0": 21, "fillers": [25, 36], "city_ntok": 2, "cities": {"France": "Amiens", "Japan": "Nagoya"}}
+{"pair_id": "k2-00007", "k": 2, "split": "train", "s0": 4, "fillers": [68, 46], "city_ntok": 1, "cities": {"France": "Calais", "Japan": "Kobe"}}
+{"pair_id": "k4-00000", "k": 4, "split": "test", "s0": 1, "fillers": [67, 73, 2, 11], "city_ntok": 2, "cities": {"France": "Nantes", "Japan": "Chiba"}}
+{"pair_id": "k4-00001", "k": 4, "split": "test", "s0": 12, "fillers": [9, 5, 79, 17], "city_ntok": 2, "cities": {"France": "Nantes", "Japan": "Okayama"}}
+{"pair_id": "k4-00002", "k": 4, "split": "train", "s0": 23, "fillers": [22, 25, 46, 63], "city_ntok": 3, "cities": {"France": "Lourdes", "Japan": "Matsuyama"}}
+{"pair_id": "k4-00003", "k": 4, "split": "train", "s0": 11, "fillers": [20, 33, 15, 63], "city_ntok": 3, "cities": {"France": "Dijon", "Japan": "Matsuyama"}}
+{"pair_id": "k4-00004", "k": 4, "split": "train", "s0": 18, "fillers": [4, 31, 21, 10], "city_ntok": 3, "cities": {"France": "Biarritz", "Japan": "Niigata"}}
+{"pair_id": "k4-00005", "k": 4, "split": "train", "s0": 20, "fillers": [43, 53, 27, 20], "city_ntok": 1, "cities": {"France": "Lyon", "Japan": "Tokyo"}}
+{"pair_id": "k4-00006", "k": 4, "split": "train", "s0": 3, "fillers": [7, 22, 28, 48], "city_ntok": 3, "cities": {"France": "Toulouse", "Japan": "Kagoshima"}}
+{"pair_id": "k4-00007", "k": 4, "split": "train", "s0": 0, "fillers": [14, 35, 63, 58], "city_ntok": 3, "cities": {"France": "Dijon", "Japan": "Kagoshima"}}
+{"pair_id": "k8-00000", "k": 8, "split": "test", "s0": 1, "fillers": [42, 79, 1, 17, 11, 73, 2, 54], "city_ntok": 3, "cities": {"France": "Bordeaux", "Japan": "Yokosuka"}}
+{"pair_id": "k8-00001", "k": 8, "split": "test", "s0": 1, "fillers": [72, 51, 2, 1, 32, 73, 67, 62], "city_ntok": 2, "cities": {"France": "Nantes", "Japan": "Chiba"}}
+{"pair_id": "k8-00002", "k": 8, "split": "train", "s0": 0, "fillers": [74, 21, 71, 53, 69, 59, 76, 24], "city_ntok": 1, "cities": {"France": "Calais", "Japan": "Kobe"}}
+{"pair_id": "k8-00003", "k": 8, "split": "train", "s0": 22, "fillers": [39, 14, 64, 58, 53, 16, 36, 37], "city_ntok": 1, "cities": {"France": "Paris", "Japan": "Kobe"}}
+{"pair_id": "k8-00004", "k": 8, "split": "train", "s0": 6, "fillers": [65, 77, 57, 64, 8, 50, 22, 24], "city_ntok": 2, "cities": {"France": "Strasbourg", "Japan": "Nagoya"}}
+{"pair_id": "k8-00005", "k": 8, "split": "train", "s0": 16, "fillers": [60, 46, 3, 53, 75, 49, 40, 44], "city_ntok": 1, "cities": {"France": "Lyon", "Japan": "Kobe"}}
+{"pair_id": "k8-00006", "k": 8, "split": "train", "s0": 13, "fillers": [48, 70, 22, 64, 43, 26, 57, 24], "city_ntok": 2, "cities": {"France": "Amiens", "Japan": "Nagasaki"}}
+{"pair_id": "k8-00007", "k": 8, "split": "train", "s0": 22, "fillers": [61, 35, 78, 53, 36, 16, 68, 7], "city_ntok": 2, "cities": {"France": "Marseille", "Japan": "Sendai"}}
+{"pair_id": "k16-00000", "k": 16, "split": "test", "s0": 15, "fillers": [2, 62, 51, 11, 17, 41, 72, 9, 55, 32, 42, 23, 29, 1, 79, 30], "city_ntok": 3, "cities": {"France": "Bordeaux", "Japan": "Shizuoka"}}
+{"pair_id": "k16-00001", "k": 16, "split": "test", "s0": 17, "fillers": [5, 42, 11, 67, 23, 73, 54, 51, 62, 55, 1, 79, 17, 32, 41, 72], "city_ntok": 3, "cities": {"France": "Avignon", "Japan": "Shizuoka"}}
+{"pair_id": "k16-00002", "k": 16, "split": "train", "s0": 0, "fillers": [76, 6, 15, 57, 14, 10, 58, 7, 40, 22, 20, 52, 66, 63, 0, 18], "city_ntok": 2, "cities": {"France": "Marseille", "Japan": "Otaru"}}
+{"pair_id": "k16-00003", "k": 16, "split": "train", "s0": 7, "fillers": [15, 59, 20, 68, 78, 19, 53, 0, 77, 25, 28, 36, 76, 57, 43, 70], "city_ntok": 1, "cities": {"France": "Paris", "Japan": "Kyoto"}}
+{"pair_id": "k16-00004", "k": 16, "split": "train", "s0": 23, "fillers": [76, 34, 14, 19, 61, 49, 3, 64, 18, 65, 15, 24, 47, 28, 35, 22], "city_ntok": 3, "cities": {"France": "Le Havre", "Japan": "Kagoshima"}}
+{"pair_id": "k16-00005", "k": 16, "split": "train", "s0": 4, "fillers": [65, 49, 3, 28, 7, 77, 18, 52, 63, 58, 33, 12, 21, 6, 14, 45], "city_ntok": 1, "cities": {"France": "Calais", "Japan": "Osaka"}}
+{"pair_id": "k16-00006", "k": 16, "split": "train", "s0": 18, "fillers": [6, 16, 10, 52, 77, 58, 59, 24, 56, 31, 63, 48, 74, 57, 38, 4], "city_ntok": 2, "cities": {"France": "Strasbourg", "Japan": "Nagoya"}}
+{"pair_id": "k16-00007", "k": 16, "split": "train", "s0": 7, "fillers": [44, 69, 40, 36, 61, 56, 52, 22, 27, 31, 26, 50, 13, 21, 76, 64], "city_ntok": 2, "cities": {"France": "Strasbourg", "Japan": "Sendai"}}

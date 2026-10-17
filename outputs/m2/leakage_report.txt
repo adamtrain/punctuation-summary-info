@@ -1,0 +1,13 @@
+Pairs with k=4: 300 train / 100 test
+
+Negative control (filler-only, last token), test n=100, chance band [0.40, 0.60]:
+  L0:0.48 L1:0.51 L2:0.51 L3:0.52 L4:0.57 L5:0.43 L6:0.44 L7:0.44 L8:0.45 L9:0.50 L10:0.43 L11:0.45 L12:0.45
+  outside band: none
+
+Positive control at city_last_token (P), test n=200 (held-out templates and cities), chance band [0.43, 0.57]:
+  real labels:     L0:1.00 L1:1.00 L2:1.00 L3:1.00 L4:1.00 L5:1.00 L6:1.00 L7:1.00 L8:1.00 L9:1.00 L10:1.00 L11:1.00 L12:1.00
+  shuffled labels: L0:0.41 L1:0.53 L2:0.27 L3:0.31 L4:0.38 L5:0.22 L6:0.23 L7:0.32 L8:0.32 L9:0.21 L10:0.47 L11:0.42 L12:0.35
+
+Positive control at readout_final (P), test n=200 (held-out templates and cities), chance band [0.43, 0.57]:
+  real labels:     L0:0.50 L1:0.69 L2:0.81 L3:0.84 L4:0.81 L5:0.88 L6:0.90 L7:0.96 L8:0.95 L9:0.96 L10:1.00 L11:1.00 L12:1.00
+  shuffled labels: L0:0.50 L1:0.53 L2:0.55 L3:0.53 L4:0.62 L5:0.62 L6:0.56 L7:0.52 L8:0.47 L9:0.46 L10:0.55 L11:0.67 L12:0.77

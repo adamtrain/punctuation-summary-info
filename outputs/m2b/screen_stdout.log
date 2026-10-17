@@ -1,0 +1,28 @@
+W1017 13:16:17.570000 87259 torch/distributed/elastic/multiprocessing/redirects.py:35] NOTE: Redirects are currently not supported in MacOs.
+Loading weights:   0%|          | 0/148 [00:00<?, ?it/s]Loading weights: 100%|██████████| 148/148 [00:00<00:00, 31026.99it/s]
+== 1. Adjectives: great-terrible logit diff relative to neutral adjectives (neutral mean +3.12) ==
+good: kept 22/22, mean |rel| of kept 1.88
+  kept:    nice(+2.2), perfect(+2.1), wonderful(+2.1), fantastic(+2.1), fabulous(+2.1), lovely(+2.1), enjoyable(+2.1), delightful(+2.1), excellent(+2.0), outstanding(+2.0), amazing(+1.9), pleasant(+1.9), terrific(+1.9), superb(+1.8), marvelous(+1.8), brilliant(+1.7), fine(+1.7), solid(+1.7), charming(+1.6), impressive(+1.5), splendid(+1.5), decent(+1.3)
+  dropped: 
+bad: kept 14/39, mean |rel| of kept 1.74
+  kept:    sloppy(-2.3), unpleasant(-2.3), annoying(-2.3), disappointing(-2.2), frustrating(-2.1), mediocre(-1.8), chaotic(-1.7), uncomfortable(-1.5), awkward(-1.5), messy(-1.5), boring(-1.4), tedious(-1.3), noisy(-1.2), stressful(-1.2)
+  dropped: appalling(-4.4), atrocious(-4.0,multi-tok), dreadful(-4.0), dismal(-3.9), abysmal(-3.4,multi-tok), disgusting(-3.4), lousy(-3.4), poor(-3.3), awful(-3.2), inadequate(-3.2), pathetic(-3.2), horrible(-3.2), gloomy(-3.1), unbearable(-3.1), miserable(-3.0), lame(-2.9), dirty(-2.8), forgettable(-2.6,multi-tok), unfriendly(-2.3,multi-tok), uninspiring(-1.5,multi-tok), shabby(-1.4,multi-tok), dull(-1.2), tiring(-1.2,multi-tok), bland(-1.0), crowded(-0.9)
+
+== 2. Fillers: valence range -0.25 .. +5.06, median +2.79; kept 64 closest to median ==
+  dropped: The dog barked at the mailman, then ran inside. (-0.25) | Nobody remembered the password. (+0.06) | I called the dentist, but nobody answered. (+0.64) | The children drew pictures, then hung them up. (+0.86) | The phone rang twice, and then it stopped. (+0.92) | He tried the new recipe, but it did not work. (+0.92) | The fridge made a strange noise. (+1.01) | I lost my favorite pen. (+1.30) | The class ended early, so we went for coffee. (+4.24) | My brother fixed the sink, and cleaned up after. (+4.35) | The printer was out of ink, so I used another one. (+4.50) | The kettle whistled, and I made some tea. (+4.61) | The store was busy, so we waited outside. (+4.62) | I answered a few emails. (+4.66) | I fixed the shelf, and hung a picture above it. (+4.94) | She baked some cookies, and shared them with us. (+5.06)
+
+== 3. Readouts (answers great/terrible): pair-level logit diff (mean of members' true-minus-other diffs), pair and member accuracy ==
+-- consistent (75 train pairs) --
+  '\n\nQuestion: Overall, was it good or bad?\nAnswer:'      P: +0.15 pair-acc 0.97 member-acc 0.50 | U: +0.12 pair-acc 0.97 member-acc 0.50
+  '\n\nQuestion: Was the experience good or bad?\nAnswer:'   P: +0.23 pair-acc 1.00 member-acc 0.50 | U: +0.22 pair-acc 1.00 member-acc 0.50
+  ' and overall it was'                                      P: +1.11 pair-acc 1.00 member-acc 0.53 | U: +1.44 pair-acc 1.00 member-acc 0.50
+  ' and all in all it was'                                   P: +1.15 pair-acc 1.00 member-acc 0.53 | U: +1.33 pair-acc 1.00 member-acc 0.50
+  ' and overall the whole experience was'                    P: +1.60 pair-acc 1.00 member-acc 0.52 | U: +1.70 pair-acc 1.00 member-acc 0.51
+  ' so overall it was'                                       P: +1.00 pair-acc 1.00 member-acc 0.51 | U: +1.31 pair-acc 1.00 member-acc 0.50
+-- mixed (75 train pairs) --
+  '\n\nQuestion: Overall, was it good or bad?\nAnswer:'      P: +0.06 pair-acc 0.96 member-acc 0.50 | U: +0.04 pair-acc 0.91 member-acc 0.50
+  '\n\nQuestion: Was the experience good or bad?\nAnswer:'   P: +0.08 pair-acc 1.00 member-acc 0.50 | U: +0.08 pair-acc 0.99 member-acc 0.50
+  ' and overall it was'                                      P: +0.44 pair-acc 1.00 member-acc 0.52 | U: +0.53 pair-acc 0.99 member-acc 0.51
+  ' and all in all it was'                                   P: +0.44 pair-acc 1.00 member-acc 0.51 | U: +0.45 pair-acc 0.99 member-acc 0.50
+  ' and overall the whole experience was'                    P: +0.62 pair-acc 1.00 member-acc 0.51 | U: +0.63 pair-acc 0.95 member-acc 0.51
+  ' so overall it was'                                       P: +0.39 pair-acc 1.00 member-acc 0.50 | U: +0.50 pair-acc 0.99 member-acc 0.50

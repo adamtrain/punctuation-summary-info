@@ -1,0 +1,105 @@
+== 1. Tokenization of probe strings ==
+           ',' -> [',']
+          ' ,' -> [' ,']
+           '.' -> ['.']
+          ' .' -> [' .']
+       '. The' -> ['.', ' The']
+      ', then' -> [',', ' then']
+          '\n' -> ['\n']
+        '\n\n' -> ['\n\n']
+        ' and' -> [' and']
+       ' then' -> [' then']
+   ' Colorado' -> [' Colorado']
+      ' Texas' -> [' Texas']
+    'Colorado' -> ['Colorado']
+       'Texas' -> ['Texas']
+
+City names (leading space / no space / lowercase):
+  Colorado  Denver     ' Denver'=[' Denver']  'Denver'=['Denver']  ' denver'=[' den', 'ver']
+  Colorado  Boulder    ' Boulder'=[' Boulder']  'Boulder'=['B', 'oulder']  ' boulder'=[' boulder']
+  Colorado  Aspen      ' Aspen'=[' As', 'pen']  'Aspen'=['As', 'pen']  ' aspen'=[' as', 'pen']
+  Colorado  Vail       ' Vail'=[' V', 'ail']  'Vail'=['V', 'ail']  ' vail'=[' v', 'ail']
+  Colorado  Durango    ' Durango'=[' Dur', 'ango']  'Durango'=['Dur', 'ango']  ' durango'=[' dur', 'ango']
+  Colorado  Telluride  ' Telluride'=[' Tell', 'ur', 'ide']  'Telluride'=['Tell', 'ur', 'ide']  ' telluride'=[' tell', 'ur', 'ide']
+  Colorado  Pueblo     ' Pueblo'=[' P', 'uebl', 'o']  'Pueblo'=['P', 'uebl', 'o']  ' pueblo'=[' p', 'uebl', 'o']
+  Colorado  Greeley    ' Greeley'=[' Gree', 'ley']  'Greeley'=['G', 'ree', 'ley']  ' greeley'=[' g', 'ree', 'ley']
+  Texas     Houston    ' Houston'=[' Houston']  'Houston'=['Houston']  ' houston'=[' h', 'ouston']
+  Texas     Dallas     ' Dallas'=[' Dallas']  'Dallas'=['Dallas']  ' dallas'=[' d', 'allas']
+  Texas     Austin     ' Austin'=[' Austin']  'Austin'=['Austin']  ' austin'=[' aust', 'in']
+  Texas     Lubbock    ' Lubbock'=[' L', 'ubb', 'ock']  'Lubbock'=['L', 'ubb', 'ock']  ' lubbock'=[' l', 'ubb', 'ock']
+  Texas     Amarillo   ' Amarillo'=[' Amar', 'illo']  'Amarillo'=['A', 'mar', 'illo']  ' amarillo'=[' am', 'ar', 'illo']
+  Texas     Galveston  ' Galveston'=[' Gal', 'vest', 'on']  'Galveston'=['Gal', 'vest', 'on']  ' galveston'=[' gal', 'vest', 'on']
+  Texas     Waco       ' Waco'=[' W', 'aco']  'Waco'=['W', 'aco']  ' waco'=[' w', 'aco']
+  Texas     Abilene    ' Abilene'=[' Ab', 'il', 'ene']  'Abilene'=['Ab', 'il', 'ene']  ' abilene'=[' ab', 'il', 'ene']
+
+== 2. Example passage in each condition ==
+
+[P] (25 tokens incl. BOS)
+  text: We drove into Boulder and parked near the trailhead. The weather was fine. We ate lunch, then went back.
+  tokens: 0:'<|endoftext|>' | 1:'We' | 2:' drove' | 3:' into' | 4:' Boulder' | 5:' and' | 6:' parked' | 7:' near' | 8:' the' | 9:' trail' | 10:'head' | 11:'.' | 12:' The' | 13:' weather' | 14:' was' | 15:' fine' | 16:'.' | 17:' We' | 18:' ate' | 19:' lunch' | 20:',' | 21:' then' | 22:' went' | 23:' back' | 24:'.'
+
+[U] (21 tokens incl. BOS)
+  text: we drove into Boulder and parked near the trailhead the weather was fine we ate lunch then went back
+  tokens: 0:'<|endoftext|>' | 1:'we' | 2:' drove' | 3:' into' | 4:' Boulder' | 5:' and' | 6:' parked' | 7:' near' | 8:' the' | 9:' trail' | 10:'head' | 11:' the' | 12:' weather' | 13:' was' | 14:' fine' | 15:' we' | 16:' ate' | 17:' lunch' | 18:' then' | 19:' went' | 20:' back'
+
+[Ucap] (21 tokens incl. BOS)
+  text: We drove into Boulder and parked near the trailhead The weather was fine We ate lunch then went back
+  tokens: 0:'<|endoftext|>' | 1:'We' | 2:' drove' | 3:' into' | 4:' Boulder' | 5:' and' | 6:' parked' | 7:' near' | 8:' the' | 9:' trail' | 10:'head' | 11:' The' | 12:' weather' | 13:' was' | 14:' fine' | 15:' We' | 16:' ate' | 17:' lunch' | 18:' then' | 19:' went' | 20:' back'
+
+[C_wordcase30] (26 tokens incl. BOS)
+  text: We drove into Boulder and Parked near the trailhead. The weather was fine. We ate lunch, Then went back.
+  tokens: 0:'<|endoftext|>' | 1:'We' | 2:' drove' | 3:' into' | 4:' Boulder' | 5:' and' | 6:' Park' | 7:'ed' | 8:' near' | 9:' the' | 10:' trail' | 11:'head' | 12:'.' | 13:' The' | 14:' weather' | 15:' was' | 16:' fine' | 17:'.' | 18:' We' | 19:' ate' | 20:' lunch' | 21:',' | 22:' Then' | 23:' went' | 24:' back' | 25:'.'
+
+[C_wordcase60] (27 tokens incl. BOS)
+  text: We Drove into Boulder and parked near The trailhead. The weather was Fine. We Ate Lunch, then went back.
+  tokens: 0:'<|endoftext|>' | 1:'We' | 2:' Dro' | 3:'ve' | 4:' into' | 5:' Boulder' | 6:' and' | 7:' parked' | 8:' near' | 9:' The' | 10:' trail' | 11:'head' | 12:'.' | 13:' The' | 14:' weather' | 15:' was' | 16:' Fine' | 17:'.' | 18:' We' | 19:' A' | 20:'te' | 21:' Lunch' | 22:',' | 23:' then' | 24:' went' | 25:' back' | 26:'.'
+
+[C_charcase10] (30 tokens incl. BOS)
+  text: We droVe intO Boulder and parked neAr the trailhead. The weatheR was fine. We ate lunch, then Went back.
+  tokens: 0:'<|endoftext|>' | 1:'We' | 2:' dro' | 3:'Ve' | 4:' int' | 5:'O' | 6:' Boulder' | 7:' and' | 8:' parked' | 9:' ne' | 10:'Ar' | 11:' the' | 12:' trail' | 13:'head' | 14:'.' | 15:' The' | 16:' we' | 17:'athe' | 18:'R' | 19:' was' | 20:' fine' | 21:'.' | 22:' We' | 23:' ate' | 24:' lunch' | 25:',' | 26:' then' | 27:' Went' | 28:' back' | 29:'.'
+
+[C_charcase25] (43 tokens incl. BOS)
+  text: we drOVe Into Boulder aNd parkeD NeAR The TrAiLheAd. tHe WeathEr wAs fine. WE ate lunch, tHen WeNt back.
+  tokens: 0:'<|endoftext|>' | 1:'we' | 2:' dr' | 3:'OV' | 4:'e' | 5:' Into' | 6:' Boulder' | 7:' a' | 8:'N' | 9:'d' | 10:' par' | 11:'ke' | 12:'D' | 13:' Ne' | 14:'AR' | 15:' The' | 16:' Tr' | 17:'A' | 18:'i' | 19:'L' | 20:'he' | 21:'Ad' | 22:'.' | 23:' t' | 24:'He' | 25:' We' | 26:'ath' | 27:'Er' | 28:' w' | 29:'As' | 30:' fine' | 31:'.' | 32:' WE' | 33:' ate' | 34:' lunch' | 35:',' | 36:' t' | 37:'Hen' | 38:' We' | 39:'N' | 40:'t' | 41:' back' | 42:'.'
+
+Readout suffix tokens: '\n' | '\n' | 'Question' | ':' | ' Which' | ' state' | ' was' | ' this' | ' in' | '?' | '\n' | 'Answer' | ':'
+
+== 3. Passage NLL per condition (48 passages: 3 templates x 16 cities) ==
+  condition      mean/token total/passage  tokens
+  P                   3.662          92.9    25.3
+  U                   5.144         109.7    21.3
+  Ucap                5.146         109.8    21.3
+  C_wordcase30        4.882         128.1    26.2
+  C_wordcase60        5.188         139.7    27.0
+  C_charcase10        6.331         215.9    34.0
+  C_charcase25        6.769         288.8    42.7
+
+== 4. Behavioral check: logit diff (correct state - other state) ==
+Knowledge prompt alone: '{CITY} is a city in the state of'
+  Denver     (Colorado) diff=+4.25
+  Boulder    (Colorado) diff=+5.37
+  Aspen      (Colorado) diff=+5.94
+  Vail       (Colorado) diff=+0.75
+  Durango    (Colorado) diff=+3.63
+  Telluride  (Colorado) diff=+1.02
+  Pueblo     (Colorado) diff=+4.77
+  Greeley    (Colorado) diff=+0.38
+  Houston    (Texas   ) diff=+4.88
+  Dallas     (Texas   ) diff=+4.15
+  Austin     (Texas   ) diff=+3.64
+  Lubbock    (Texas   ) diff=+5.79
+  Amarillo   (Texas   ) diff=+3.14
+  Galveston  (Texas   ) diff=+5.98
+  Waco       (Texas   ) diff=+4.20
+  Abilene    (Texas   ) diff=+2.93
+
+Passage + readout, by condition (mean diff, accuracy = share with diff > 0):
+  P              mean diff=+2.11  acc=1.00  (n=48)
+  U              mean diff=+1.90  acc=1.00  (n=48)
+  Ucap           mean diff=+1.99  acc=1.00  (n=48)
+  C_wordcase30   mean diff=+2.07  acc=0.98  (n=48)
+  C_charcase10   mean diff=+1.43  acc=0.90  (n=48)
+
+Top-10 next tokens after readout (P, Boulder): ' Colorado', ' California', ' Montana', ' Alaska', ' Wyoming', ' New', ' Arizona', ' Boulder', ' Nevada', ' Oregon'
+
+Peak RSS: 2.69 GB

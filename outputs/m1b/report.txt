@@ -1,0 +1,35 @@
+Substitution pool: 60/60 words are single tokens in GPT-2
+
+== Unusualness and behavior (48 passages; x5 random draws for M, C, K) ==
+cond   word NLL  Δ vs P   ×U Δ  all NLL   total tokens logit diff   acc
+P         4.014  +0.000   0.00    3.662    92.9   26.3      +2.11  1.00
+U         5.144  +1.130   1.00    5.144   109.7   22.3      +1.90  1.00
+Ucap      5.146  +1.132   1.00    5.146   109.8   22.3      +1.99  1.00
+M         5.673  +1.659   1.47    5.709   144.6   26.3      +1.91  0.96
+C0.1      4.967  +0.953   0.84    4.513   114.4   26.3      +2.05  1.00
+C0.2      5.830  +1.816   1.61    5.290   134.0   26.3      +1.98  0.98
+C0.3      6.674  +2.660   2.35    6.033   152.8   26.3      +1.90  0.98
+C0.4      7.294  +3.281   2.90    6.576   166.6   26.3      +1.91  0.97
+C0.5      7.765  +3.751   3.32    7.000   177.3   26.3      +1.84  0.99
+C0.6      8.190  +4.176   3.70    7.378   186.8   26.3      +1.81  0.95
+C0.8      8.760  +4.746   4.20    7.880   199.4   26.3      +1.74  0.95
+C1.0      9.040  +5.026   4.45    8.131   205.8   26.3      +1.67  0.95
+K1        4.476  +0.462   0.41    4.068   104.0   26.6      +2.08  1.00
+K2        4.860  +0.847   0.75    4.405   113.3   26.7      +2.06  1.00
+K3        5.152  +1.138   1.01    4.663   121.0   26.9      +2.05  0.97
+
+U's word-NLL increase over P: +1.130 nats/token
+Closest C strengths: 0.5x U -> C0.1, 1.0x U -> C0.1, 1.5x U -> C0.2
+
+== Example renderings (template 1, Denver) ==
+  P     We drove into Denver and parked near the trailhead. The weather was fine. We ate lunch, then went back.
+  U     we drove into Denver and parked near the trailhead the weather was fine we ate lunch then went back
+  Ucap  We drove into Denver and parked near the trailhead The weather was fine We ate lunch then went back
+  M     we drove into Denver and parked near. the trailhead the. weather was, fine we ate. lunch then went back
+  C0.1  We drove into Denver and loud near the trailhead. The weather was honest. We ate paint, then went back.
+  C0.2  We drove into Denver and parked near the trailhead. The weather simple promise. We ate whisper, then went back.
+  K1    We drove into Denver and parked near the Trailhead. The weather was fine. We ate lunch, then went back.
+  K2    We drove into Denver and Parked near the trailhead. The weather was fine. We ate lunch, then Went back.
+  K3    We drove into Denver and parked Near the trailhead. The weather was Fine. We ate lunch, then went Back.
+
+Peak RSS: 2.69 GB
