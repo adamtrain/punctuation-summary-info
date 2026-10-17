@@ -614,6 +614,16 @@ binary property).
   would give only 10 negative. Rationale: the ceiling balanced strengths for the mixed-majority test; for consistent mood
   (main property) the pair metric cancels any overall lean. Caveat to report with the larger models' mixed-mood test: its
   words are less strength-matched than GPT-2's.
+- **2026-10-17: DEVIATION FROM THE FREEZE (approved by the user, "option 2"), Pythia ladder only:** (a) the adjective
+  strength *ceiling* is dropped; the floor stays (right direction and strength ≥ 1.2 relative to neutral words, in **every**
+  Pythia size). Reason: the 2.6 ceiling was calibrated on GPT-2's logit scale and excludes most words in larger models.
+  (b) All six sizes share one item set: **15 positive and 10 negative adjectives**, 54 cities. (c) Because 10 negatives can't
+  give 3 distinct test adjectives at a 25% hold-out, **3 adjectives per valence are held out for the test split** (12
+  positive / 7 negative for training). Only probes use the split; behavior, knockout and patching train nothing. Why
+  option 2 over dropping 160M: Pythia-160M is the Pythia model closest in size to GPT-2 small (124M), so it separates
+  *size* effects from *model-family* effects. Caveat: in 160M the shared negative adjectives are stronger than the positive
+  ones (mean valence 2.5 vs 1.7); footnote its mixed-majority result. Fillers: the 64 fillers closest to each model's median
+  valence, averaged over the six sizes, so one filler set serves the whole ladder.
 - **2026-10-17 (side session with the user, relayed to this session; no files were changed there):** Scaling decisions
   recorded in Section 5.2: one 80 GB cloud GPU; finish GPT-2 through patching and freeze the method first; Pythia ladder
   (160M–12B) then one modern 7–9B model (Llama-3.1-8B or Gemma-2-9B) with full internals; optional Gemma-2-27B behavior +

@@ -47,9 +47,11 @@ def summarize(s):
     cands = [r for r in s["rows"] if not r.startswith(("span.", "ro.")) and not is_prop(r)]
     best = max(cands, key=lambda r: peak(s, r)[0])
     out["best_position"] = (*peak(s, best), best)
-    l7 = s["layers"].index(7)
+    # Property words' recovery at ~58% depth (layer 7 of 12 in GPT-2, where the summary route peaks), so models with
+    # different depths are compared at the same relative depth.
+    lm = int(np.argmin([abs(l / max(s["layers"]) - 7 / 12) for l in s["layers"]]))
     props = [r for r in s["rows"] if ".prop" in r and not r.endswith("+1")]
-    out["prop_mid"] = float(sum(s["recovery"][s["rows"].index(r)][l7] for r in props))
+    out["prop_mid"] = float(sum(s["recovery"][s["rows"].index(r)][lm] for r in props))
     return out
 
 

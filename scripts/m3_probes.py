@@ -118,11 +118,14 @@ def plot(acc, sig, names, examples, n_test, title, path):
     plt.close(fig)
 
 
-def run(model, prop: str, k: int, cond: str, check_c: bool = False) -> None:
+def run(model, prop: str, k: int, cond: str, check_c: bool = False, pairs: list[dict] | None = None,
+        out=None) -> None:
+    """pairs / out default to the GPT-2 setup (outputs/m3); scaling runs pass their own."""
+    out = out or OUT
     t0 = time.time()
-    pairs = [p for p in load_pairs(prop) if p["k"] == k]
+    pairs = [p for p in (pairs if pairs is not None else load_pairs(prop)) if p["k"] == k]
     tag = f"{prop}_k{k}_{cond}"
-    cache = OUT / "acts" / f"{tag}.npz"
+    cache = out / "acts" / f"{tag}.npz"
     if cache.exists():
         z = np.load(cache, allow_pickle=True)
         acts, mask, names, y, pid, split = z["acts"], z["mask"], list(z["names"]), z["y"], z["pid"], z["split"]
@@ -158,8 +161,8 @@ def run(model, prop: str, k: int, cond: str, check_c: bool = False) -> None:
                              "null_mean": nullmean[i, l], "n_train": int(tr.sum()), "n_test": int(te.sum())})
     sig = acc > p95
 
-    OUT.mkdir(parents=True, exist_ok=True)
-    with open(OUT / f"probes_{tag}.csv", "w", newline="") as f:
+    out.mkdir(parents=True, exist_ok=True)
+    with open(out / f"probes_{tag}.csv", "w", newline="") as f:
         w = csv.DictWriter(f, fieldnames=list(rows_out[0]))
         w.writeheader()
         w.writerows(rows_out)
@@ -184,11 +187,11 @@ def run(model, prop: str, k: int, cond: str, check_c: bool = False) -> None:
         for c in comp:
             print(f"  {c['row']:18} L{c['layer']:<2} " + "  ".join(f"{k} {v:.3f}" for k, v in c.items() if k.startswith("C=")))
 
-    (OUT / f"probes_{tag}.json").write_text(json.dumps(summary, indent=1))
+    (out / f"probes_{tag}.json").write_text(json.dumps(summary, indent=1))
     prop_note = "held-out templates, fillers, adjectives" if prop == "mood" else "held-out templates, fillers, cities"
     title = (f"Probe accuracy: {prop}, condition {cond}, k={k} filler sentences "
              f"(test = {prop_note}; null = {N_PERM:,} pair-level label permutations)")
-    plot(acc, sig, names, examples, n_test, title, OUT / f"heatmap_{tag}.png")
+    plot(acc, sig, names, examples, n_test, title, out / f"heatmap_{tag}.png")
     print(f"[{tag}] null p95 range {p95.min():.3f}..{p95.max():.3f}; significant cells {sig.sum()}/{sig.size}; "
           f"runtime {time.time() - t0:.0f}s; peak RSS {peak_rss_gb():.2f} GB", flush=True)
 

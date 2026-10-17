@@ -67,10 +67,14 @@ N_BOOT = 2000
 OUT = PROJECT_ROOT / "outputs" / "m5"
 
 
-def run(model, prop_name: str, k: int, cond: str, n_pairs: int = N_PAIRS, max_tokens: int = 4096) -> None:
+def run(model, prop_name: str, k: int, cond: str, n_pairs: int = N_PAIRS, max_tokens: int = 4096,
+        pairs: list[dict] | None = None, out=None, layers: list[int] | None = None) -> None:
+    """pairs / out / layers default to the GPT-2 setup (outputs/m5, layers 1-12); scaling runs pass their own."""
+    out = out or OUT
+    layers = layers or LAYERS
     t0 = time.time()
     tag = f"{prop_name}_k{k}_{cond}"
-    pairs = [p for p in load_pairs(prop_name) if p["k"] == k][:n_pairs]
+    pairs = [p for p in (pairs if pairs is not None else load_pairs(prop_name)) if p["k"] == k][:n_pairs]
     records = []  # per pair: ld_clean, ld_corr, {row: [LD per layer]}
     examples: dict[str, str] = {}
     for i, p in enumerate(pairs):
@@ -88,19 +92,19 @@ def run(model, prop_name: str, k: int, cond: str, n_pairs: int = N_PAIRS, max_to
         spans = spans_for(enc[corr_lab][1])
         rows = list(pos) + list(spans)
         targets = {**pos, **spans}
-        cells = [(l, targets[r]) for r in rows for l in LAYERS]
+        cells = [(l, targets[r]) for r in rows for l in layers]
         answers = (model.to_single_token(prop.answer(clean_lab)), model.to_single_token(prop.answer(corr_lab)))
         ldc, ldr, lds = patch_pair(model, clean, corr, cells, answers, max_tokens)
         records.append({"pair_id": p["pair_id"], "ld_clean": ldc, "ld_corr": ldr,
                         "pos": {**pos, **{s: 10_000 + j for j, s in enumerate(SPANS)}},  # spans sort last
-                        "patched": {r: lds[j * len(LAYERS):(j + 1) * len(LAYERS)] for j, r in enumerate(rows)}})
+                        "patched": {r: lds[j * len(layers):(j + 1) * len(layers)] for j, r in enumerate(rows)}})
 
     # Rows in passage order (mean token position), as in the probe heatmaps.
     names = sorted({r for rec in records for r in rec["patched"]},
                    key=lambda r: np.mean([rec["pos"][r] for rec in records if r in rec["pos"]]))
     gap = np.array([rec["ld_clean"] - rec["ld_corr"] for rec in records])
     rng = np.random.default_rng(0)
-    R, L = len(names), len(LAYERS)
+    R, L = len(names), len(layers)
     rec_mean, lo, hi, n_used = np.zeros((R, L)), np.zeros((R, L)), np.zeros((R, L)), []
     rows_out = []
     for i, r in enumerate(names):
@@ -113,25 +117,26 @@ def run(model, prop_name: str, k: int, cond: str, n_pairs: int = N_PAIRS, max_to
         rec_mean[i] = num.mean(0) / den.mean()
         lo[i], hi[i] = np.percentile(bs, 2.5, axis=0), np.percentile(bs, 97.5, axis=0)
         for l in range(L):
-            rows_out.append({"row": r, "example": examples.get(r, ""), "layer": LAYERS[l], "recovery": rec_mean[i, l],
+            rows_out.append({"row": r, "example": examples.get(r, ""), "layer": layers[l], "recovery": rec_mean[i, l],
                              "ci_lo": lo[i, l], "ci_hi": hi[i, l], "n_pairs": len(idx)})
 
-    OUT.mkdir(parents=True, exist_ok=True)
-    with open(OUT / f"patching_{tag}.csv", "w", newline="") as f:
+    out.mkdir(parents=True, exist_ok=True)
+    with open(out / f"patching_{tag}.csv", "w", newline="") as f:
         w = csv.DictWriter(f, fieldnames=list(rows_out[0]))
         w.writeheader()
         w.writerows(rows_out)
-    summary = {"tag": tag, "rows": names, "layers": LAYERS, "recovery": rec_mean.tolist(), "ci_lo": lo.tolist(),
+    summary = {"tag": tag, "rows": names, "layers": layers, "recovery": rec_mean.tolist(), "ci_lo": lo.tolist(),
                "ci_hi": hi.tolist(), "n_pairs": n_used, "mean_gap": float(gap.mean()),
                "mean_ld_clean": float(np.mean([r["ld_clean"] for r in records])),
                "mean_ld_corr": float(np.mean([r["ld_corr"] for r in records]))}
-    (OUT / f"patching_{tag}.json").write_text(json.dumps(summary, indent=1))
-    plot(rec_mean, lo > 0, names, examples, n_used, tag, gap.mean(), OUT / f"patching_{tag}.png")
+    (out / f"patching_{tag}.json").write_text(json.dumps(summary, indent=1))
+    plot(rec_mean, lo > 0, names, examples, n_used, tag, gap.mean(), out / f"patching_{tag}.png", layers)
     print(f"[{tag}] {len(pairs)} pairs, {R} rows; mean clean-corrupted gap {gap.mean():+.2f}; "
           f"runtime {time.time() - t0:.0f}s; peak RSS {peak_rss_gb():.2f} GB", flush=True)
 
 
-def plot(rec, sig, names, examples, n_used, tag, gap, path):
+def plot(rec, sig, names, examples, n_used, tag, gap, path, layers=None):
+    layers = layers or LAYERS
     cmap = LinearSegmentedColormap.from_list("blues", BLUES)
     R, L = rec.shape
     fig, ax = plt.subplots(figsize=(1.0 + 0.62 * L, 0.9 + 0.30 * R), dpi=150)
@@ -144,7 +149,7 @@ def plot(rec, sig, names, examples, n_used, tag, gap, path):
             txt = f"{v:.2f}".replace("0.", ".") if abs(v) < 1 else f"{v:.1f}"
             ax.text(j, i, txt, ha="center", va="center", fontsize=6.5,
                     color=INK_ON_DARK if (sig[i, j] and v >= 0.6) else (INK if sig[i, j] else INK_MUTED))
-    ax.set_xticks(range(L), [f"L{l}" for l in LAYERS], fontsize=7, color=INK_MUTED)
+    ax.set_xticks(range(L), [f"L{l}" for l in layers], fontsize=7, color=INK_MUTED)
     ax.set_yticks(range(R), [f"{n}  {examples[n]!r}" if n in examples else n for n in names], fontsize=7, color=INK)
     ax2 = ax.secondary_yaxis("right")
     ax2.set_yticks(range(R), [f"n={n}" for n in n_used], fontsize=6, color=INK_MUTED)

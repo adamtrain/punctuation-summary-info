@@ -139,19 +139,22 @@ def neutral_fillers(filler_screen: list[dict]) -> list[int]:
     return sorted(r["filler"] for r in ranked[:N_NEUTRAL_FILLERS])
 
 
-def _split_list(items: list[str], rng: random.Random) -> dict[str, list[str]]:
+def _split_list(items: list[str], rng: random.Random, n_test: int | None = None) -> dict[str, list[str]]:
     items = sorted(items)
     rng.shuffle(items)
-    n_test = max(1, round(len(items) * TEST_FRACTION))
+    n_test = n_test if n_test is not None else max(1, round(len(items) * TEST_FRACTION))
     return {"test": items[:n_test], "train": items[n_test:]}
 
 
-def make_mood_pairs(adj_screen: list[dict], fillers: list[int], n_per_length: int, seed: int, variant: str) -> list[dict]:
-    """Pairs for variant "mixed" or "consistent". Templates, fillers and adjectives are split train/test."""
+def make_mood_pairs(adj_screen: list[dict], fillers: list[int], n_per_length: int, seed: int, variant: str,
+                    n_test_adj: int | None = None) -> list[dict]:
+    """Pairs for variant "mixed" or "consistent". Templates, fillers and adjectives are split train/test.
+    n_test_adj: adjectives held out per valence (default: TEST_FRACTION of each list; the Pythia ladder uses 3)."""
     rng = random.Random(seed)
     t_split = split_indices(MOOD_TEMPLATES, seed)
     f_split = {fillers[i]: s for i, s in split_indices([FILLERS[j] for j in fillers], seed + 1).items()}
-    adj = {lab: _split_list([r["adj"] for r in adj_screen if r["keep"] and r["label"] == lab], random.Random(seed + 2))
+    adj = {lab: _split_list([r["adj"] for r in adj_screen if r["keep"] and r["label"] == lab], random.Random(seed + 2),
+                            n_test_adj)
            for lab in MOOD_LABELS}
     pairs = []
     for k in FILLER_LENGTHS:

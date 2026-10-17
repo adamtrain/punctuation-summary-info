@@ -2,6 +2,12 @@
 
   python scripts/m6_scale.py verify pythia-160m [pythia-410m ...]   # TransformerLens vs plain Hugging Face, memory
   python scripts/m6_scale.py screen pythia-160m [...]               # city, adjective and filler screens
+  python scripts/m6_scale.py run pythia-160m [calib behavior knockout accept patch probe]   # the frozen protocol
+
+`run` steps (BRIEF.md decision log, method freeze + "option 2"): calibrate control C for this model; country behavior
+(all 8 conditions, question readout); knockout (country with both readouts, mood with the continuation readout); mood
+acceptance test (consistent and mixed); mood patching (P, U, U-cap, M, K, C_mid; 12 evenly spaced layers); mood probes
+(P and U at k=16). Filler lengths k in {1, 4, 16}. Pythia models use the shared ladder items (outputs/models/pythia-ladder).
 
 Models are named as in scripts/m6_models.py and loaded at the exact revision recorded in
 outputs/m6/models_manifest.json, with Hugging Face in offline mode (only the downloaded weights can be used).
@@ -28,6 +34,19 @@ from punctsum.dataset import load_jsonl, property_of, render_condition, save_jso
 from punctsum.materials import LABELS  # noqa: E402
 from punctsum.model import load, peak_rss_gb, tokenize_with_readout  # noqa: E402
 from punctsum.mood import MOOD_ANSWERS, screen_adjectives, screen_fillers  # noqa: E402
+import numpy as np  # noqa: E402
+from sklearn.metrics import roc_auc_score  # noqa: E402
+
+import punctsum.dataset as dataset  # noqa: E402
+from punctsum.behavior import pair_bootstrap, passage_label_pairs, score  # noqa: E402
+from punctsum.dataset import CONDITIONS  # noqa: E402
+
+KS = (1, 4, 16)
+INTERNAL = ["P", "U", "Ucap", "M", "K", "C_mid"]  # internal-analysis conditions after the freeze's strikes
+PUNCTUATED = ["P", "M", "K", "C_mid"]
+KNOCKOUTS = ["none", "s0words", "s0all", "punctonly"]
+C_GRID = [0.01, 0.02, 0.03, 0.04, 0.06, 0.08, 0.10, 0.12, 0.15, 0.18, 0.22, 0.26]
+C_TARGETS = {"C_lo": 0.5, "C_mid": 1.0, "C_hi": 1.5}
 
 MANIFEST = PROJECT_ROOT / "outputs" / "m6" / "models_manifest.json"
 
@@ -134,7 +153,208 @@ def screen(name: str) -> None:
     free()
 
 
+def items_dir(name: str) -> Path:
+    return PROJECT_ROOT / "outputs" / "models" / ("pythia-ladder" if name.startswith("pythia") else name)
+
+
+def ladder_pairs(name: str, kind: str) -> list[dict]:
+    return load_jsonl(items_dir(name) / f"pairs_{kind}.jsonl")
+
+
+def by_k(pairs: list[dict], per_k: int | None = None) -> list[dict]:
+    return [p for k in KS for p in [q for q in pairs if q["k"] == k][:per_k]]
+
+
+def max_tokens_for(model) -> int:
+    gb = torch.cuda.memory_allocated() / 1e9
+    return 32768 if gb < 20 else 16384 if gb < 40 else 8192
+
+
+def pair_means(rows: list[dict], key: str = "diff") -> dict[tuple, float]:
+    acc: dict[tuple, list[float]] = {}
+    for r in rows:
+        acc.setdefault((r["group"], r["cond"], r["knockout"], r["pair_id"]), []).append(r[key])
+    return {k: sum(v) / len(v) for k, v in acc.items()}
+
+
+def ratio_ci(num: dict, den: dict, n_boot: int = 2000):
+    ids = sorted(num)
+    a, b = np.array([num[i] for i in ids]), np.array([den[i] for i in ids])
+    idx = np.random.default_rng(0).integers(0, len(ids), size=(n_boot, len(ids)))
+    bs = a[idx].mean(1) / b[idx].mean(1)
+    return [float(a.mean() / b.mean()), float(np.percentile(bs, 2.5)), float(np.percentile(bs, 97.5))]
+
+
+def step_calib(model, name, out):
+    """Choose control C's substitution rates for this model: 0.5x / 1x / 1.5x U's word-NLL increase over P."""
+    pairs = [p for p in ladder_pairs(name, "country") if p["split"] == "train"]
+    calib = [p for k in KS for p in [q for q in pairs if q["k"] == k][:40]]
+    conds = ["P", "U"] + [f"C@{r}" for r in C_GRID]
+    items = passage_label_pairs(calib, conds)
+    res = score(model, items, max_tokens=max_tokens_for(model))
+    nll: dict[str, list[float]] = {}
+    for (_, _, c), r in zip(items, res):
+        nll.setdefault(c, []).append(r["word_nll"])
+    base, u = np.mean(nll["P"]), np.mean(nll["U"]) - np.mean(nll["P"])
+    deltas = np.maximum.accumulate([np.mean(nll[f"C@{r}"]) - base for r in C_GRID])  # enforce monotone for interpolation
+    rates = {n: round(float(np.interp(m * u, deltas, C_GRID)), 4) for n, m in C_TARGETS.items()}
+    capped = [n for n, m in C_TARGETS.items() if m * u > deltas[-1]]
+    info = {"u_delta": float(u), "grid": C_GRID, "deltas": deltas.tolist(), "rates": rates, "capped_at_grid_max": capped}
+    (out / "calibration.json").write_text(json.dumps(info, indent=1))
+    print(f"[{name}] calibration: U +{u:.3f} nats/word; rates {rates}" + (f"; CAPPED {capped}" if capped else ""), flush=True)
+
+
+def load_rates(name, out):
+    rates = json.loads((out / "calibration.json").read_text())["rates"]
+    dataset.C_STRENGTHS.update(rates)  # render_condition reads the module-level rates
+    return rates
+
+
+def step_behavior(model, name, out):
+    """Country behavior, all 8 conditions, question readout, 400 pairs per k (as GPT-2, Section 10.5)."""
+    pairs = by_k(ladder_pairs(name, "country"))
+    items = passage_label_pairs(pairs, CONDITIONS)
+    res = score(model, items, max_tokens=max_tokens_for(model))
+    rows = [{"group": "country", "pair_id": p["pair_id"], "k": p["k"], "label": lab, "cond": c, "knockout": "none", **r}
+            for (p, lab, c), r in zip(items, res)]
+    save_jsonl(rows, out / "behavior.jsonl")
+    pm, nll = pair_means(rows), pair_means(rows, "word_nll")
+    k_of = {p["pair_id"]: p["k"] for p in pairs}
+    summary = {}
+    for ks, kn in [((k,), f"k={k}") for k in KS] + [(KS, "all")]:
+        sel = lambda c, d: {pid: v for (g, cc, ko, pid), v in d.items() if cc == c and k_of[pid] in ks}  # noqa: E731
+        base, nb = sel("P", pm), sel("P", nll)
+        u = np.mean([sel("U", nll)[i] - nb[i] for i in nb])
+        for c in CONDITIONS:
+            d = sel(c, pm)
+            summary[f"{kn}|{c}"] = {"diff": pair_bootstrap(d), "delta": pair_bootstrap({i: d[i] - base[i] for i in d}),
+                                    "xU": float(np.mean([sel(c, nll)[i] - nb[i] for i in nb]) / u)}
+    (out / "behavior_summary.json").write_text(json.dumps(summary, indent=1))
+    print(f"[{name}] behavior: P {summary['all|P']['diff'][0]:+.2f}, U delta {summary['all|U']['delta'][0]:+.2f}, "
+          f"C_mid delta {summary['all|C_mid']['delta'][0]:+.2f}", flush=True)
+
+
+def knockout_rows(model, pairs, group, readout, conds=INTERNAL, knockouts=KNOCKOUTS):
+    rows = []
+    for ko in knockouts:
+        items = passage_label_pairs(pairs, PUNCTUATED if ko == "punctonly" else conds)
+        for (p, lab, c), r in zip(items, score(model, items, max_tokens=max_tokens_for(model), readout=readout, knockout=ko)):
+            rows.append({"group": group, "pair_id": p["pair_id"], "k": p["k"], "label": lab, "cond": c, "knockout": ko,
+                         "diff": r["diff"]})
+    return rows
+
+
+def summarize_knockout(rows, pairs, groups):
+    pm = pair_means(rows)
+    k_of = {p["pair_id"]: p["k"] for p in pairs}
+    summary = {}
+    for g in groups:
+        for ks, kn in [((k,), f"k={k}") for k in KS] + [(KS, "all")]:
+            for c in INTERNAL:
+                sel = {ko: {pid: v for (gg, cc, kk, pid), v in pm.items() if gg == g and cc == c and kk == ko and k_of[pid] in ks}
+                       for ko in KNOCKOUTS}
+                cell = {ko: pair_bootstrap(v) for ko, v in sel.items() if v}
+                if sel["none"] and sel["s0words"]:
+                    cell["retention_s0words"] = ratio_ci(sel["s0words"], sel["none"])
+                    cell["s0punct_share"] = ratio_ci({i: sel["s0words"][i] - sel["s0all"][i] for i in sel["s0all"]},
+                                                     sel["none"])
+                summary[f"{g}|{kn}|{c}"] = cell
+    return summary
+
+
+def step_knockout(model, name, out):
+    """Knockouts (BRIEF.md 4.7): country with both readouts, mood with the continuation readout; 100 pairs per k."""
+    country = by_k(ladder_pairs(name, "country"), 100)
+    mood = by_k(ladder_pairs(name, "mood"), 100)
+    rows = (knockout_rows(model, country, "country/question", "question")
+            + knockout_rows(model, country, "country/continuation", "continuation")
+            + knockout_rows(model, mood, "mood", "continuation"))
+    save_jsonl(rows, out / "knockout.jsonl")
+    summary = summarize_knockout(rows, country + mood, ["country/question", "country/continuation", "mood"])
+    (out / "knockout_summary.json").write_text(json.dumps(summary, indent=1))
+    m = summary["mood|all|P"]
+    print(f"[{name}] knockout mood P: none {m['none'][0]:+.2f}, retention {m['retention_s0words'][0]:.2f}, "
+          f"s0 punct share {m['s0punct_share'][0]:.2f}; U retention {summary['mood|all|U']['retention_s0words'][0]:.2f}", flush=True)
+
+
+def step_accept(model, name, out):
+    """Mood acceptance test with the pre-registered criteria (C1: pair acc >= 0.90 and AUC >= 0.80; C2: s0words
+    retention >= 0.25), P, continuation readout, pooled over k. Consistent: from the knockout run; mixed: run here."""
+    result = {}
+    for variant, kind in (("consistent", "mood"), ("mixed", "mood_mixed")):
+        if variant == "consistent":
+            rows = [r for r in load_jsonl(out / "knockout.jsonl") if r["group"] == "mood" and r["cond"] == "P"]
+            pairs = by_k(ladder_pairs(name, "mood"), 100)
+        else:
+            pairs = by_k(ladder_pairs(name, kind), 100)
+            rows = knockout_rows(model, pairs, "mood_mixed", "continuation", ["P"], ["none", "s0words"])
+            save_jsonl(rows, out / "accept_mixed.jsonl")
+        pm = pair_means(rows)
+        none = {pid: v for (g, c, ko, pid), v in pm.items() if ko == "none"}
+        s0w = {pid: v for (g, c, ko, pid), v in pm.items() if ko == "s0words"}
+        member = [(int(r["label"] == "good"), r["diff"] if r["label"] == "good" else -r["diff"])
+                  for r in rows if r["knockout"] == "none"]
+        pair_acc = sum(v > 0 for v in none.values()) / len(none)
+        auc = float(roc_auc_score([y for y, _ in member], [x for _, x in member]))
+        ret = ratio_ci(s0w, none)
+        result[variant] = {"pair_acc": pair_acc, "auc": auc, "retention": ret, "C1": pair_acc >= 0.90 and auc >= 0.80,
+                           "C2": ret[0] >= 0.25}
+        print(f"[{name}] accept {variant}: pair acc {pair_acc:.3f}, AUC {auc:.3f}, retention {ret[0]:.2f} -> "
+              f"C1 {'PASS' if result[variant]['C1'] else 'FAIL'}, C2 {'PASS' if result[variant]['C2'] else 'FAIL'}", flush=True)
+    (out / "accept.json").write_text(json.dumps(result, indent=1))
+
+
+def step_patch(model, name, out):
+    """Mood patching: P, U, U-cap, M, K, C_mid; k in {1, 4, 16}; 50 pairs; 12 evenly spaced layers."""
+    from m5_patching import run as patch_run
+    from m5_summary import summarize
+
+    n_layers = model.cfg.n_layers
+    layers = sorted({int(round(x)) for x in np.linspace(1, n_layers, 12)})
+    pairs = ladder_pairs(name, "mood")
+    d = out / "patching"
+    for k in KS:
+        for c in INTERNAL:
+            patch_run(model, "mood", k, c, 50, max_tokens_for(model), pairs=pairs, out=d, layers=layers)
+    summ = {f.stem.removeprefix("patching_"): summarize(json.loads(f.read_text())) for f in sorted(d.glob("patching_*.json"))}
+    (out / "patching_summary.json").write_text(json.dumps(summ, indent=1))
+
+
+def step_probe(model, name, out):
+    """Mood probes, P and U at k=16 (presence only; probes saturate)."""
+    from m3_probes import run as probe_run
+
+    pairs = ladder_pairs(name, "mood")
+    for c in ("P", "U"):
+        probe_run(model, "mood", 16, c, pairs=pairs, out=out / "probes")
+
+
+STEPS = {"calib": step_calib, "behavior": step_behavior, "knockout": step_knockout, "accept": step_accept,
+         "patch": step_patch, "probe": step_probe}
+
+
+def run(name: str, steps: list[str]) -> None:
+    out = out_dir(name)
+    model, mem = load_model(name)
+    log_path = out / "run_log.json"
+    log = json.loads(log_path.read_text()) if log_path.exists() else {}
+    log["load"] = mem
+    for st in steps:
+        if st != "calib":
+            load_rates(name, out)
+        t = time.time()
+        STEPS[st](model, name, out)
+        log[st] = {"seconds": round(time.time() - t, 1), "peak_gpu_gb": round(torch.cuda.max_memory_allocated() / 1e9, 2)}
+        log_path.write_text(json.dumps(log, indent=1))
+        print(f"[{name}] step {st} done in {log[st]['seconds']:.0f}s", flush=True)
+    del model
+    free()
+
+
 if __name__ == "__main__":
-    cmd, names = sys.argv[1], sys.argv[2:]
-    for n in names:
-        {"verify": verify, "screen": screen}[cmd](n)
+    cmd = sys.argv[1]
+    if cmd == "run":
+        run(sys.argv[2], sys.argv[3:] or list(STEPS))
+    else:
+        for n in sys.argv[2:]:
+            {"verify": verify, "screen": screen}[cmd](n)

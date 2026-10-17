@@ -142,7 +142,10 @@ PROPERTIES: dict[str, Property] = {"country": COUNTRY}
 
 
 def property_of(pair: dict) -> Property:
-    return PROPERTIES[pair.get("property", "country")]
+    name = pair.get("property", "country")
+    if name not in PROPERTIES:
+        import punctsum.mood  # noqa: F401  (registers the mood properties)
+    return PROPERTIES[name]
 
 
 _pools: dict[int, list[str]] = {}
