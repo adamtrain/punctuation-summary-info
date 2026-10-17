@@ -658,7 +658,13 @@ binary property).
   copied to `outputs/models/gpt2-items/`. **Run order:** GPU jobs run strictly one at a time. Running a small job next to a
   ladder model ran out of GPU memory, because the large job's PyTorch cache held ~71 GB. Queue after Pythia-1.4B: 1.4B
   long-distance → GPT-2 and GPT-Neo-125M (verify, screen, full protocol + long) → 160M and 410M long-distance → 2.8B → 6.9B (each
-  full protocol + long). Then Llama-3.1-8B.
+  full protocol + long). Then Llama-3.1-8B. The user kept the full long-distance protocol (including the country
+  question-readout knockout) rather than trimming it to save ~5 GPU hours; estimated remaining GPU time ≈ 30 h.
+- **2026-10-17 (Llama prep tooling):** `scripts/m6_scale.py bf16check` (fp32 vs bf16 on the same passages: answer-margin
+  change, sign agreement, log-probability change) and a generalized item builder (`scripts/m6_ladder_items.py <set> <models>`)
+  that checks the item bar and stops if it fails. **Bar clarified:** ≥ 10 adjectives per valence (the configuration approved as
+  option 2, with 3 held out for testing; the original ≥ 12 assumed a 25% hold-out) and ≥ 8 pairable cities per side. The ladder
+  passes (15/10 adjectives, 22 cities).
 - **2026-10-17 (side session with the user, relayed to this session; no files were changed there):** Scaling decisions
   recorded in Section 5.2: one 80 GB cloud GPU; finish GPT-2 through patching and freeze the method first; Pythia ladder
   (160M–12B) then one modern 7–9B model (Llama-3.1-8B or Gemma-2-9B) with full internals; optional Gemma-2-27B behavior +

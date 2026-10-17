@@ -1,4 +1,10 @@
-"""Milestone 6: shared items and pairs for the Pythia ladder (BRIEF.md decision log, "option 2").
+"""Milestone 6: shared items and pairs for a set of models (BRIEF.md decision log, "option 2").
+
+  python scripts/m6_ladder_items.py                                  # the Pythia ladder (default)
+  python scripts/m6_ladder_items.py llama-3.1-8b llama-3.1-8b        # item set name, then the model(s) it must fit
+
+Exits with an error if the bar isn't met: >= 10 adjectives per valence (the configuration approved as "option 2": 3 held out
+for testing, the rest for training; the original bar of 12 assumed a 25% hold-out) and >= 8 pairable cities per side.
 
 From the per-model screens in outputs/models/pythia-*/screen/: cities kept by the frozen knowledge screen in every size;
 adjectives with the right direction and strength >= 1.2 (relative to neutral words) in every size (no ceiling);
@@ -9,6 +15,7 @@ pairs_mood_mixed.jsonl (100 per filler length, for the acceptance test).
 """
 
 import json
+import sys
 
 import numpy as np
 
@@ -21,9 +28,11 @@ SEED = 0
 ADJ_FLOOR = 1.2
 N_TEST_ADJ = 3
 OUT = PROJECT_ROOT / "outputs" / "models" / "pythia-ladder"
+MIN_ADJ, MIN_CITIES = 10, 8
 
 
-def main():
+def main(out=OUT, sizes=SIZES):
+    OUT, SIZES = out, sizes  # noqa: N806
     OUT.mkdir(parents=True, exist_ok=True)
     scr = {s: PROJECT_ROOT / "outputs" / "models" / s / "screen" for s in SIZES}
     cities = {s: {r["city"]: r for r in load_jsonl(scr[s] / "city_screen.jsonl")} for s in SIZES}
@@ -54,7 +63,20 @@ def main():
     save_jsonl(make_mood_pairs(adj_screen, fillers, 100, SEED, "mixed", N_TEST_ADJ), OUT / "pairs_mood_mixed.jsonl")
     print({k: ({kk: len(vv) for kk, vv in v.items()} if isinstance(v, dict) else (len(v) if isinstance(v, list) else v))
            for k, v in items.items()})
+    buckets = {}
+    for r in city_screen:
+        if r["keep"]:
+            buckets.setdefault(r["ntok"], {"France": 0, "Japan": 0})[r["label"]] += 1
+    pairable = sum(min(b.values()) for b in buckets.values())
+    ok = min(len(v) for v in items["adjectives"].values()) >= MIN_ADJ and pairable >= MIN_CITIES
+    print(f"bar: adjectives {[len(v) for v in items['adjectives'].values()]} (need >= {MIN_ADJ}), pairable cities per side "
+          f"{pairable} (need >= {MIN_CITIES}) -> {'PASS' if ok else 'FAIL'}")
+    if not ok:
+        sys.exit("item set does not meet the pre-registered bar; stop and decide with the user")
 
 
 if __name__ == "__main__":
-    main()
+    if len(sys.argv) > 2:
+        main(PROJECT_ROOT / "outputs" / "models" / sys.argv[1], sys.argv[2:])
+    else:
+        main()

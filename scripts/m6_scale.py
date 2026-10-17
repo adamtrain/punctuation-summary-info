@@ -2,6 +2,7 @@
 
   python scripts/m6_scale.py verify pythia-160m [pythia-410m ...]   # TransformerLens vs plain Hugging Face, memory
   python scripts/m6_scale.py screen pythia-160m [...]               # city, adjective and filler screens
+  python scripts/m6_scale.py bf16check llama-3.1-8b                 # bf16 vs fp32 numerics
   python scripts/m6_scale.py run pythia-160m [calib behavior knockout accept patch probe]   # the frozen protocol
 
 `run` steps (BRIEF.md decision log, method freeze + "option 2"): calibrate control C for this model; country behavior
@@ -123,6 +124,33 @@ def verify(name: str) -> dict:
            "peak_rss_gb": round(peak_rss_gb(), 2)}
     (out_dir(name) / "verify.json").write_text(json.dumps(res, indent=1))
     print(f"[{name}] {res}", flush=True)
+    return res
+
+
+@torch.no_grad()
+def bf16_check(name: str) -> dict:
+    """How much does computing in bf16 change results compared with fp32 (decision log: report this for the modern
+    model)? Same passages as `verify`; compares the readout's answer logit difference and per-token log-probabilities."""
+    out = {}
+    for dtype in (torch.float32, torch.bfloat16):
+        model = load(MODELS[name], revision=revision(name), dtype=dtype, stage_on_cpu=True)
+        texts = sample_texts(model)
+        lds, lps = [], []
+        for text, good, bad in texts:
+            logits = model(model.to_tokens(text, prepend_bos=True))[0].float()
+            lds.append((logits[-1, model.to_single_token(good)] - logits[-1, model.to_single_token(bad)]).item())
+            lps.append(logits.log_softmax(-1).cpu())
+        out[str(dtype)] = (lds, lps)
+        del model, logits
+        free()
+    (a, la), (b, lb) = out["torch.float32"], out["torch.bfloat16"]
+    d = np.abs(np.array(a) - np.array(b))
+    res = {"n_texts": len(a), "answer_diff_fp32_mean": float(np.mean(a)), "max_abs_answer_diff_change": float(d.max()),
+           "mean_abs_answer_diff_change": float(d.mean()),
+           "sign_agreement": float(np.mean(np.sign(a) == np.sign(b))),
+           "max_abs_logprob_change": max(float((x - y).abs().max()) for x, y in zip(la, lb))}
+    (out_dir(name) / "bf16_check.json").write_text(json.dumps(res, indent=1))
+    print(f"[{name}] bf16 vs fp32: {res}", flush=True)
     return res
 
 
@@ -422,4 +450,4 @@ if __name__ == "__main__":
         run(sys.argv[2], sys.argv[3:] or list(STEPS))
     else:
         for n in sys.argv[2:]:
-            {"verify": verify, "screen": screen, "fitprobes": fit_probes}[cmd](n)
+            {"verify": verify, "screen": screen, "fitprobes": fit_probes, "bf16check": bf16_check}[cmd](n)
