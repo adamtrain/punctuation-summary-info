@@ -67,7 +67,7 @@ N_BOOT = 2000
 OUT = PROJECT_ROOT / "outputs" / "m5"
 
 
-def run(model, prop_name: str, k: int, cond: str, n_pairs: int = N_PAIRS) -> None:
+def run(model, prop_name: str, k: int, cond: str, n_pairs: int = N_PAIRS, max_tokens: int = 4096) -> None:
     t0 = time.time()
     tag = f"{prop_name}_k{k}_{cond}"
     pairs = [p for p in load_pairs(prop_name) if p["k"] == k][:n_pairs]
@@ -90,7 +90,7 @@ def run(model, prop_name: str, k: int, cond: str, n_pairs: int = N_PAIRS) -> Non
         targets = {**pos, **spans}
         cells = [(l, targets[r]) for r in rows for l in LAYERS]
         answers = (model.to_single_token(prop.answer(clean_lab)), model.to_single_token(prop.answer(corr_lab)))
-        ldc, ldr, lds = patch_pair(model, clean, corr, cells, answers)
+        ldc, ldr, lds = patch_pair(model, clean, corr, cells, answers, max_tokens)
         records.append({"pair_id": p["pair_id"], "ld_clean": ldc, "ld_corr": ldr,
                         "pos": {**pos, **{s: 10_000 + j for j, s in enumerate(SPANS)}},  # spans sort last
                         "patched": {r: lds[j * len(LAYERS):(j + 1) * len(LAYERS)] for j, r in enumerate(rows)}})
@@ -179,6 +179,8 @@ def main():
     ap.add_argument("--cond", default="P")
     ap.add_argument("--n-pairs", type=int, default=N_PAIRS)
     ap.add_argument("--all", action="store_true")
+    ap.add_argument("--max-tokens", type=int, default=4096,
+                    help="tokens per patching batch; results don't depend on it (larger = faster on big GPUs)")
     args = ap.parse_args()
     model = load("gpt2")
     if args.all:
@@ -188,9 +190,9 @@ def main():
                     if (OUT / f"patching_{prop}_k{k}_{cond}.json").exists():  # resume: skip finished configurations
                         print(f"[{prop}_k{k}_{cond}] exists, skipped", flush=True)
                         continue
-                    run(model, prop, k, cond, args.n_pairs)
+                    run(model, prop, k, cond, args.n_pairs, args.max_tokens)
     else:
-        run(model, args.prop, args.k, args.cond, args.n_pairs)
+        run(model, args.prop, args.k, args.cond, args.n_pairs, args.max_tokens)
 
 
 if __name__ == "__main__":

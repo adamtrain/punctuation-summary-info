@@ -3,6 +3,7 @@ which gives HookedTransformer-style hook names (blocks.{L}.hook_resid_post) and 
 
 import os
 import resource
+import sys
 
 import punctsum  # noqa: F401  (sets HF_HOME before transformer_lens is imported)
 import numpy as np
@@ -117,5 +118,6 @@ def resid_at(model, seqs: list[list[int]], positions: list[list[int]], max_token
 
 
 def peak_rss_gb() -> float:
-    # ru_maxrss is in bytes on macOS.
-    return resource.getrusage(resource.RUSAGE_SELF).ru_maxrss / 1e9
+    # ru_maxrss is in bytes on macOS but kilobytes on Linux.
+    rss = resource.getrusage(resource.RUSAGE_SELF).ru_maxrss
+    return rss / 1e9 if sys.platform == "darwin" else rss * 1024 / 1e9

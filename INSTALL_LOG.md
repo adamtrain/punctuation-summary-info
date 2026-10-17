@@ -60,8 +60,18 @@ of the local-disk items is automatic when the instance is terminated.
 ### 2026-10-17: project copy and model cache (remote, persistent storage)
 - **What:** project copied with rsync to `/lambda/nfs/AT1/punctuation-summary-info` (excluding `.venv`, `.hf_cache`,
   activation caches). Hugging Face cache at `/lambda/nfs/AT1/punctuation-summary-info/.hf_cache` (set automatically by
-  `punctsum/__init__.py`). Models downloaded:
+  `punctsum/__init__.py`). Weights live in a shared content-addressed store (`.hf_cache/hub/blobs/`) that each model's
+  folder links into. Models downloaded (safetensors only, pinned revisions in `outputs/m6/models_manifest.json`,
+  95 GB in total):
   - `gpt2` (≈ 0.5 GB)
+  - 2026-10-17, via `scripts/m6_models.py download`: EleutherAI/pythia-160m (0.37 GB), -410m (0.91), -1.4b (2.93), -2.8b
+    (5.68), -6.9b (13.85), -12b (23.84); meta-llama/Llama-3.1-8B (16.06 GB, gated); google/gemma-2-9b (36.97 GB, gated,
+    fp32 weights).
+  - 2026-10-17, at the user's request (pre-download in case it's used): google/gemma-2-27b (108.91 GB, 24 shards, gated,
+    fp32 weights, revision 938270f527). Cache total now 196 GB.
+- **Login:** the user ran `huggingface-cli login` on the instance themselves; the token stays at its default location
+  (`~/.cache/huggingface/token`, local disk), and the code only points `HF_TOKEN_PATH` at it. To remove it:
+  `huggingface-cli logout` (or terminate the instance).
 - **Cleanup:** `rm -rf /lambda/nfs/AT1/punctuation-summary-info` (persistent storage is billed separately; check Lambda's
   pricing).
 

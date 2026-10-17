@@ -1,0 +1,19 @@
+Mac (MPS) vs H100 (CUDA) patching recovery, per configuration: max and mean |difference| over all cells
+
+  mood_k16_P           cells  456  max 1.88e-06  mean 8.24e-07  gap +2.7207 vs +2.7207
+  mood_k1_C_hi         cells  384  max 1.03e-06  mean 1.62e-07  gap +4.2025 vs +4.2025
+  mood_k1_C_mid        cells  384  max 1.30e-06  mean 3.51e-07  gap +4.3935 vs +4.3935
+  mood_k1_K            cells  384  max 9.19e-07  mean 2.08e-07  gap +4.5893 vs +4.5893
+  mood_k1_M            cells  492  max 2.18e-06  mean 2.33e-07  gap +5.1382 vs +5.1382
+  mood_k1_P            cells  384  max 7.74e-07  mean 1.93e-07  gap +4.5060 vs +4.5060
+  mood_k1_U            cells  300  max 8.66e-07  mean 1.91e-07  gap +5.5548 vs +5.5548
+  mood_k1_Ucap         cells  300  max 5.48e-07  mean 1.47e-07  gap +5.0019 vs +5.0019
+  mood_k4_C_hi         cells  456  max 2.15e-06  mean 3.33e-07  gap +3.1981 vs +3.1981
+  mood_k4_C_mid        cells  456  max 1.17e-06  mean 3.78e-07  gap +3.2717 vs +3.2717
+  mood_k4_K            cells  456  max 1.32e-06  mean 2.45e-07  gap +3.3951 vs +3.3951
+  mood_k4_M            cells  636  max 3.83e-06  mean 3.60e-07  gap +3.6520 vs +3.6520
+  mood_k4_P            cells  456  max 1.10e-06  mean 2.68e-07  gap +3.4110 vs +3.4110
+  mood_k4_U            cells  348  max 1.23e-06  mean 3.76e-07  gap +3.9981 vs +3.9981
+  mood_k4_Ucap         cells  348  max 1.10e-06  mean 2.25e-07  gap +3.5736 vs +3.5736
+
+Worst cell difference across all configurations: 3.83e-06 (recovery is a share of the logit gap)

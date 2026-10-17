@@ -1,0 +1,83 @@
+{
+ "pythia-160m": {
+  "repo": "EleutherAI/pythia-160m",
+  "ok": true,
+  "revision": "50f5173d932e8e61f858120bcb800b97af589f46",
+  "gated": false,
+  "safetensors_gb": 0.37,
+  "bin_gb": 0.38,
+  "local_path": "/lambda/nfs/AT1/punctuation-summary-info/.hf_cache/hub/models--EleutherAI--pythia-160m/snapshots/50f5173d932e8e61f858120bcb800b97af589f46"
+ },
+ "pythia-410m": {
+  "repo": "EleutherAI/pythia-410m",
+  "ok": true,
+  "revision": "9879c9b5f8bea9051dcb0e68dff21493d67e9d4f",
+  "gated": false,
+  "safetensors_gb": 0.91,
+  "bin_gb": 0.91,
+  "local_path": "/lambda/nfs/AT1/punctuation-summary-info/.hf_cache/hub/models--EleutherAI--pythia-410m/snapshots/9879c9b5f8bea9051dcb0e68dff21493d67e9d4f"
+ },
+ "pythia-1.4b": {
+  "repo": "EleutherAI/pythia-1.4b",
+  "ok": true,
+  "revision": "fedc38a16eea3bd36a96b906d78d11d2ce18ed79",
+  "gated": false,
+  "safetensors_gb": 2.93,
+  "bin_gb": 2.93,
+  "local_path": "/lambda/nfs/AT1/punctuation-summary-info/.hf_cache/hub/models--EleutherAI--pythia-1.4b/snapshots/fedc38a16eea3bd36a96b906d78d11d2ce18ed79"
+ },
+ "pythia-2.8b": {
+  "repo": "EleutherAI/pythia-2.8b",
+  "ok": true,
+  "revision": "2a259cdd96a4beb1cdf467512e3904197345f6a9",
+  "gated": false,
+  "safetensors_gb": 5.68,
+  "bin_gb": 5.68,
+  "local_path": "/lambda/nfs/AT1/punctuation-summary-info/.hf_cache/hub/models--EleutherAI--pythia-2.8b/snapshots/2a259cdd96a4beb1cdf467512e3904197345f6a9"
+ },
+ "pythia-6.9b": {
+  "repo": "EleutherAI/pythia-6.9b",
+  "ok": true,
+  "revision": "c0e3eee36dc47af0c49f361c74cfe459c09f7f23",
+  "gated": false,
+  "safetensors_gb": 13.85,
+  "bin_gb": 13.85,
+  "local_path": "/lambda/nfs/AT1/punctuation-summary-info/.hf_cache/hub/models--EleutherAI--pythia-6.9b/snapshots/c0e3eee36dc47af0c49f361c74cfe459c09f7f23"
+ },
+ "pythia-12b": {
+  "repo": "EleutherAI/pythia-12b",
+  "ok": true,
+  "revision": "bb1e3e710cdf6b524461d543cfb5ba773f0a81b6",
+  "gated": false,
+  "safetensors_gb": 23.84,
+  "bin_gb": 23.84,
+  "local_path": "/lambda/nfs/AT1/punctuation-summary-info/.hf_cache/hub/models--EleutherAI--pythia-12b/snapshots/bb1e3e710cdf6b524461d543cfb5ba773f0a81b6"
+ },
+ "llama-3.1-8b": {
+  "repo": "meta-llama/Llama-3.1-8B",
+  "ok": true,
+  "revision": "d04e592bb4f6aa9cfee91e2e20afa771667e1d4b",
+  "gated": true,
+  "safetensors_gb": 16.06,
+  "bin_gb": 0.0,
+  "local_path": "/lambda/nfs/AT1/punctuation-summary-info/.hf_cache/hub/models--meta-llama--Llama-3.1-8B/snapshots/d04e592bb4f6aa9cfee91e2e20afa771667e1d4b"
+ },
+ "gemma-2-9b": {
+  "repo": "google/gemma-2-9b",
+  "ok": true,
+  "revision": "33c193028431c2fde6c6e51f29e6f17b60cbfac6",
+  "gated": true,
+  "safetensors_gb": 36.97,
+  "bin_gb": 0.0,
+  "local_path": "/lambda/nfs/AT1/punctuation-summary-info/.hf_cache/hub/models--google--gemma-2-9b/snapshots/33c193028431c2fde6c6e51f29e6f17b60cbfac6"
+ },
+ "gemma-2-27b": {
+  "repo": "google/gemma-2-27b",
+  "ok": true,
+  "revision": "938270f5272feb02779b55c2bb2fffdd0f53ff0c",
+  "gated": true,
+  "safetensors_gb": 108.91,
+  "bin_gb": 0.0,
+  "local_path": "/lambda/nfs/AT1/punctuation-summary-info/.hf_cache/hub/models--google--gemma-2-27b/snapshots/938270f5272feb02779b55c2bb2fffdd0f53ff0c"
+ }
+}

@@ -557,6 +557,35 @@ binary property).
   0.9245 / −0.6857). TF32 is off for matrix multiplies (`allow_tf32=False`, precision "highest"), so fp32 means fp32. Speed:
   400 renderings in 0.4 s (2.1 GB GPU memory), ~25× the Mac. Scaling runs still wait for the GPT-2 patching batch to finish
   and the method to be frozen.
+- **2026-10-17 (models for scaling):** The user has access to the Llama and Gemma families and logged in to Hugging Face on
+  the H100; `punctsum/__init__.py` now keeps reading the login token from its default location (`HF_TOKEN_PATH`) while
+  models download into the project's cache. Base (non-instruct) models only. Only safetensors weights are downloaded (never
+  pickled `.bin`), pinned to exact revisions (`scripts/m6_models.py`, `outputs/m6/models_manifest.json`): pythia-160m
+  50f5173d93, -410m 9879c9b5f8, -1.4b fedc38a16e, -2.8b 2a259cdd96, -6.9b c0e3eee36d, -12b bb1e3e710c (fp16 weights, 47.5 GB
+  total); Llama-3.1-8B d04e592bb4 (bf16, 16.1 GB); Gemma-2-9B 33c1930284 (37.0 GB). **Correction to the side-session note:**
+  the Gemma-2 base repos ship **fp32** weights (Gemma-2-9B 37 GB, Gemma-2-27B 108.9 GB), not bf16. The bf16 exception for
+  27B therefore means casting the fp32 release to bf16 to fit the GPU (54 GB). Gemma-2-27B (revision 938270f527, 108.9 GB)
+  was pre-downloaded at the user's request so it's available if we run the optional step; whether to run it is still open.
+- **2026-10-17 (TransformerLens support):** all scaling models are in TransformerBridge's registry. Pythia ≤ 6.9B,
+  Llama-3.1-8B and Gemma-2-9B are verified there (status 1). Pythia-12B and Gemma-2-27B have status 2: verification was
+  *skipped* for size ("exceeds 35/100 GB limit"), not failed. **To do before using them:** verify on the H100 that
+  TransformerBridge logits match plain Hugging Face logits. **Risk to check:** loading in fp32 with compatibility mode
+  (LayerNorm folding, weight centering) may briefly need about 2× the weights' memory; Pythia-12B in fp32 is 48 GB, so a
+  2× peak would exceed 80 GB. If so, process the weights in CPU RAM (221 GB) before moving them to the GPU.
+- **2026-10-17 (GPT-2 complete; proposed method freeze for scaling, awaiting the user's decision):** GPT-2 small now has
+  behavior, knockout, probes and patching for every condition. Proposed protocol per scaling model:
+  1. *Per-model setup:* verify TransformerBridge logits against plain Hugging Face logits; record load-time peak memory; a
+     bf16-vs-fp32 check on the 7–9B model; recalibrate C's rate (unusualness is model-specific); re-screen cities and
+     adjectives (knowledge differs by model) and rerun the mood acceptance test, mixed variant included.
+  2. *Behavior + knockout:* all conditions, both properties, k ∈ {1, 4, 16} plus the long-distance condition. These feed
+     predictions N1, N2, U1, U2 directly and are cheap (forward passes only).
+  3. *Patching (mood only):* P, U, U-cap, M, K, C_mid; k ∈ {1, 4, 16}; 12 evenly spaced layers per model (same relative
+     depths across sizes).
+  4. *Probes (mood only):* P and U at k=16, to document presence.
+  **Proposed strikes for the scaling runs** (all kept for GPT-2): **C_hi** in internal analyses (identical to C_mid in
+  behavior, probes and patching, so it adds no measurement; C_lo and C_hi stay in the cheap behavioral table);
+  **country probes and patching** (lookback-dominated in every condition; country stays in behavior + knockout, which
+  prediction N1 needs); **most probe configurations** (probes saturate and don't discriminate between hypotheses).
 - **2026-10-17 (side session with the user, relayed to this session; no files were changed there):** Scaling decisions
   recorded in Section 5.2: one 80 GB cloud GPU; finish GPT-2 through patching and freeze the method first; Pythia ladder
   (160M–12B) then one modern 7–9B model (Llama-3.1-8B or Gemma-2-9B) with full internals; optional Gemma-2-27B behavior +
@@ -960,6 +989,44 @@ test passages are not probed (rare M rows such as a 6th misplaced mark; listed p
 - **Conclusion for the probe method:** presence is a weak discriminator here. The information is decodable almost everywhere
   in every condition; the differences between conditions are in which positions the readout *uses* (knockout,
   patching), which is where the hypotheses get decided.
+
+### 10.11 Milestone 5: full patching, 42 configurations (2026-10-17)
+Run on the H100 (`scripts/m5_patching.py --all --max-tokens 32768`, about 15 min; the Mac would have needed about 2.5 h).
+Summary: `scripts/m5_summary.py` → `outputs/m5/summary.csv`, `summary_{mood,country}.png`; per-configuration heatmaps,
+CSVs and JSONs in `outputs/m5/`. 50 pairs per configuration.
+**Hardware consistency:** 15 configurations were computed on both the Mac (Apple GPU) and the H100 (CUDA)
+(`outputs/m5_mac/`, `scripts/m5_crosscheck.py`, `outputs/m5/crosscheck.txt`): largest cell difference 3.8e-6 of the logit
+gap; clean-vs-corrupted gaps identical to 4 decimals.
+
+Peak recovery (share of the logit gap; best layer is L7 for mood, L10 for country; every cell's 95% CI excludes 0):
+
+| mood | s0 punct span (k=1/4/16) | post-property passage | all fillers | property words at L7 |
+|---|---|---|---|---|
+| P | 0.15 / 0.20 / 0.16 | 0.16 / 0.21 / 0.18 | 0.04 / 0.06 / 0.06 | 0.24 / 0.28 / 0.33 |
+| U | — | 0.03 / 0.05 / 0.07 | 0.03 / 0.05 / 0.06 | 0.28 / 0.42 / 0.52 |
+| U-cap | — | 0.05 / 0.10 / 0.08 | 0.04 / 0.09 / 0.07 | 0.30 / 0.41 / 0.46 |
+| M | 0.05 / 0.09 / 0.08 | 0.05 / 0.09 / 0.09 | 0.03 / 0.06 / 0.06 | 0.30 / 0.40 / 0.49 |
+| K | 0.13 / 0.17 / 0.14 | 0.15 / 0.19 / 0.17 | 0.04 / 0.06 / 0.06 | 0.24 / 0.30 / 0.34 |
+| C_mid | 0.15 / 0.19 / 0.16 | 0.16 / 0.21 / 0.19 | 0.04 / 0.06 / 0.07 | 0.24 / 0.29 / 0.35 |
+| C_hi | 0.14 / 0.19 / 0.15 | 0.16 / 0.21 / 0.18 | 0.04 / 0.06 / 0.06 | 0.24 / 0.28 / 0.35 |
+
+Country (all conditions, all k): city position ≈ 0.77–0.84 at L7; s0 punctuation ≤ 0.01; post-property passage 0.03–0.07;
+fillers 0.01–0.05; clean-corrupted gap ≈ 8–10.7 logits.
+
+**Findings (GPT-2 small, final for this model):**
+- **Summary route (mood, P):** the property sentence's punctuation carries 15–20% of the gap at every distance (the
+  period alone 11–14%), always peaking at L7 (of 12), then handing off to the readout tokens. Unaffected by unusualness
+  (C_mid, C_hi ≈ P) and barely by dictation capitals (K: 13–17%).
+- **Bypass (mood, U):** with no punctuation, the whole post-property passage carries only 3–7% and no single position more
+  than 6%: no relocation and no diffusion. Reliance on the property words themselves grows instead (0.28 → 0.42 → 0.52 at
+  L7 for k = 1/4/16, vs P's 0.24 → 0.33), and behavior is unharmed (10.7). The slight rise with k (0.03 → 0.07) is the only
+  hint of a substitute route forming at long distance.
+- **Capitals as a weak substitute:** U-cap recovers up to 10% (k=4), about half of P's route.
+- **Misplaced punctuation is used about half as much** as correct punctuation (5–9% vs 15–20%), although the knockout
+  showed it *can* carry the label when it's the only thing visible. Punctuation tokens collect information wherever they
+  are, but the intact model routes mostly through those at true boundaries.
+- **Country is lookback-dominated in every condition** (the city's own position carries ~80% at L7; summary routes ≤ 7%),
+  confirming the knockout. The property type decides whether summary points are used at all.
 
 ## 11. Future research directions
 
