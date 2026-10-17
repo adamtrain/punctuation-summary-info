@@ -586,6 +586,10 @@ binary property).
   behavior, probes and patching, so it adds no measurement; C_lo and C_hi stay in the cheap behavioral table);
   **country probes and patching** (lookback-dominated in every condition; country stays in behavior + knockout, which
   prediction N1 needs); **most probe configurations** (probes saturate and don't discriminate between hypotheses).
+- **2026-10-17: METHOD FROZEN (approved by the user)**, including the proposed strikes (C_hi from internal analyses;
+  country probes and patching; probes reduced to mood P and U at k=16). The frozen code is git tag `method-freeze-v1`.
+  Scaling starts with the Pythia ladder. Later changes to the method must be logged here as deviations from the freeze,
+  with a reason.
 - **2026-10-17 (side session with the user, relayed to this session; no files were changed there):** Scaling decisions
   recorded in Section 5.2: one 80 GB cloud GPU; finish GPT-2 through patching and freeze the method first; Pythia ladder
   (160M–12B) then one modern 7–9B model (Llama-3.1-8B or Gemma-2-9B) with full internals; optional Gemma-2-27B behavior +
