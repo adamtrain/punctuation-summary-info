@@ -24,6 +24,7 @@ import torch
 from punctsum.conditions import Passage, render, to_text
 from punctsum.dataset import (
     FILLER_LENGTHS,
+    filler_sentences,
     PROPERTIES,
     TEST_FRACTION,
     Property,
@@ -200,8 +201,9 @@ def passage_for_mood(pair: dict, label: str) -> Passage:
                 positions.add((0, ci, wi))
             new.append(w)
         s0.append(new)
-    sentences = [s0] + [FILLERS[j] for j in pair["fillers"]]
-    return Passage(sentences, proper_nouns=set(FIXED_PROPER), property_positions=positions)
+    sentences = [s0] + filler_sentences(pair)
+    return Passage(sentences, proper_nouns=set(FIXED_PROPER) | set(pair.get("long_proper", [])),
+                   property_positions=positions)
 
 
 # Continuation readout chosen by scripts/m2b_mood_screen.py (largest margins of 4 candidates for both variants).

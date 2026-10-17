@@ -15,6 +15,8 @@ from punctsum import PROJECT_ROOT  # noqa: F401  (sets HF_HOME before huggingfac
 from huggingface_hub import HfApi, snapshot_download
 
 MODELS = {
+    "gpt2": "gpt2",
+    "gpt-neo-125m": "EleutherAI/gpt-neo-125m",
     "pythia-160m": "EleutherAI/pythia-160m",
     "pythia-410m": "EleutherAI/pythia-410m",
     "pythia-1.4b": "EleutherAI/pythia-1.4b",

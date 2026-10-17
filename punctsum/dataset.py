@@ -121,8 +121,14 @@ def make_pairs(screen: list[dict], n_per_length: int, seed: int) -> list[dict]:
 def passage_for(pair: dict, label: str) -> Passage:
     city = pair["cities"][label]
     s0 = [[city if w == CITY else w for w in clause] for clause in S0_TEMPLATES[pair["s0"]]]
-    sentences = [s0] + [FILLERS[j] for j in pair["fillers"]]
-    return Passage(sentences, proper_nouns=FIXED_PROPER | {city}, property_words={city})
+    sentences = [s0] + filler_sentences(pair)
+    return Passage(sentences, proper_nouns=FIXED_PROPER | {city} | set(pair.get("long_proper", [])),
+                   property_words={city})
+
+
+def filler_sentences(pair: dict) -> list:
+    """Templated fillers, or a natural-text excerpt for long-distance pairs (punctsum/longtext.py)."""
+    return pair["long_filler"] if "long_filler" in pair else [FILLERS[j] for j in pair["fillers"]]
 
 
 @dataclass(frozen=True)

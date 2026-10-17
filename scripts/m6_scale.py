@@ -154,7 +154,13 @@ def screen(name: str) -> None:
 
 
 def items_dir(name: str) -> Path:
-    return PROJECT_ROOT / "outputs" / "models" / ("pythia-ladder" if name.startswith("pythia") else name)
+    """Shared item sets: the Pythia ladder's (decision log, option 2); GPT-2's items for GPT-2 and GPT-Neo-125M (same
+    tokenizer, so identical inputs); otherwise the model's own."""
+    if name.startswith("pythia"):
+        return PROJECT_ROOT / "outputs" / "models" / "pythia-ladder"
+    if name in ("gpt2", "gpt-neo-125m"):
+        return PROJECT_ROOT / "outputs" / "models" / "gpt2-items"
+    return PROJECT_ROOT / "outputs" / "models" / name
 
 
 def ladder_pairs(name: str, kind: str) -> list[dict]:
@@ -218,10 +224,17 @@ def step_behavior(model, name, out):
     rows = [{"group": "country", "pair_id": p["pair_id"], "k": p["k"], "label": lab, "cond": c, "knockout": "none", **r}
             for (p, lab, c), r in zip(items, res)]
     save_jsonl(rows, out / "behavior.jsonl")
+    summary = summarize_behavior(rows, pairs, KS)
+    (out / "behavior_summary.json").write_text(json.dumps(summary, indent=1))
+    print(f"[{name}] behavior: P {summary['all|P']['diff'][0]:+.2f}, U delta {summary['all|U']['delta'][0]:+.2f}, "
+          f"C_mid delta {summary['all|C_mid']['delta'][0]:+.2f}", flush=True)
+
+
+def summarize_behavior(rows, pairs, ks_all) -> dict:
     pm, nll = pair_means(rows), pair_means(rows, "word_nll")
     k_of = {p["pair_id"]: p["k"] for p in pairs}
     summary = {}
-    for ks, kn in [((k,), f"k={k}") for k in KS] + [(KS, "all")]:
+    for ks, kn in [((k,), f"k={k}") for k in ks_all] + [(tuple(ks_all), "all")]:
         sel = lambda c, d: {pid: v for (g, cc, ko, pid), v in d.items() if cc == c and k_of[pid] in ks}  # noqa: E731
         base, nb = sel("P", pm), sel("P", nll)
         u = np.mean([sel("U", nll)[i] - nb[i] for i in nb])
@@ -229,9 +242,7 @@ def step_behavior(model, name, out):
             d = sel(c, pm)
             summary[f"{kn}|{c}"] = {"diff": pair_bootstrap(d), "delta": pair_bootstrap({i: d[i] - base[i] for i in d}),
                                     "xU": float(np.mean([sel(c, nll)[i] - nb[i] for i in nb]) / u)}
-    (out / "behavior_summary.json").write_text(json.dumps(summary, indent=1))
-    print(f"[{name}] behavior: P {summary['all|P']['diff'][0]:+.2f}, U delta {summary['all|U']['delta'][0]:+.2f}, "
-          f"C_mid delta {summary['all|C_mid']['delta'][0]:+.2f}", flush=True)
+    return summary
 
 
 def knockout_rows(model, pairs, group, readout, conds=INTERNAL, knockouts=KNOCKOUTS):
@@ -244,17 +255,17 @@ def knockout_rows(model, pairs, group, readout, conds=INTERNAL, knockouts=KNOCKO
     return rows
 
 
-def summarize_knockout(rows, pairs, groups):
+def summarize_knockout(rows, pairs, groups, ks_all=KS):
     pm = pair_means(rows)
     k_of = {p["pair_id"]: p["k"] for p in pairs}
     summary = {}
     for g in groups:
-        for ks, kn in [((k,), f"k={k}") for k in KS] + [(KS, "all")]:
+        for ks, kn in [((k,), f"k={k}") for k in ks_all] + [(tuple(ks_all), "all")]:
             for c in INTERNAL:
                 sel = {ko: {pid: v for (gg, cc, kk, pid), v in pm.items() if gg == g and cc == c and kk == ko and k_of[pid] in ks}
                        for ko in KNOCKOUTS}
                 cell = {ko: pair_bootstrap(v) for ko, v in sel.items() if v}
-                if sel["none"] and sel["s0words"]:
+                if sel["none"] and sel["s0words"] and sel["s0all"]:
                     cell["retention_s0words"] = ratio_ci(sel["s0words"], sel["none"])
                     cell["s0punct_share"] = ratio_ci({i: sel["s0words"][i] - sel["s0all"][i] for i in sel["s0all"]},
                                                      sel["none"])
@@ -347,8 +358,44 @@ def fit_probes(name: str) -> None:
     (out / "probes_fit_seconds.txt").write_text(f"{time.time() - t:.0f}\n")
 
 
+def step_long(model, name, out):
+    """Long-distance condition (decision log): property sentence + PG19 excerpt + readout. Behavior (country, all
+    conditions, question readout) and knockout (none / s0words / s0all; country with both readouts, mood with the
+    continuation readout); 100 pairs per level. L900 for every model; L1500 only if the context window allows it."""
+    n_ctx = model.cfg.n_ctx
+    levels = ["L900"] + (["L1500"] if n_ctx >= 2048 else [])
+    d = items_dir(name)
+    country = [p for lv in levels for p in load_jsonl(d / f"pairs_country_{lv}.jsonl")]
+    mood = [p for lv in levels for p in load_jsonl(d / f"pairs_mood_{lv}.jsonl")]
+    mt = max_tokens_for(model)
+    items = passage_label_pairs(country, CONDITIONS)
+    res = score(model, items, max_tokens=mt)
+    longest = max(r["tokens"] for r in res)
+    if longest > n_ctx:
+        raise ValueError(f"{name}: a long-distance passage has {longest} tokens, over the {n_ctx}-token window")
+    brows = [{"group": "country", "pair_id": p["pair_id"], "k": p["k"], "label": lab, "cond": c, "knockout": "none", **r}
+             for (p, lab, c), r in zip(items, res)]
+    save_jsonl(brows, out / "long_behavior.jsonl")
+    kos = ["none", "s0words", "s0all"]
+    krows = (knockout_rows(model, country, "country/question", "question", knockouts=kos)
+             + knockout_rows(model, country, "country/continuation", "continuation", knockouts=kos)
+             + knockout_rows(model, mood, "mood", "continuation", knockouts=kos))
+    save_jsonl(krows, out / "long_knockout.jsonl")
+    summary = {"levels": levels, "longest_tokens": longest, "n_ctx": n_ctx,
+               "behavior": summarize_behavior(brows, country, levels),
+               "knockout": summarize_knockout(krows, country + mood, ["country/question", "country/continuation", "mood"],
+                                              levels)}
+    (out / "long_summary.json").write_text(json.dumps(summary, indent=1))
+    for lv in levels:
+        b, m = summary["behavior"], summary["knockout"]
+        print(f"[{name}] long {lv}: country P {b[f'{lv}|P']['diff'][0]:+.2f}, U delta {b[f'{lv}|U']['delta'][0]:+.2f}, "
+              f"C_mid delta {b[f'{lv}|C_mid']['delta'][0]:+.2f}; mood P retention "
+              f"{m[f'mood|{lv}|P']['retention_s0words'][0]:.2f}, U retention {m[f'mood|{lv}|U']['retention_s0words'][0]:.2f}",
+              flush=True)
+
+
 STEPS = {"calib": step_calib, "behavior": step_behavior, "knockout": step_knockout, "accept": step_accept,
-         "patch": step_patch, "probe": step_probe}
+         "patch": step_patch, "probe": step_probe, "long": step_long}
 
 
 def run(name: str, steps: list[str]) -> None:

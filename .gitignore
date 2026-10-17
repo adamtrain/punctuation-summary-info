@@ -10,3 +10,6 @@ outputs/**/acts/
 
 # Rule: files over 10 MB are not committed without checking with the user first
 # (see BRIEF.md decision log, 2026-10-17).
+
+# Downloaded corpora (re-downloadable; see INSTALL_LOG.md)
+data/

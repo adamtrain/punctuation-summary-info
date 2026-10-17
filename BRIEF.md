@@ -634,6 +634,31 @@ binary property).
   19 s, behavior 84 s, knockout 176 s, accept 8 s, patching 1,224 s, probes 441 s (CPU-bound). **Implementation change (not
   a method change):** the probe step now caches activations on the GPU and fits the probes (same sklearn code and settings)
   in a separate CPU process, so the GPU moves on to the next model instead of idling during fitting.
+- **2026-10-17 (user decisions: long-distance condition and GPT-Neo):**
+  - *Why Pythia-160M barely uses a hub (analysis):* GPT-2 small and Pythia-160M have the same shape (12 layers, width 768,
+    12 heads, MLP 3,072). They differ in position encoding (GPT-2: learned absolute; Pythia: rotary on 25% of head
+    dimensions), layer layout (Pythia: parallel attention + MLP), embedding tying (GPT-2 tied), and training data (WebText
+    vs the Pile). Pythia-410M shares all of Pythia-160M's choices and has a GPT-2-like hub, so no Pythia design choice
+    *prevents* a hub; the likeliest explanation is capacity combined with data, with GPT-2's earlier hub due to either its
+    architecture or its data. **Test (approved):** GPT-Neo-125M (GPT-2-style architecture, trained on the Pile) through the
+    full protocol, on **GPT-2's items** (same tokenizer, so identical inputs). The driver also runs on GPT-2 itself, so both
+    go through one pipeline.
+  - *Long-distance condition (approved design):* filler = contiguous excerpts of **PG19** books (public-domain Project
+    Gutenberg; the distractor text of BABILong, where LLM-Microscope found 7–8B punctuation costs). Normalization: `?` `!` →
+    period; `;` `:` dashes → comma; quotes and parentheses dropped; apostrophes and hyphens inside words kept. Excerpts
+    mentioning France, Japan, any study city, mood adjective or answer word are skipped. Mid-sentence capitalized words and
+    "I" count as proper nouns. Layout: property sentence, excerpt, readout. **Two levels: ~900 tokens (all 7 models,
+    including GPT-2, whose window is 1,024) and ~1,500 tokens (Pythia and Llama).** 100 pairs per level, each with a different
+    excerpt. Runs behavior (all conditions) and knockout (none / s0words / s0all); no patching or probes.
+- **2026-10-17 (long-distance build and run order):** Excerpts built from the PG19 test split (`data/pg19_test/`, 100 books,
+  41 MB; the full 11 GB isn't needed): L900, 100 excerpts of 698–850 tokens; L1500, 100 excerpts of 1,389–1,450 tokens
+  (GPT-2 tokenizer); about 22% of sentences skipped by the character, heading and leak filters. Long pairs reuse each item set's
+  first 100 k=1 pairs (same property sentences, cities, adjectives) with excerpt i as filler; files
+  `outputs/models/{pythia-ladder,gpt2-items}/pairs_{country,mood}_{L900,L1500}.jsonl`. GPT-2's items for GPT-2/GPT-Neo are
+  copied to `outputs/models/gpt2-items/`. **Run order:** GPU jobs run strictly one at a time. Running a small job next to a
+  ladder model ran out of GPU memory, because the large job's PyTorch cache held ~71 GB. Queue after Pythia-1.4B: 1.4B
+  long-distance → GPT-2 and GPT-Neo-125M (verify, screen, full protocol + long) → 160M and 410M long-distance → 2.8B → 6.9B (each
+  full protocol + long). Then Llama-3.1-8B.
 - **2026-10-17 (side session with the user, relayed to this session; no files were changed there):** Scaling decisions
   recorded in Section 5.2: one 80 GB cloud GPU; finish GPT-2 through patching and freeze the method first; Pythia ladder
   (160M–12B) then one modern 7–9B model (Llama-3.1-8B or Gemma-2-9B) with full internals; optional Gemma-2-27B behavior +

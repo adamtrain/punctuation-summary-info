@@ -77,6 +77,17 @@ of the local-disk items is automatic when the instance is terminated.
 - **Cleanup:** `rm -rf /lambda/nfs/AT1/punctuation-summary-info` (persistent storage is billed separately; check Lambda's
   pricing).
 
+### 2026-10-17: PG19 test split (local machine)
+- **What:** the 100 books of DeepMind's official PG19 test split plus `metadata.csv`, downloaded from
+  `https://storage.googleapis.com/deepmind-gutenberg/` (the URLs used by the official `deepmind/pg19` loader; Apache-2.0,
+  public-domain texts) into `data/pg19_test/` (46 MB). `data/` is git-ignored. Used for the long-distance condition
+  (`punctsum/longtext.py`, `scripts/m6_long_pairs.py`); the derived excerpts are in `outputs/models/long_excerpts.jsonl`.
+- **Cleanup:** `rm -rf data/pg19_test`
+
+### 2026-10-17: GPT-2 and GPT-Neo-125M pinned downloads (remote)
+- **What:** `gpt2` at revision 607a30d783 (0.55 GB) and `EleutherAI/gpt-neo-125m` at revision 21def0189f (0.53 GB), via
+  `scripts/m6_models.py download`, into the project's model cache on the persistent share.
+
 ## Not installed (deliberately)
 - No Homebrew packages, no global pip installs, no Jupyter (so far).
 - No Hugging Face login or token stored yet. Gemma (milestone 6) will need `HF_TOKEN`; record it here
