@@ -590,6 +590,30 @@ binary property).
   country probes and patching; probes reduced to mood P and U at k=16). The frozen code is git tag `method-freeze-v1`.
   Scaling starts with the Pythia ladder. Later changes to the method must be logged here as deviations from the freeze,
   with a reason.
+- **2026-10-17 (Pythia ladder item policy, agreed with the user before the screens were run):** **shared items** across all
+  six sizes: a city or adjective is used only if it passes the frozen screen (same thresholds as GPT-2) in *every* Pythia
+  model, so the size trend isn't confounded by item differences. All Pythia sizes share one tokenizer, so token counts and
+  pairing are identical across the ladder. **Large enough** means ≥ 12 adjectives per valence (needed for a train/test split
+  with 3 distinct test adjectives per passage) and ≥ 8 cities per side that can be paired by token count. **Fallback:**
+  intersection over 410M–12B only, with 160M reported separately on its own items and marked as such.
+- **2026-10-17 (Pythia ladder setup results):** Implementation details for scaling, not changes to the method:
+  (1) the start-of-text token is always prepended explicitly (GPT-2's default; required by Gemma); (2) Hugging Face runs in
+  offline mode and models load at pinned revisions; (3) **CPU-staged loading** for every scaling model: loading straight
+  onto the GPU peaks at ~2.6× the weights (Pythia-2.8B: 37 GB for 14.5 GB of weights), so 12B in fp32 would not fit. Weights
+  are processed in CPU RAM and then moved (staged vs direct agree to ~1e-3 logits). **Verification** (`scripts/m6_scale.py
+  verify`, `outputs/models/<model>/verify.json`): TransformerBridge vs plain Hugging Face, 32 passages per model, answer
+  margins agree to ≤ 0.0013 logits (160M) and ≤ 0.0005 (410M–12B); max per-token log-probability difference 0.001–0.009.
+  GPU memory for weights: 0.7 (160M) to 58.7 GB (12B); CPU peak 155 GB for 12B. **Screens** (`outputs/models/<model>/screen/`):
+  every size keeps 27 French and 27–28 Japanese cities (22 pairable per side; 54 shared across all six, which passes).
+  **Mood adjectives fail the shared-item bar:** with the frozen band (1.2–2.6), all six sizes share 3 positive and 0
+  negative adjectives (410M–12B: 4 and 2). Cause: the band was calibrated on GPT-2's logit scale; larger Pythia models
+  respond more strongly (median positive valence 2.8–3.6), so most words exceed the ceiling.
+  **Proposed deviation, awaiting the user's decision:** drop the ceiling and keep the floor (right direction, ≥ 1.2 in every
+  model). With the agreed fallback range (410M–12B) that gives 20 positive and 14 negative shared adjectives (bar: 12),
+  with mean strengths within 0.7 of each other in each model; 160M reported separately on its own items. All six sizes
+  would give only 10 negative. Rationale: the ceiling balanced strengths for the mixed-majority test; for consistent mood
+  (main property) the pair metric cancels any overall lean. Caveat to report with the larger models' mixed-mood test: its
+  words are less strength-matched than GPT-2's.
 - **2026-10-17 (side session with the user, relayed to this session; no files were changed there):** Scaling decisions
   recorded in Section 5.2: one 80 GB cloud GPU; finish GPT-2 through patching and freeze the method first; Pythia ladder
   (160M–12B) then one modern 7–9B model (Llama-3.1-8B or Gemma-2-9B) with full internals; optional Gemma-2-27B behavior +

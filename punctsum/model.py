@@ -25,9 +25,18 @@ def default_device() -> str:
     return "cpu"
 
 
-def load(name: str = "gpt2", device: str | None = None, dtype: torch.dtype = torch.float32) -> TransformerBridge:
-    model = TransformerBridge.boot_transformers(name, device=device or default_device(), dtype=dtype)
+def load(name: str = "gpt2", device: str | None = None, dtype: torch.dtype = torch.float32,
+         revision: str | None = None, stage_on_cpu: bool = False) -> TransformerBridge:
+    """`revision` pins the exact weights (a commit hash from outputs/m6/models_manifest.json).
+    `stage_on_cpu`: load and process the weights (LayerNorm folding, centering) in CPU memory, then move the finished
+    model to `device`. Loading on the GPU directly peaks at about 2.6x the weights' size, too much for 12B in fp32 on
+    80 GB; staged loading matches direct GPU loading to ~1e-3 logits (BRIEF.md decision log)."""
+    target = device or default_device()
+    model = TransformerBridge.boot_transformers(name, device="cpu" if stage_on_cpu else target, dtype=dtype,
+                                                revision=revision)
     model.enable_compatibility_mode(disable_warnings=True)
+    if stage_on_cpu:
+        model = model.to(target)
     model.eval()
     return model
 
@@ -57,7 +66,9 @@ def tokenize_with_readout(model, pieces: list[Piece], readout: str) -> tuple[str
     change how the passage tokenizes. Returns (full text, tokens, piece index per passage token,
     number of readout tokens)."""
     text, toks, piece_of_token = tokenize_pieces(model, pieces)
-    full = model.to_tokens(text + readout).cpu()
+    # Always prepend the model's start-of-text token explicitly (GPT-2's default; required by e.g. Gemma), so every
+    # model sees the same structure and the check below compares like with like.
+    full = model.to_tokens(text + readout, prepend_bos=True).cpu()
     n = toks.shape[1]
     if not torch.equal(full[:, :n], toks):
         raise ValueError(f"readout changes passage tokenization: {text!r}")

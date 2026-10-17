@@ -1,0 +1,47 @@
+[pythia-160m] {'load_s': 1.6, 'load_peak_gpu_gb': 0.74, 'weights_gpu_gb': 0.74, 'n_texts': 32, 'max_abs_logprob_diff': 0.00877237319946289, 'max_abs_answer_logit_diff_diff': 0.00131988525390625, 'peak_rss_gb': 3.2}
+[pythia-410m] {'load_s': 3.3, 'load_peak_gpu_gb': 2.27, 'weights_gpu_gb': 2.27, 'n_texts': 32, 'max_abs_logprob_diff': 0.002288818359375, 'max_abs_answer_logit_diff_diff': 0.0004711151123046875, 'peak_rss_gb': 7.44}
+[pythia-1.4b] {'load_s': 8.1, 'load_peak_gpu_gb': 7.32, 'weights_gpu_gb': 7.32, 'n_texts': 32, 'max_abs_logprob_diff': 0.0017938613891601562, 'max_abs_answer_logit_diff_diff': 0.00014019012451171875, 'peak_rss_gb': 21.17}
+[pythia-2.8b] {'load_s': 10.7, 'load_peak_gpu_gb': 14.51, 'weights_gpu_gb': 14.51, 'n_texts': 32, 'max_abs_logprob_diff': 0.0011467933654785156, 'max_abs_answer_logit_diff_diff': 0.000102996826171875, 'peak_rss_gb': 40.06}
+[pythia-6.9b] {'load_s': 38.5, 'load_peak_gpu_gb': 34.94, 'weights_gpu_gb': 34.94, 'n_texts': 32, 'max_abs_logprob_diff': 0.0021800994873046875, 'max_abs_answer_logit_diff_diff': 0.00022125244140625, 'peak_rss_gb': 100.05}
+[W1017 21:57:34.631084078 CUDACachingAllocator.cpp:3934] memory allocation failed with OOM on device 0 while trying to allocate 419430400 bytes (free: 388300800, total: 85017624576).
+[W1017 21:57:50.179676587 CUDACachingAllocator.cpp:3934] memory allocation failed with OOM on device 0 while trying to allocate 419430400 bytes (free: 390397952, total: 85017624576).
+[W1017 21:57:50.179801226 CUDACachingAllocator.cpp:3934] memory allocation failed with OOM on device 0 while trying to allocate 419430400 bytes (free: 390397952, total: 85017624576).
+Traceback (most recent call last):
+  File "/lambda/nfs/AT1/punctuation-summary-info/scripts/m6_scale.py", line 137, in <module>
+    {"verify": verify, "screen": screen}[cmd](n)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^
+  File "/home/ubuntu/venvs/punctuation-summary-info/lib/python3.13/site-packages/torch/utils/_contextlib.py", line 124, in decorate_context
+    return func(*args, **kwargs)
+  File "/lambda/nfs/AT1/punctuation-summary-info/scripts/m6_scale.py", line 93, in verify
+    hf = AutoModelForCausalLM.from_pretrained(MODELS[name], revision=revision(name), torch_dtype=torch.float32).to("cuda")
+  File "/home/ubuntu/venvs/punctuation-summary-info/lib/python3.13/site-packages/transformers/modeling_utils.py", line 3710, in to
+    return super().to(*args, **kwargs)
+           ~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/venvs/punctuation-summary-info/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1388, in to
+    return self._apply(convert)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "/home/ubuntu/venvs/punctuation-summary-info/lib/python3.13/site-packages/torch/nn/modules/module.py", line 933, in _apply
+    module._apply(fn)
+    ~~~~~~~~~~~~~^^^^
+  File "/home/ubuntu/venvs/punctuation-summary-info/lib/python3.13/site-packages/torch/nn/modules/module.py", line 933, in _apply
+    module._apply(fn)
+    ~~~~~~~~~~~~~^^^^
+  File "/home/ubuntu/venvs/punctuation-summary-info/lib/python3.13/site-packages/torch/nn/modules/module.py", line 933, in _apply
+    module._apply(fn)
+    ~~~~~~~~~~~~~^^^^
+  [Previous line repeated 2 more times]
+  File "/home/ubuntu/venvs/punctuation-summary-info/lib/python3.13/site-packages/torch/nn/modules/module.py", line 966, in _apply
+    param_applied = fn(param)
+  File "/home/ubuntu/venvs/punctuation-summary-info/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1374, in convert
+    return t.to(
+           ~~~~^
+        device,
+        ^^^^^^^
+        dtype if t.is_floating_point() or t.is_complex() else None,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        non_blocking,
+        ^^^^^^^^^^^^^
+    )
+    ^
+torch.OutOfMemoryError: CUDA out of memory. Tried to allocate 400.00 MiB. GPU 0 has a total capacity of 79.18 GiB of which 372.31 MiB is free. Including non-PyTorch memory, this process has 78.81 GiB memory in use. Of the allocated memory 72.89 GiB is allocated by PyTorch, and 5.34 GiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://docs.pytorch.org/docs/stable/notes/cuda.html#optimizing-memory-usage-with-pytorch-cuda-alloc-conf)
+[pythia-12b] {'load_s': 51.6, 'load_peak_gpu_gb': 58.71, 'weights_gpu_gb': 58.71, 'n_texts': 32, 'max_abs_logprob_diff': 0.0022821426391601562, 'max_abs_answer_logit_diff_diff': 0.00024509429931640625, 'peak_rss_gb': 155.48}
