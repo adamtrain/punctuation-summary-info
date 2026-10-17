@@ -31,6 +31,40 @@ don't edit old ones.
   - `gpt2` (GPT-2 small, ≈ 0.5 GB)
 - **Cleanup:** `rm -rf .hf_cache`
 
+### 2026-10-17: git repository and GitHub remote (local machine)
+- **What:** `git init` in the project folder; private GitHub repository
+  https://github.com/adamtrain/punctuation-summary-info (remote `origin`). `.gitignore` excludes `.venv/`, `.hf_cache/`,
+  `outputs/**/acts/` (activation caches, 18 GB so far) and Python caches. Rule: files over 10 MB are not committed
+  without checking with the user first.
+- **Cleanup:** `rm -rf .git .gitignore`; delete the GitHub repository from its settings page (or `gh repo delete
+  adamtrain/punctuation-summary-info`).
+
+## Remote: Lambda H100 instance (`ssh lambda`)
+Persistent storage `/lambda/nfs/AT1` survives instance termination; the home directory and local disk do not. Cleanup
+of the local-disk items is automatic when the instance is terminated.
+
+### 2026-10-17: uv (remote)
+- **What:** uv 0.12.21 (same version as the Mac) from Astral's official installer
+  (`curl -LsSf https://astral.sh/uv/0.12.21/install.sh | sh`) into `~/.local/bin/uv` and `~/.local/bin/uvx`. The installer
+  appended `. "$HOME/.local/bin/env"` to `~/.bashrc`, `~/.profile` and `~/.zshrc`.
+- **Cleanup:** `rm ~/.local/bin/uv ~/.local/bin/uvx ~/.local/bin/env ~/.local/bin/env.fish`; delete that line from the
+  three profile files.
+
+### 2026-10-17: Python environment (remote, local disk)
+- **What:** uv-managed CPython 3.13 (`~/.local/share/uv/python`, 108 MB); project environment at
+  `~/venvs/punctuation-summary-info` (5.9 GB), created with `UV_PROJECT_ENVIRONMENT=$HOME/venvs/punctuation-summary-info uv
+  sync --frozen --python 3.13` from the same `uv.lock` as the Mac (torch 2.14.1+cu130, transformer-lens 4.2.0); uv download
+  cache `~/.cache/uv`.
+- **Cleanup:** `rm -rf ~/venvs/punctuation-summary-info ~/.local/share/uv ~/.cache/uv` (or terminate the instance).
+
+### 2026-10-17: project copy and model cache (remote, persistent storage)
+- **What:** project copied with rsync to `/lambda/nfs/AT1/punctuation-summary-info` (excluding `.venv`, `.hf_cache`,
+  activation caches). Hugging Face cache at `/lambda/nfs/AT1/punctuation-summary-info/.hf_cache` (set automatically by
+  `punctsum/__init__.py`). Models downloaded:
+  - `gpt2` (≈ 0.5 GB)
+- **Cleanup:** `rm -rf /lambda/nfs/AT1/punctuation-summary-info` (persistent storage is billed separately; check Lambda's
+  pricing).
+
 ## Not installed (deliberately)
 - No Homebrew packages, no global pip installs, no Jupyter (so far).
 - No Hugging Face login or token stored yet. Gemma (milestone 6) will need `HF_TOKEN`; record it here

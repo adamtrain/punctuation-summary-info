@@ -1,6 +1,7 @@
 """Model loading. All models go through TransformerLens's TransformerBridge in compatibility mode,
 which gives HookedTransformer-style hook names (blocks.{L}.hook_resid_post) and numerics."""
 
+import os
 import resource
 
 import punctsum  # noqa: F401  (sets HF_HOME before transformer_lens is imported)
@@ -11,8 +12,20 @@ from transformer_lens.model_bridge import TransformerBridge
 from punctsum.conditions import Piece, to_text
 
 
-def load(name: str = "gpt2", device: str = "cpu", dtype: torch.dtype = torch.float32) -> TransformerBridge:
-    model = TransformerBridge.boot_transformers(name, device=device, dtype=dtype)
+def default_device() -> str:
+    """PUNCTSUM_DEVICE if set, else the best available: CUDA (cloud GPU), MPS (Apple GPU), CPU.
+    MPS logits match CPU to ~3e-5 on GPT-2 (BRIEF.md section 10.9)."""
+    if os.environ.get("PUNCTSUM_DEVICE"):
+        return os.environ["PUNCTSUM_DEVICE"]
+    if torch.cuda.is_available():
+        return "cuda"
+    if torch.backends.mps.is_available():
+        return "mps"
+    return "cpu"
+
+
+def load(name: str = "gpt2", device: str | None = None, dtype: torch.dtype = torch.float32) -> TransformerBridge:
+    model = TransformerBridge.boot_transformers(name, device=device or default_device(), dtype=dtype)
     model.enable_compatibility_mode(disable_warnings=True)
     model.eval()
     return model
@@ -80,7 +93,7 @@ def forward_batched(model, seqs: list[list[int]], fn, max_tokens: int = 4096) ->
     sequence. Results come back in input order."""
     out = [None] * len(seqs)
     for idx in length_batches(seqs, max_tokens):
-        logits = model(torch.tensor([seqs[i] for i in idx]))
+        logits = model(torch.tensor([seqs[i] for i in idx], device=model.cfg.device))
         for i, r in zip(idx, fn(logits, idx)):
             out[i] = r
     return out
@@ -95,10 +108,11 @@ def resid_at(model, seqs: list[list[int]], positions: list[list[int]], max_token
     n_pos = len(positions[0])
     out = np.zeros((len(seqs), n_pos, len(names), model.cfg.d_model), dtype=np.float32)
     for idx in length_batches(seqs, max_tokens):
-        _, cache = model.run_with_cache(torch.tensor([seqs[i] for i in idx]), names_filter=lambda n: n in names)
+        toks = torch.tensor([seqs[i] for i in idx], device=model.cfg.device)
+        _, cache = model.run_with_cache(toks, names_filter=lambda n: n in names)
         stacked = torch.stack([cache[n] for n in names], dim=2)  # [B, T, L+1, d]
         for b, i in enumerate(idx):
-            out[i] = stacked[b, positions[i]].float().numpy()
+            out[i] = stacked[b, positions[i]].float().cpu().numpy()
     return out
 
 

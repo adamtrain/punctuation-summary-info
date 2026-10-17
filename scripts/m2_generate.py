@@ -89,7 +89,7 @@ def main():
                 for lab, (_, toks, _) in zip(LABELS, rendered):
                     other = next(x for x in LABELS if x != lab)
                     with torch.no_grad():
-                        logits = model(torch.tensor([toks]))[0, -1]
+                        logits = model(torch.tensor([toks], device=model.cfg.device))[0, -1]
                     diffs[(pair["k"], cond)].append((logits[answer[lab]] - logits[answer[other]]).item())
     log(f"\n== 3. Generated {len(pairs)} pairs ({len(pairs) * 2} passages); checked {n_checked} renderings ==")
     log("All renderings tokenize cleanly; pair members match in token count and roles in every condition.")

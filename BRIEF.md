@@ -549,6 +549,14 @@ binary property).
   hypotheses will be decided by patching (milestone 5), which should come next rather than more probe variants.
 - **2026-10-17: approved by the user:** **control-task baseline struck** (redundant with the held-out-type test split);
   probes scaled to k ∈ {1, 4, 16} × {P, U, U-cap, M, K, C_mid, C_hi} × {mood, country}; then activation patching.
+- **2026-10-17 (H100 setup):** Project put under git (private GitHub repo adamtrain/punctuation-summary-info; activation
+  caches and environments excluded; files over 10 MB need the user's OK before committing). Device selection is automatic
+  (`punctsum.model.default_device`: CUDA, then MPS, then CPU; override with `PUNCTSUM_DEVICE`), and shared helpers move
+  inputs to the model's device. H100 environment built from the same `uv.lock` (torch 2.14.1+cu130). **Verification:**
+  GPT-2 on the H100 reproduces the Mac CPU reference pair to 4 decimals (no knockout 1.6137 / 2.1727; s0words knockout
+  0.9245 / −0.6857). TF32 is off for matrix multiplies (`allow_tf32=False`, precision "highest"), so fp32 means fp32. Speed:
+  400 renderings in 0.4 s (2.1 GB GPU memory), ~25× the Mac. Scaling runs still wait for the GPT-2 patching batch to finish
+  and the method to be frozen.
 - **2026-10-17 (side session with the user, relayed to this session; no files were changed there):** Scaling decisions
   recorded in Section 5.2: one 80 GB cloud GPU; finish GPT-2 through patching and freeze the method first; Pythia ladder
   (160M–12B) then one modern 7–9B model (Llama-3.1-8B or Gemma-2-9B) with full internals; optional Gemma-2-27B behavior +

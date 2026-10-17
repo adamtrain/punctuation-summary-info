@@ -54,8 +54,8 @@ def score(model, items: list[tuple[dict, str, str]], max_tokens: int = 4096, rea
         logprobs = logits.log_softmax(-1)
         for b, i in enumerate(idx):
             n = n_passage[i]
-            tgt = torch.tensor(seqs[i][1:n])
-            nll = -logprobs[b, : n - 1].gather(-1, tgt[:, None])[:, 0].numpy()
+            tgt = torch.tensor(seqs[i][1:n], device=logprobs.device)
+            nll = -logprobs[b, : n - 1].gather(-1, tgt[:, None])[:, 0].float().cpu().numpy()
             good, bad = answers[i]
             res.append({
                 "word_nll": float(nll[word_masks[i]].mean()),
@@ -70,11 +70,11 @@ def score(model, items: list[tuple[dict, str, str]], max_tokens: int = 4096, rea
     names = [f"blocks.{l}.attn.hook_attn_scores" for l in range(model.cfg.n_layers)]
     with torch.no_grad():
         for idx in length_batches(seqs, max_tokens):
-            toks = torch.tensor([seqs[i] for i in idx])
+            toks = torch.tensor([seqs[i] for i in idx], device=model.cfg.device)
             if knockout == "none":
                 logits = model(toks)
             else:
-                mask = torch.stack([blocked[i] for i in idx])[:, None]  # [B, 1, Q, K], broadcast over heads
+                mask = torch.stack([blocked[i] for i in idx])[:, None].to(model.cfg.device)  # [B, 1, Q, K]
 
                 def hook(scores, hook, mask=mask):
                     return scores.masked_fill(mask, float("-inf"))

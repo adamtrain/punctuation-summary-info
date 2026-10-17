@@ -14,7 +14,8 @@ CI over pairs. Span rows patch several positions at once (the diffusion test, BR
   span.fillers        every filler token
   span.passage_after  every passage token after the last property word (s0 rest + fillers)
   span.readout_pre    every readout token except the final one Layer 0 is skipped: there a patch either changes nothing (same token in both members) or swaps the
-property word itself. Runs on the Apple GPU (MPS; logits match CPU to ~3e-5). Writes outputs/m5/.
+property word itself. Runs on the best available device (punctsum.model.default_device: CUDA, MPS, CPU). Writes
+outputs/m5/.
 """
 
 import argparse
@@ -179,7 +180,7 @@ def main():
     ap.add_argument("--n-pairs", type=int, default=N_PAIRS)
     ap.add_argument("--all", action="store_true")
     args = ap.parse_args()
-    model = load("gpt2", device="mps")
+    model = load("gpt2")
     if args.all:
         for prop in ("mood", "country"):
             for k in (1, 4, 16):
