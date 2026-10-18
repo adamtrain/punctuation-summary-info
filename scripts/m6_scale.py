@@ -3,6 +3,7 @@
   python scripts/m6_scale.py verify pythia-160m [pythia-410m ...]   # TransformerLens vs plain Hugging Face, memory
   python scripts/m6_scale.py screen pythia-160m [...]               # city, adjective and filler screens
   python scripts/m6_scale.py bf16check llama-3.1-8b                 # bf16 vs fp32 numerics
+  python scripts/m6_scale.py fusedcheck llama-3.1-8b                # readout boundary: split vs fused tokens (after calib)
   python scripts/m6_scale.py run pythia-160m [calib behavior knockout accept patch probe]   # the frozen protocol
 
 `run` steps (BRIEF.md decision log, method freeze + "option 2"): calibrate control C for this model; country behavior
@@ -33,7 +34,7 @@ from m6_models import MODELS  # noqa: E402
 from punctsum import PROJECT_ROOT  # noqa: E402
 from punctsum.dataset import load_jsonl, property_of, render_condition, save_jsonl, screen_cities  # noqa: E402
 from punctsum.materials import LABELS  # noqa: E402
-from punctsum.model import load, peak_rss_gb, tokenize_with_readout  # noqa: E402
+from punctsum.model import joint_tokens, load, peak_rss_gb, tokenize_with_readout  # noqa: E402
 from punctsum.mood import MOOD_ANSWERS, screen_adjectives, screen_fillers  # noqa: E402
 import numpy as np  # noqa: E402
 from sklearn.metrics import roc_auc_score  # noqa: E402
@@ -151,6 +152,61 @@ def bf16_check(name: str) -> dict:
            "max_abs_logprob_change": max(float((x - y).abs().max()) for x, y in zip(la, lb))}
     (out_dir(name) / "bf16_check.json").write_text(json.dumps(res, indent=1))
     print(f"[{name}] bf16 vs fp32: {res}", flush=True)
+    return res
+
+
+@torch.no_grad()
+def fused_check(name: str) -> dict:
+    """Llama 3 has a single ".\n\n" token, so whole-text tokenization fuses a passage-final period with the question
+    readout; the pipeline instead feeds the period and the readout as separate tokens (BRIEF.md decision log,
+    2026-10-18). How much does that change the answer? Country pairs, question readout, 100 pairs per k: answer margin
+    with the pipeline's split tokens (as scored by `score`) vs the whole text tokenized at once, for the period-final
+    conditions P, K, C_mid and for U, where both tokenizations are identical, so U's difference is the numerical floor
+    (the fused pass runs one passage at a time, the split pass in batches)."""
+    model, _ = load_model(name)
+    out = out_dir(name)
+    load_rates(name, out)
+    pairs = by_k(ladder_pairs(name, "country"), per_k=100)
+    conds = ["P", "U", "K", "C_mid"]
+    items = passage_label_pairs(pairs, conds)
+    split = score(model, items, max_tokens=max_tokens_for(model))
+    rows = []
+    for (p, lab, c), s in zip(items, split):
+        prop = property_of(p)
+        pieces = render_condition(p, lab, c, model)
+        _, toks, _, _ = tokenize_with_readout(model, pieces, prop.readouts["question"])
+        joint = joint_tokens(model, pieces, prop.readouts["question"])
+        logits = model(joint.to(model.cfg.device))[0, -1]
+        other = next(x for x in prop.labels if x != lab)
+        fused = (logits[model.to_single_token(prop.answer(lab))] - logits[model.to_single_token(prop.answer(other))]).item()
+        rows.append({"pair_id": p["pair_id"], "k": p["k"], "label": lab, "cond": c, "split": s["diff"], "fused": fused,
+                     "tokens_differ": not torch.equal(toks, joint)})
+    del logits
+    save_jsonl(rows, out / "fused_check.jsonl")
+
+    def pair_vals(c, f):
+        acc: dict[str, list[float]] = {}
+        for r in rows:
+            if r["cond"] == c:
+                acc.setdefault(r["pair_id"], []).append(f(r))
+        return {k: float(np.mean(v)) for k, v in acc.items()}
+
+    res = {}
+    for c in conds:
+        res[c] = {"tokens_differ_share": float(np.mean([r["tokens_differ"] for r in rows if r["cond"] == c])),
+                  "split": pair_bootstrap(pair_vals(c, lambda r: r["split"])),
+                  "fused": pair_bootstrap(pair_vals(c, lambda r: r["fused"])),
+                  "fused_minus_split": pair_bootstrap(pair_vals(c, lambda r: r["fused"] - r["split"])),
+                  "max_abs_change": float(max(abs(r["fused"] - r["split"]) for r in rows if r["cond"] == c))}
+    for how in ("split", "fused"):  # the headline comparison: U's cost relative to P under each tokenization
+        p_, u_ = pair_vals("P", lambda r: r[how]), pair_vals("U", lambda r: r[how])
+        res[f"U_minus_P_{how}"] = pair_bootstrap({k: u_[k] - p_[k] for k in p_})
+    (out / "fused_check.json").write_text(json.dumps(res, indent=1))
+    print(f"[{name}] fused vs split: " + "; ".join(f"{c} {res[c]['split'][0]:+.2f} -> {res[c]['fused'][0]:+.2f} "
+          f"({res[c]['tokens_differ_share']:.0%} differ)" for c in conds)
+          + f"; U-P split {res['U_minus_P_split'][0]:+.2f}, fused {res['U_minus_P_fused'][0]:+.2f}", flush=True)
+    del model
+    free()
     return res
 
 
@@ -452,4 +508,5 @@ if __name__ == "__main__":
         run(sys.argv[2], sys.argv[3:] or list(STEPS))
     else:
         for n in sys.argv[2:]:
-            {"verify": verify, "screen": screen, "fitprobes": fit_probes, "bf16check": bf16_check}[cmd](n)
+            {"verify": verify, "screen": screen, "fitprobes": fit_probes, "bf16check": bf16_check,
+             "fusedcheck": fused_check}[cmd](n)

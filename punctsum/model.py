@@ -68,17 +68,22 @@ def tokenize_pieces(model, pieces: list[Piece]) -> tuple[str, torch.Tensor, list
 
 
 def tokenize_with_readout(model, pieces: list[Piece], readout: str) -> tuple[str, torch.Tensor, list[int], int]:
-    """Like tokenize_pieces, with the readout suffix appended. Checks that appending the readout doesn't
-    change how the passage tokenizes. Returns (full text, tokens, piece index per passage token,
-    number of readout tokens)."""
+    """Like tokenize_pieces, with the readout suffix appended. The passage (with the start-of-text token) and the
+    readout are tokenized separately and their ids joined, so the passage keeps exactly its own tokens even where a
+    tokenizer would merge across the boundary: Llama 3 has a single ".\\n\\n" token, which would fuse a final period
+    with the question readout (BRIEF.md decision log, 2026-10-18). For GPT-2, GPT-Neo and Pythia the joined ids equal
+    tokenizing the whole text (checked on every item by scripts/m6_token_check.py). Returns (full text, tokens, piece
+    index per passage token, number of readout tokens)."""
     text, toks, piece_of_token = tokenize_pieces(model, pieces)
-    # Always prepend the model's start-of-text token explicitly (GPT-2's default; required by e.g. Gemma), so every
-    # model sees the same structure and the check below compares like with like.
-    full = model.to_tokens(text + readout, prepend_bos=True).cpu()
-    n = toks.shape[1]
-    if not torch.equal(full[:, :n], toks):
-        raise ValueError(f"readout changes passage tokenization: {text!r}")
-    return text + readout, full, piece_of_token, full.shape[1] - n
+    ro = model.tokenizer(readout, add_special_tokens=False)["input_ids"]
+    return text + readout, torch.cat([toks, torch.tensor([ro])], dim=1), piece_of_token, len(ro)
+
+
+def joint_tokens(model, pieces: list[Piece], readout: str) -> torch.Tensor:
+    """The whole text (passage + readout) tokenized at once, with the start-of-text token: what the model would see
+    from raw text. Used only to check where this differs from tokenize_with_readout."""
+    text, _ = to_text(pieces)
+    return model.to_tokens(text + readout, prepend_bos=True).cpu()
 
 
 def single_token_word(model, word: str) -> bool:

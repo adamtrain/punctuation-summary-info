@@ -699,12 +699,24 @@ binary property).
      (`scripts/m6_queue2.sh`) logs each failed step and stops Llama at the first failure.
   Second queue started 2026-10-18 01:28 UTC: 2.8B → 6.9B (behavior through long) → long-distance for GPT-2, GPT-Neo, 160M,
   410M, 1.4B → Llama.
-- **2026-10-18 (Llama: readout boundary; decision pending with the user):** The new check found that Llama 3's tokenizer
+- **2026-10-18 (Llama: readout boundary; problem):** The new check found that Llama 3's tokenizer
   has a single `.\n\n` token, so when the passage ends with a period (P, K, C), the period fuses with the start of the
   question readout (`\n\nQuestion: …`). GPT-2, GPT-Neo and Pythia keep `.` and `\n` separate. Our code refuses the fusion
   (the readout must not change the passage's tokens). Only Llama's country question readout is affected; the continuation
   readouts start with a space and are clean. The earlier CPU pre-check of Llama's tokenizer tested passage pieces only, not
   the readout boundary. Llama's queue will stop at its first step that scores the question readout.
+- **2026-10-18: approved by the user: split readout tokenization**, plus a sensitivity check. The passage (with the
+  start-of-text token) and the readout are tokenized separately and their ids joined (`punctsum/model.tokenize_with_readout`),
+  so the passage always keeps its own tokens and the final period stays a period token. For GPT-2, GPT-Neo and Pythia this
+  gives exactly the tokens the frozen pipeline used (the old code required the passage tokens to be unchanged by the
+  readout; the readout's own tokens are verified identical on every item by `scripts/m6_token_check.py`, below), so no
+  completed result changes. For Llama, the input differs from raw-text tokenization only in P, K and C with the question
+  readout. **Sensitivity check** `m6_scale.py fusedcheck` (after Llama's run): country, question readout, 100 pairs per k,
+  answer margin with split vs whole-text (fused) tokens for P, K, C_mid, and U as the numerical floor (identical tokens).
+  It reports U − P under both tokenizations, the comparison the fusion could bias. Dry run on GPT-2: tokens differ in 0% of
+  renderings; largest margin change 2.6 × 10⁻⁵ (numerical). Queue: Pythia-2.8B continues; `scripts/m6_queue3.sh` replaces
+  the rest of `m6_queue2.sh` (6.9B → long-distance for the five finished models → Llama, with the token check on its long
+  items as a gate and `fusedcheck` at the end).
 - **2026-10-17:** Conditions are rendered as word/punctuation pieces carrying metadata, and tokens are mapped
   to pieces by character offsets. Verified: the mapped token ids equal `to_tokens()` on every pilot rendering,
   and the milestone 1 report reproduced exactly after the refactor.
