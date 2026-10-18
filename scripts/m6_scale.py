@@ -200,8 +200,10 @@ def by_k(pairs: list[dict], per_k: int | None = None) -> list[dict]:
 
 
 def max_tokens_for(model) -> int:
+    """Tokens per forward batch, by the weights' size on the GPU. Speed and memory only: batches group sequences of
+    equal length, so results don't depend on it. (Pythia-2.8B ran out of memory at 32768, BRIEF.md decision log.)"""
     gb = torch.cuda.memory_allocated() / 1e9
-    return 32768 if gb < 20 else 16384 if gb < 40 else 8192
+    return 32768 if gb < 8 else 16384 if gb < 20 else 4096
 
 
 def pair_means(rows: list[dict], key: str = "diff") -> dict[tuple, float]:

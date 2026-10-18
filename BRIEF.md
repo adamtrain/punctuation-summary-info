@@ -679,6 +679,32 @@ binary property).
   GPT-2 on the GPU for consistency. Add a long-distance (thousands of tokens) condition for large models. The user's prior
   is pre-registered in Section 5.3 before any scaling run; the concrete thresholds there were written by Claude, and the
   user delegated them to Claude's judgment (directional predictions primary, thresholds a secondary guide). A larger model may pass the mixed-mood acceptance test GPT-2 small failed; same criteria apply.
+- **2026-10-18 (first scaling queue: what failed and the fixes; no result was altered):** The queue ran overnight. GPT-2,
+  GPT-Neo-125M and Pythia-1.4B completed the full protocol (calib → probe); everything else failed, for three reasons:
+  1. **Every long-distance step failed** before scoring: 31 PG19 words kept an edge apostrophe (`diggin'`), and before a
+     comma the tokenizers merge `',` into one token, which straddles two pieces (the tokenizer mapping refuses that rather
+     than mislabel roles). Fix: the parser keeps apostrophes and hyphens only inside words (`punctsum/longtext.py`).
+     Excerpts rebuilt with the same seeds: the same 200 passages (same books and start paragraphs), 31 words changed, one
+     excerpt gained a sentence; long pairs rebuilt. New gate `scripts/m6_long_check.py` (tokenizer only, CPU): every long pair ×
+     label × condition × readout must tokenize cleanly; GPT-2 and GPT-Neo pass (0 of 9,600 renderings fail).
+  2. **Pythia-2.8B and 6.9B ran out of GPU memory** in the behavior step (their calibrations completed and are kept). The
+     GPT-2 hardware rerun had been started next to the queue and held 7 GB, and ~10 GB of the allocator's cache was fragmented.
+     Fixes: the per-batch token budget now steps down with model size (32,768 below 8 GB of weights, as before, so finished
+     models are unaffected; 16,384 below 20 GB; 4,096 above) and PyTorch's expandable allocator segments. Batches hold only
+     sequences of equal length (no padding), so the budget doesn't change results. Lesson repeated: one GPU job at a time,
+     including side runs.
+  3. **Llama-3.1-8B crashed when verifying.** TransformerLens stores a gated MLP's processed weights as plain tensor attributes,
+     which `Module.to()` doesn't move, so CPU-staged loading left them on the CPU. Fix in `punctsum/model.load`: move every
+     tensor attribute after `.to()`. The first queue then printed `LLAMA_DONE` anyway (unconditional echo); the second queue
+     (`scripts/m6_queue2.sh`) logs each failed step and stops Llama at the first failure.
+  Second queue started 2026-10-18 01:28 UTC: 2.8B → 6.9B (behavior through long) → long-distance for GPT-2, GPT-Neo, 160M,
+  410M, 1.4B → Llama.
+- **2026-10-18 (Llama: readout boundary; decision pending with the user):** The new check found that Llama 3's tokenizer
+  has a single `.\n\n` token, so when the passage ends with a period (P, K, C), the period fuses with the start of the
+  question readout (`\n\nQuestion: …`). GPT-2, GPT-Neo and Pythia keep `.` and `\n` separate. Our code refuses the fusion
+  (the readout must not change the passage's tokens). Only Llama's country question readout is affected; the continuation
+  readouts start with a space and are clean. The earlier CPU pre-check of Llama's tokenizer tested passage pieces only, not
+  the readout boundary. Llama's queue will stop at its first step that scores the question readout.
 - **2026-10-17:** Conditions are rendered as word/punctuation pieces carrying metadata, and tokens are mapped
   to pieces by character offsets. Verified: the mapped token ids equal `to_tokens()` on every pilot rendering,
   and the milestone 1 report reproduced exactly after the refactor.
@@ -1143,6 +1169,24 @@ Same measures as GPT-2 (10.5–10.7, 10.11); k ∈ {1, 4, 16}. GPT-2 small value
   / −0.11), so the punctuation-specific part is smaller. The distance effect is clear in both (cost grows with k).
 - **Pythia-410M passes the mixed-majority test** (AUC 0.819) that GPT-2 small failed: the "bonus" outcome. 160M fails, with
   the caveat that its shared negative adjectives are stronger than its positive ones.
+
+### 10.13 Hardware consistency: GPT-2 small on the H100 vs the Mac (2026-10-18)
+The GPT-2 pipeline (C calibration, behavior, knockout, mood acceptance, all 42 probe configurations) was rerun on the H100
+(CUDA, fp32, TF32 off) and compared with the original Mac (MPS) results. The H100 outputs are kept separately in
+`outputs/gpt2_h100/` (files byte-identical to the Mac's aren't duplicated there); the Mac originals in `outputs/m2`, `m2b`,
+`m3` are unchanged.
+- **Calibration:** identical chosen rates (C_lo 0.026, C_mid 0.057, C_hi 0.079).
+- **Behavior:** all 48 rows of the behavior tables (8 conditions × 5 filler lengths + pooled; margins, Δ, 95% CIs, accuracy)
+  are identical to two decimals. The H100's raw `behavior.jsonl` and `calibration.json` were overwritten on the remote by a
+  later code sync from the Mac (their timestamps are the Mac's), so this comparison uses the printed tables in
+  `outputs/gpt2_h100/rerun.log`.
+- **Knockout:** 1,056 summary numbers; max |difference| 4.8 × 10⁻⁶.
+- **Mood acceptance:** 1,536 summary numbers; max |difference| 1.0 × 10⁻⁴ (one AUC, 0.5370 vs 0.5371). Regenerated
+  mood pairs are byte-identical.
+- **Probes:** 14,885 cells; 97.8% of test accuracies are bit-identical, 0.04% differ by more than 0.02; significance calls
+  (accuracy > permutation-null 95th percentile) agree in all but one borderline cell (mood, k = 4, P).
+
+GPT-2 results don't depend on the hardware at the precision reported, so Mac and H100 results can be combined.
 
 ## 11. Future research directions
 

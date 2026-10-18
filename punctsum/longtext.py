@@ -5,7 +5,7 @@ Each excerpt is normalized so that commas and periods are the only punctuation, 
 sentence -> clause -> word structure as the templated fillers, so every condition (P, U, U-cap, M, K, C) applies unchanged.
 
 Normalization: `?` `!` -> period; `;` `:` dashes -> comma; quotes, parentheses, brackets, underscores and asterisks dropped;
-apostrophes and hyphens inside words kept; periods after common abbreviations (Mr., Mrs., Dr., ...) removed so they don't
+apostrophes and hyphens kept only inside words; periods after common abbreviations (Mr., Mrs., Dr., ...) removed so they don't
 end sentences. A sentence is skipped (and the excerpt continues with the next one) if it contains any other character,
 has fewer than 3 words, is a heading (mostly capitals), or mentions a label-related word (France, Japan, their adjectives,
 any study city, or the mood answer words "great"/"terrible").
@@ -51,7 +51,9 @@ def parse_sentence(s: str) -> list[list[str]] | None:
     """Sentence -> clauses -> words, or None if the sentence must be skipped."""
     if not ALLOWED.match(s):
         return None
-    clauses = [[w for w in c.split() if w.strip("'-")] for c in s.split(",")]
+    # Apostrophes and hyphens are kept only inside words: an edge one ("diggin'") would merge with a following comma
+    # into one token ("',"), which straddles two pieces.
+    clauses = [[w.strip("'-") for w in c.split() if w.strip("'-")] for c in s.split(",")]
     clauses = [c for c in clauses if c]
     words = [w for c in clauses for w in c]
     if len(words) < 3:

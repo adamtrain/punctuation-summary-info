@@ -37,6 +37,12 @@ def load(name: str = "gpt2", device: str | None = None, dtype: torch.dtype = tor
     model.enable_compatibility_mode(disable_warnings=True)
     if stage_on_cpu:
         model = model.to(target)
+        # Gated MLPs (Llama, Gemma) keep their processed weights as plain tensor attributes (_processed_W_gate, ...),
+        # which Module.to() doesn't move.
+        for m in model.modules():
+            for k, v in list(vars(m).items()):
+                if isinstance(v, torch.Tensor) and v.device != torch.device(target):
+                    setattr(m, k, v.to(target))
     model.eval()
     return model
 
