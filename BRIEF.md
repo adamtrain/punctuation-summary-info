@@ -717,6 +717,32 @@ binary property).
   renderings; largest margin change 2.6 × 10⁻⁵ (numerical). Queue: Pythia-2.8B continues; `scripts/m6_queue3.sh` replaces
   the rest of `m6_queue2.sh` (6.9B → long-distance for the five finished models → Llama, with the token check on its long
   items as a gate and `fusedcheck` at the end).
+- **2026-10-18: the user is away for ~24 h and authorized best-effort decisions without consulting them.** Entries
+  marked **[autonomous]** below were made under that authorization, for the user to review or reverse.
+- **2026-10-18 (full token check):** `scripts/m6_token_check.py` on every item (standard and long; 113,600 renderings per
+  model): GPT-2, GPT-Neo, Pythia-160M and Pythia-6.9B have 0 failures and **0 renderings where the joined ids differ from
+  whole-text tokenization**, so the split readout tokenization leaves every frozen model's input unchanged. Llama on the
+  GPT-2 items: 0 failures; ids differ in exactly the predicted cells (question readout × P, K, C_lo, C_mid, C_hi; 22,000).
+- **2026-10-18 [autonomous] (long-distance step fixes):** Pythia-2.8B's long step ran out of GPU memory (77 GB in its own
+  process: 16,384 tokens per batch of ~1,500-token passages, and attention memory grows with the square of the length).
+  The long step's batch is now capped at 4,096 tokens for every model (Pythia-6.9B had run at 4,096 and passed; batching
+  doesn't change results). Pythia-6.9B's long step crashed in its final print (wrong summary keys) after saving all its
+  outputs; the print is fixed, nothing was rerun. `scripts/m6_queue4.sh` replaced the queue's remainder to add 2.8B's long
+  step before Llama.
+- **2026-10-18 [autonomous] (GPT-Neo's attention knockout was a silent no-op; fixed):** GPT-Neo-125M's knockout gave
+  identical margins under every knockout (retention exactly 1.00, punctuation share 0.00). Cause: TransformerBridge wraps
+  GPT-Neo's Hugging Face attention with its generic `AttentionBridge`, which fires `hook_attn_scores` only *after* the
+  attention output is computed, so editing the scores changes nothing. GPT-2 and Pythia use reimplemented attention, where
+  the hook is part of the computation: their knockouts are valid (confirmed below, and their retentions are < 1).
+  Fixes: (1) **a guard** in `punctsum/behavior.score`: before any knockout, block the last query from every key but the
+  start-of-text token in all layers; the final logits must move, or the run stops. (2) **A second seam for GPT-Neo:**
+  the block is added to the additive attention mask inside GPT-Neo's own `_attn`, after its causal and local-window masks
+  (the same operation as setting the scores to −inf); with nothing blocked, the output is unchanged. Guard results:
+  GPT-2 hook (max logit change 17.9), Pythia-160M hook (7.4), **Llama-3.1-8B hook (15.7; checked on the CPU before its
+  run)**, GPT-Neo hook 0.0 → GPT-Neo seam (16.5). A 30-pair GPT-Neo test now gives mood P retention 0.17, punctuation share
+  0.09, U retention 0.04. GPT-Neo's long step already ran with the fix. Its standard knockout and acceptance steps (the
+  acceptance test's C2 uses the knockout) are rerun by `scripts/m6_queue5.sh` after the queue; the invalid outputs are kept as
+  `noop_*` files and are not reported. GPT-Neo's behavior, patching and probes don't use the knockout and are valid.
 - **2026-10-17:** Conditions are rendered as word/punctuation pieces carrying metadata, and tokens are mapped
   to pieces by character offsets. Verified: the mapped token ids equal `to_tokens()` on every pilot rendering,
   and the milestone 1 report reproduced exactly after the refactor.
@@ -1199,6 +1225,71 @@ The GPT-2 pipeline (C calibration, behavior, knockout, mood acceptance, all 42 p
   (accuracy > permutation-null 95th percentile) agree in all but one borderline cell (mood, k = 4, P).
 
 GPT-2 results don't depend on the hardware at the precision reported, so Mac and H100 results can be combined.
+
+### 10.14 Scaling: Pythia ladder through 6.9B, GPT-Neo-125M (standard conditions; 2026-10-18)
+`scripts/m6_summary.py` builds this table from each model's saved summaries (`outputs/models/summary.md`). k ∈ {1, 4, 16};
+95% pair-bootstrap CIs in brackets; the GPT-2 column is the same driver on GPT-2's items. "—" for GPT-Neo's knockout and
+acceptance rows: the rerun is queued (decision log). Patching layers are actual layer indices (Pythia-6.9B and 2.8B have
+32 layers, 1.4B 24, 410M 24, 160M 12). Long-distance results are in 10.15 once complete.
+
+| measure | gpt2 | gpt-neo-125m | pythia-160m | pythia-410m | pythia-1.4b | pythia-2.8b | pythia-6.9b |
+|---|---|---|---|---|---|---|---|
+| country P margin (question) | +3.40 | +4.65 | +4.02 | +3.50 | +3.19 | +3.23 | +4.17 |
+| U Δ vs P (pooled) | -0.45 [-0.46, -0.44] | -0.14 [-0.16, -0.13] | -0.26 [-0.28, -0.24] | -0.28 [-0.30, -0.26] | -0.01 [-0.03, +0.01] | -0.25 [-0.27, -0.23] | +0.34 [+0.32, +0.36] |
+| U Δ at k = 1 / 4 / 16 | -0.35 / -0.40 / -0.60 | +0.03 / -0.13 / -0.33 | -0.15 / -0.26 / -0.37 | -0.04 / -0.37 / -0.42 | +0.06 / +0.09 / -0.18 | -0.03 / -0.14 / -0.58 | +0.46 / +0.35 / +0.21 |
+| Ucap Δ | -0.31 | -0.19 | -0.24 | -0.34 | -0.10 | -0.18 | +0.21 |
+| C_mid Δ (matched control) | -0.06 [-0.07, -0.05] | -0.12 [-0.13, -0.10] | -0.17 [-0.20, -0.15] | -0.11 [-0.13, -0.10] | -0.16 [-0.17, -0.14] | -0.13 [-0.14, -0.12] | -0.22 [-0.24, -0.20] |
+| M Δ / K Δ | -0.49 / -0.17 | -0.36 / -0.17 | -1.09 / -0.25 | -0.52 / -0.23 | -0.63 / -0.20 | -0.65 / -0.02 | -0.41 / +0.05 |
+| country continuation readout: U Δ vs P | -0.22 [-0.25, -0.18] | — | -0.75 [-0.81, -0.70] | -0.14 [-0.18, -0.10] | +0.35 [+0.30, +0.41] | -1.27 [-1.34, -1.20] | -0.69 [-0.75, -0.63] |
+| country continuation readout: C_mid Δ | -0.10 [-0.12, -0.08] | — | -0.15 [-0.20, -0.10] | -0.21 [-0.25, -0.17] | -0.19 [-0.24, -0.14] | -0.50 [-0.58, -0.43] | -0.35 [-0.41, -0.28] |
+| mood P margin | +1.77 | — | +3.29 | +3.77 | +3.92 | +3.95 | +4.61 |
+| mood P s0words retention | 0.49 | — | 0.27 | 0.53 | 0.58 | 0.41 | 0.51 |
+| mood s0-punctuation share (P) | 0.39 [0.37, 0.41] | — | 0.09 [0.08, 0.09] | 0.37 [0.35, 0.38] | 0.42 [0.40, 0.43] | 0.20 [0.19, 0.21] | 0.41 [0.40, 0.43] |
+| mood s0-punctuation share (M / K) | 0.17 / 0.35 | — | 0.11 / 0.08 | 0.08 / 0.33 | 0.07 / 0.38 | 0.06 / 0.18 | 0.07 / 0.38 |
+| mood U retention | 0.09 | — | 0.10 | 0.16 | 0.19 | 0.20 | 0.21 |
+| patching: s0 punct span, P (k=1/4/16) | 0.15 / 0.20 / 0.16 | 0.04 / 0.06 / 0.05 | 0.02 / 0.01 / 0.01 | 0.10 / 0.12 / 0.16 | 0.20 / 0.24 / 0.31 | 0.07 / 0.08 / 0.07 | 0.09 / 0.13 / 0.15 |
+| patching: s0 punct peak layer / depth (k=16, P) | L7 | L8 | L4 | L11 | L9 | L12 | L12 |
+| patching: post-property passage, U (k=1/4/16) | 0.03 / 0.05 / 0.07 | 0.01 / 0.01 / 0.02 | 0.03 / 0.04 / 0.08 | 0.04 / 0.05 / 0.06 | 0.01 / 0.03 / 0.05 | 0.05 / 0.08 / 0.11 | 0.03 / 0.05 / 0.09 |
+| consistent acceptance (AUC; C1/C2) | 0.996; pass/pass | — | 0.997; pass/pass | 0.999; pass/pass | 1.000; pass/pass | 1.000; pass/pass | 1.000; pass/pass |
+| mixed acceptance (AUC; C1/C2) | 0.758; fail/pass | — | 0.767; fail/fail | 0.819; pass/pass | 0.855; pass/pass | 0.866; pass/pass | 0.875; pass/pass |
+
+**Pre-registered predictions (Section 5.3), provisional: ladder 160M → 6.9B (12B dropped), long-distance pending.**
+- **N1 (necessity fades): partly supported, and readout-dependent.** On the pre-registered measure (question readout),
+  U's cost goes −0.26 (160M), −0.28, −0.01, −0.25, **+0.34 [+0.32, +0.36] (6.9B)**: at the largest size, removing punctuation
+  no longer costs anything; it *raises* the margin, with CIs far from 160M's. But the trend isn't monotonic (2.8B is back at
+  −0.25, and −0.58 at k = 16). **On the continuation readout, there's no fading:** −0.75, −0.14, +0.35, −1.27, **−0.69**
+  (6.9B). At 6.9B the two readouts disagree in sign.
+- **N2 (U costs more than the matched control at every size): fails** at 1.4B and 6.9B on the question readout
+  (U −0.01 and +0.34 vs C_mid −0.16 and −0.22). On the continuation readout, U costs more than C_mid at 160M, 2.8B, 6.9B
+  but not at 410M or 1.4B.
+- **U1 (usage persists: P retention ≥ 0.25): holds at every size** (0.27, 0.53, 0.58, 0.41, 0.51).
+- **U2 (punctuation is the hub: share ≥ 0.15, patching ≥ 0.10): holds from 410M up on the knockout share** (0.37, 0.42,
+  0.20, 0.41; 160M 0.09 fails). The patching threshold holds at 410M, 1.4B and 6.9B (best 0.16, 0.31, 0.15), and fails at
+  160M (0.02) and 2.8B (0.08, though its knockout share is 0.20).
+
+**Observations.**
+- **The behavioral "necessity" of punctuation depends on how the question is asked.** The question readout begins with
+  `\n\n` (validity risk 6.4: it supplies a separator), and in U it's the only boundary between the passage and the
+  question. The continuation readout continues the passage with no separator. That the two readouts can disagree in sign
+  (1.4B, 6.9B) means behavioral claims about punctuation removal must be stated per readout. U passages are also 10–15%
+  shorter in tokens, which favors direct lookback to the city (country is lookback-dominated, Section 10.6). That may
+  contribute on the question readout, and it can't explain the continuation readout's large costs.
+- **The internal story is stable across sizes.** Wherever the hub exists (GPT-2, Pythia ≥ 410M), the property sentence's
+  punctuation carries 20–42% of the mood margin under knockout. U never relocates the summary (post-property passage under
+  patching ≤ 0.11 at every size), and U retention stays low (0.10–0.21, slowly rising).
+  **Bypass holds at every size.**
+- **Misplaced punctuation is the worst condition behaviorally at every size** (M Δ −0.41 to −1.09), worse than no
+  punctuation. Internally, misplaced marks carry a small share (0.06–0.11 in Pythia vs 0.17 in GPT-2). **Restart capitals
+  (K) leave the hub intact** (K share ≈ P share from 410M up) and cost little (−0.25 to +0.05).
+- **Mixed-mood acceptance improves monotonically with size** (AUC 0.767, 0.819, 0.855, 0.866, 0.875): from 410M on, models
+  pass the test GPT-2 small failed.
+- **The hub's strength isn't monotonic in size** (patching 160M 0.02 → 1.4B 0.31 → 2.8B 0.08 → 6.9B 0.15; knockout share
+  2.8B 0.20 vs 0.41–0.42 for 1.4B and 6.9B). All Pythia models see the same data in the same order,
+  so this non-monotonicity isn't a data difference.
+- **GPT-Neo-125M vs GPT-2 small (architecture vs data):** GPT-Neo (trained on the Pile, like Pythia) has a weak hub under
+  patching (0.04–0.06), like Pythia-160M (0.01–0.02) and unlike GPT-2 (0.15–0.20), with the same tokenizer and items as GPT-2.
+  The 30-pair knockout test points the same way (share 0.09). That favors **training data over architecture** for the hub's
+  absence at ~125M. The full GPT-Neo knockout rerun will confirm.
 
 ## 11. Future research directions
 

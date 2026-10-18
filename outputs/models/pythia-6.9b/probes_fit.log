@@ -1,0 +1,4 @@
+[mood_k16_P] activations (800, 32, 33, 4096) (6.92 GB) at 37s
+[mood_k16_P] null p95 range 0.500..0.625; significant cells 1019/1056; runtime 484s; peak RSS 90.52 GB
+[mood_k16_U] activations (800, 25, 33, 4096) (5.41 GB) at 36s
+[mood_k16_U] null p95 range 0.500..0.625; significant cells 802/825; runtime 379s; peak RSS 90.52 GB

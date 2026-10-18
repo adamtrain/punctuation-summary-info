@@ -26,11 +26,76 @@ KNOCKOUTS = {
 }
 
 
+_knockout_modes: dict[int, str] = {}
+
+
+def _neo_attention(model) -> list:
+    return [m for m in model.modules() if type(m).__name__ == "GPTNeoSelfAttention"]
+
+
+def run_blocked(model, toks: torch.Tensor, mask: torch.Tensor, mode: str) -> torch.Tensor:
+    """Logits with attention knocked out: mask [B, 1, Q, K], True = query Q may not attend to key K (any layer, head).
+    mode "hook": set those pre-softmax scores to -inf through hook_attn_scores. mode "neo": GPT-Neo's Hugging Face
+    attention computes its scores inside `_attn`, and TransformerBridge fires hook_attn_scores only afterwards, so the
+    hook can't change the output; instead the block is added to the additive attention mask inside `_attn`, after
+    GPT-Neo's own causal and local-window masks (BRIEF.md decision log, 2026-10-18). Same operation, other seam."""
+    if mode == "hook":
+        def hook(scores, hook):
+            return scores.masked_fill(mask, float("-inf"))
+
+        return model.run_with_hooks(toks, fwd_hooks=[(f"blocks.{l}.attn.hook_attn_scores", hook)
+                                                     for l in range(model.cfg.n_layers)])
+    mods = _neo_attention(model)
+
+    def wrap(orig):
+        def _attn(query, key, value, attention_mask=None):
+            add = torch.zeros(mask.shape, dtype=query.dtype, device=query.device)
+            add = add.masked_fill(mask.to(query.device), torch.finfo(query.dtype).min)
+            return orig(query, key, value, add if attention_mask is None else attention_mask + add)
+        return _attn
+
+    for m in mods:
+        m._attn = wrap(m._attn)  # instance attribute shadows the method for this forward only
+    try:
+        return model(toks)
+    finally:
+        for m in mods:
+            del m._attn
+
+
+@torch.no_grad()
+def knockout_mode(model) -> str:
+    """How to knock out attention in this model ("hook" or "neo", see run_blocked), checked once per model: blocking the
+    last query from every key but the start-of-text token in all layers must move the final logits, and (for "neo") an
+    empty block must leave them unchanged. Raises if no mode works, so a knockout can never silently do nothing."""
+    if id(model) in _knockout_modes:
+        return _knockout_modes[id(model)]
+    toks = model.to_tokens("The cat sat on the mat, and then it went to sleep.", prepend_bos=True).to(model.cfg.device)
+    clean = model(toks)[0, -1]
+    t = toks.shape[1]
+    full = torch.zeros(1, 1, t, t, dtype=torch.bool, device=toks.device)
+    full[..., -1, 1:-1] = True
+    for mode in ["hook"] + (["neo"] if _neo_attention(model) else []):
+        change = float((run_blocked(model, toks, full, mode)[0, -1] - clean).abs().max())
+        if change < 1e-3:
+            continue
+        if mode == "neo":
+            same = float((run_blocked(model, toks, torch.zeros_like(full), mode)[0, -1] - clean).abs().max())
+            if same > 1e-4:
+                raise RuntimeError(f"GPT-Neo knockout wrapper changes the output with nothing blocked ({same:.1e})")
+        _knockout_modes[id(model)] = mode
+        print(f"attention knockout via {mode!r} (full-block logit change {change:.2f})", flush=True)
+        return mode
+    raise RuntimeError("attention knockout has no effect on this model: hook_attn_scores is not part of its attention "
+                       "computation and no fallback applies")
+
+
 def score(model, items: list[tuple[dict, str, str]], max_tokens: int = 4096, readout: str = "question",
           knockout: str = "none") -> list[dict]:
     """items: (pair, label, condition). `readout` is a readout name of the pair's property ("question" or
     "continuation") or a literal readout string. Returns one result dict per item, in order. With a knockout,
     readout tokens cannot attend to the blocked passage tokens in any layer or head."""
+    mode = knockout_mode(model) if knockout != "none" else None
     seqs, word_masks, n_passage, answers, blocked = [], [], [], [], []
     for pair, label, cond in items:
         prop = property_of(pair)
@@ -67,7 +132,6 @@ def score(model, items: list[tuple[dict, str, str]], max_tokens: int = 4096, rea
         return res
 
     out = [None] * len(seqs)
-    names = [f"blocks.{l}.attn.hook_attn_scores" for l in range(model.cfg.n_layers)]
     with torch.no_grad():
         for idx in length_batches(seqs, max_tokens):
             toks = torch.tensor([seqs[i] for i in idx], device=model.cfg.device)
@@ -75,11 +139,7 @@ def score(model, items: list[tuple[dict, str, str]], max_tokens: int = 4096, rea
                 logits = model(toks)
             else:
                 mask = torch.stack([blocked[i] for i in idx])[:, None].to(model.cfg.device)  # [B, 1, Q, K]
-
-                def hook(scores, hook, mask=mask):
-                    return scores.masked_fill(mask, float("-inf"))
-
-                logits = model.run_with_hooks(toks, fwd_hooks=[(n, hook) for n in names])
+                logits = run_blocked(model, toks, mask, mode)
             for i, r in zip(idx, fn(logits, idx)):
                 out[i] = r
     return out

@@ -331,11 +331,11 @@ def summarize_behavior(rows, pairs, ks_all) -> dict:
     return summary
 
 
-def knockout_rows(model, pairs, group, readout, conds=INTERNAL, knockouts=KNOCKOUTS):
+def knockout_rows(model, pairs, group, readout, conds=INTERNAL, knockouts=KNOCKOUTS, max_tokens=None):
     rows = []
     for ko in knockouts:
         items = passage_label_pairs(pairs, PUNCTUATED if ko == "punctonly" else conds)
-        for (p, lab, c), r in zip(items, score(model, items, max_tokens=max_tokens_for(model), readout=readout, knockout=ko)):
+        for (p, lab, c), r in zip(items, score(model, items, max_tokens=max_tokens or max_tokens_for(model), readout=readout, knockout=ko)):
             rows.append({"group": group, "pair_id": p["pair_id"], "k": p["k"], "label": lab, "cond": c, "knockout": ko,
                          "diff": r["diff"]})
     return rows
@@ -453,7 +453,9 @@ def step_long(model, name, out):
     d = items_dir(name)
     country = [p for lv in levels for p in load_jsonl(d / f"pairs_country_{lv}.jsonl")]
     mood = [p for lv in levels for p in load_jsonl(d / f"pairs_mood_{lv}.jsonl")]
-    mt = max_tokens_for(model)
+    # Long passages: attention memory grows with the square of the length, so cap the batch (Pythia-2.8B ran out of
+    # memory at 16,384 tokens per batch of ~1,500-token passages; decision log 2026-10-18). Results don't depend on it.
+    mt = min(max_tokens_for(model), 4096)
     items = passage_label_pairs(country, CONDITIONS)
     res = score(model, items, max_tokens=mt)
     longest = max(r["tokens"] for r in res)
@@ -463,9 +465,9 @@ def step_long(model, name, out):
              for (p, lab, c), r in zip(items, res)]
     save_jsonl(brows, out / "long_behavior.jsonl")
     kos = ["none", "s0words", "s0all"]
-    krows = (knockout_rows(model, country, "country/question", "question", knockouts=kos)
-             + knockout_rows(model, country, "country/continuation", "continuation", knockouts=kos)
-             + knockout_rows(model, mood, "mood", "continuation", knockouts=kos))
+    krows = (knockout_rows(model, country, "country/question", "question", knockouts=kos, max_tokens=mt)
+             + knockout_rows(model, country, "country/continuation", "continuation", knockouts=kos, max_tokens=mt)
+             + knockout_rows(model, mood, "mood", "continuation", knockouts=kos, max_tokens=mt))
     save_jsonl(krows, out / "long_knockout.jsonl")
     summary = {"levels": levels, "longest_tokens": longest, "n_ctx": n_ctx,
                "behavior": summarize_behavior(brows, country, levels),
@@ -474,9 +476,9 @@ def step_long(model, name, out):
     (out / "long_summary.json").write_text(json.dumps(summary, indent=1))
     for lv in levels:
         b, m = summary["behavior"], summary["knockout"]
-        print(f"[{name}] long {lv}: country P {b[f'{lv}|P']['diff'][0]:+.2f}, U delta {b[f'{lv}|U']['delta'][0]:+.2f}, "
-              f"C_mid delta {b[f'{lv}|C_mid']['delta'][0]:+.2f}; mood P retention "
-              f"{m[f'mood|{lv}|P']['retention_s0words'][0]:.2f}, U retention {m[f'mood|{lv}|U']['retention_s0words'][0]:.2f}",
+        print(f"[{name}] long {lv}: country P {b[f'k={lv}|P']['diff'][0]:+.2f}, U delta {b[f'k={lv}|U']['delta'][0]:+.2f}, "
+              f"C_mid delta {b[f'k={lv}|C_mid']['delta'][0]:+.2f}; mood P retention "
+              f"{m[f'mood|k={lv}|P']['retention_s0words'][0]:.2f}, U retention {m[f'mood|k={lv}|U']['retention_s0words'][0]:.2f}",
               flush=True)
 
 
