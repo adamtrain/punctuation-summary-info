@@ -1230,7 +1230,7 @@ GPT-2 results don't depend on the hardware at the precision reported, so Mac and
 `scripts/m6_summary.py` builds this table from each model's saved summaries (`outputs/models/summary.md`). k ∈ {1, 4, 16};
 95% pair-bootstrap CIs in brackets; the GPT-2 column is the same driver on GPT-2's items. "—" for GPT-Neo's knockout and
 acceptance rows: the rerun is queued (decision log). Patching layers are actual layer indices (Pythia-6.9B and 2.8B have
-32 layers, 1.4B 24, 410M 24, 160M 12). Long-distance results are in 10.15 once complete.
+32 layers, 1.4B 24, 410M 24, 160M 12). Long-distance results: Section 10.15.
 
 | measure | gpt2 | gpt-neo-125m | pythia-160m | pythia-410m | pythia-1.4b | pythia-2.8b | pythia-6.9b |
 |---|---|---|---|---|---|---|---|
@@ -1290,6 +1290,40 @@ acceptance rows: the rerun is queued (decision log). Patching layers are actual 
   patching (0.04–0.06), like Pythia-160M (0.01–0.02) and unlike GPT-2 (0.15–0.20), with the same tokenizer and items as GPT-2.
   The 30-pair knockout test points the same way (share 0.09). That favors **training data over architecture** for the hub's
   absence at ~125M. The full GPT-Neo knockout rerun will confirm.
+
+### 10.15 Long-distance condition: ~900 and ~1,500 tokens of natural text (2026-10-18)
+Property sentence + a contiguous PG19 excerpt (decision log) + readout; 100 pairs per level (the first 100 k = 1 pairs of
+each item set), all conditions. Knockouts none / s0words / s0all. GPT-2's window allows L900 only. The k = 1 values in 10.14
+are the matching short-distance reference (same property sentences). Pair-bootstrap CIs for the continuation readout.
+
+| measure | gpt2 | gpt-neo-125m | pythia-160m | pythia-410m | pythia-1.4b | pythia-2.8b | pythia-6.9b |
+|---|---|---|---|---|---|---|---|
+| L900: country P margin | +2.03 | +1.76 | +1.11 | +1.24 | +0.93 | +1.46 | +1.75 |
+| L900: U Δ / C_mid Δ | -0.03 / -0.04 | +0.08 / -0.15 | -0.12 / -0.22 | +0.12 / -0.11 | +0.20 / -0.08 | -0.19 / -0.17 | +0.43 / -0.19 |
+| L900: continuation readout U Δ | +0.05 [-0.01, +0.11] | -0.03 [-0.06, +0.00] | -0.90 [-1.06, -0.75] | +0.09 [+0.02, +0.17] | +0.23 [+0.13, +0.33] | -0.45 [-0.59, -0.32] | -0.18 [-0.31, -0.05] |
+| L900: mood retention P / U | 0.15 / 0.07 | 0.07 / 0.03 | 0.20 / 0.10 | 0.10 / 0.10 | 0.09 / 0.04 | 0.13 / 0.02 | 0.29 / 0.07 |
+| L900: mood s0-punctuation share (P) | 0.11 | 0.03 | 0.02 | 0.03 | 0.09 | 0.05 | 0.24 |
+| L1500: country P margin | — | +1.29 | +0.39 | +0.63 | +0.61 | +1.15 | +1.06 |
+| L1500: U Δ / C_mid Δ | — | +0.19 / -0.11 | +0.41 / -0.11 | +0.19 / -0.07 | +0.25 / -0.02 | +0.05 / -0.09 | +0.45 / -0.10 |
+| L1500: continuation readout U Δ | — | -0.02 [-0.04, +0.01] | -0.16 [-0.28, -0.04] | +0.15 [+0.08, +0.22] | +0.36 [+0.24, +0.48] | -0.16 [-0.29, -0.04] | -0.20 [-0.29, -0.11] |
+| L1500: mood retention P / U | — | 0.06 / 0.04 | 0.23 / 0.10 | 0.09 / 0.13 | 0.10 / 0.05 | 0.10 / -0.00 | 0.27 / 0.08 |
+| L1500: mood s0-punctuation share (P) | — | 0.02 | 0.06 | 0.04 | 0.07 | 0.04 | 0.22 |
+
+**Observations.**
+- **The mood summary route through the property sentence's punctuation doesn't survive long distances, except in the
+  largest model.** The punctuation share falls from 0.37–0.42 (k ≤ 16, models with a hub) to 0.02–0.11 at ~900–1,500
+  tokens, but stays at **0.24 / 0.22 in Pythia-6.9B**. Retention under the s0words knockout is low everywhere (0.06–0.29):
+  far from the property, the readout mostly reads the mood words directly (lookback), rather than a summary carried by
+  the passage. So the long-range summary hub appears only at 6.9B among the models tested: a scaling result.
+- **Bypass at long distance too:** U retention 0.00–0.13.
+- **Question readout: removing punctuation costs nothing at long distance** (U Δ −0.19 to +0.45, positive in 9 of 13
+  model × level cells), while the matched control C_mid still costs a little (−0.02 to −0.22). N1's "strongest test"
+  therefore doesn't show a size trend: at long distance the cost is already gone for small models, on this readout.
+- **Continuation readout: no consistent pattern** (160M −0.90 / −0.16, 2.8B −0.45 / −0.16, 6.9B −0.18 / −0.20; 410M and
+  1.4B positive). It agrees with the short-distance picture: on this readout, removing punctuation still costs Pythia-160M,
+  2.8B and 6.9B something.
+- Country margins are much smaller at long distance (P +0.4 to +2.0 vs +3–4 at k ≤ 16). Pythia-160M at L1500 (+0.39) is near
+  floor, so its deltas there are the least informative.
 
 ## 11. Future research directions
 

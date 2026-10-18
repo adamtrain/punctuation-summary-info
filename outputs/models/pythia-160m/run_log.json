@@ -1,8 +1,8 @@
 {
  "load": {
-  "load_s": 1.9,
-  "load_peak_gpu_gb": 0.74,
-  "weights_gpu_gb": 0.74
+  "load_s": 2.2,
+  "load_peak_gpu_gb": 0.73,
+  "weights_gpu_gb": 0.73
  },
  "calib": {
   "seconds": 13.3,
@@ -27,5 +27,9 @@
  "probe": {
   "seconds": 194.3,
   "peak_gpu_gb": 18.95
+ },
+ "long": {
+  "seconds": 1431.1,
+  "peak_gpu_gb": 6.33
  }
 }

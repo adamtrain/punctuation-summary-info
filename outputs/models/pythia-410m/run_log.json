@@ -1,6 +1,6 @@
 {
  "load": {
-  "load_s": 3.5,
+  "load_s": 2.7,
   "load_peak_gpu_gb": 1.92,
   "weights_gpu_gb": 1.92
  },
@@ -27,5 +27,9 @@
  "probe": {
   "seconds": 441.0,
   "peak_gpu_gb": 29.28
+ },
+ "long": {
+  "seconds": 2594.5,
+  "peak_gpu_gb": 13.76
  }
 }

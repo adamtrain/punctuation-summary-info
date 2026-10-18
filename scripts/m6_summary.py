@@ -24,16 +24,18 @@ def f(x, signed=True, ci=None):
     return s + (f" [{ci[0]:+.2f}, {ci[1]:+.2f}]" if ci and signed else f" [{ci[0]:.2f}, {ci[1]:.2f}]" if ci else "")
 
 
-def continuation_delta(m, cond="U"):
+def continuation_delta(m, cond="U", file="knockout.jsonl", k=None):
     """Country, continuation readout, no knockout: cond's margin minus P's, per pair (mean of the two labels), with a
-    pair-bootstrap CI. From knockout.jsonl, the only place the country continuation readout is scored at k = 1, 4, 16."""
-    path = OUT / m / "knockout.jsonl"
+    pair-bootstrap CI. From the knockout rows, the only place the country continuation readout is scored
+    (knockout.jsonl for k = 1, 4, 16; long_knockout.jsonl for the long-distance levels, selected by k)."""
+    path = OUT / m / file
     if not path.exists():
         return None
     acc: dict = {}
     for line in path.read_text().splitlines():
         r = json.loads(line)
-        if r["group"] == "country/continuation" and r["knockout"] == "none" and r["cond"] in ("P", cond):
+        if (r["group"] == "country/continuation" and r["knockout"] == "none" and r["cond"] in ("P", cond)
+                and (k is None or r["k"] == k)):
             acc.setdefault((r["cond"], r["pair_id"]), []).append(r["diff"])
     mean = {k: sum(v) / len(v) for k, v in acc.items()}
     return pair_bootstrap({pid: mean[(cond, pid)] - mean[("P", pid)] for c, pid in mean if c == "P"})
@@ -79,6 +81,8 @@ def column(m):
             lb, lk = lg["behavior"], lg["knockout"]
             col[f"{lv}: country P margin"] = f(lb[f"k={lv}|P"]["diff"][0])
             col[f"{lv}: U Δ / C_mid Δ"] = f"{f(lb[f'k={lv}|U']['delta'][0])} / {f(lb[f'k={lv}|C_mid']['delta'][0])}"
+            cd = continuation_delta(m, "U", "long_knockout.jsonl", lv)
+            col[f"{lv}: continuation readout U Δ"] = f(cd[0], ci=cd[1:]) if cd else "—"
             col[f"{lv}: mood retention P / U"] = (f"{f(lk[f'mood|k={lv}|P']['retention_s0words'][0], False)} / "
                                                  f"{f(lk[f'mood|k={lv}|U']['retention_s0words'][0], False)}")
             col[f"{lv}: mood s0-punctuation share (P)"] = f(lk[f"mood|k={lv}|P"]["s0punct_share"][0], False)
