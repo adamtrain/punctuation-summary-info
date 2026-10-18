@@ -1315,8 +1315,8 @@ are the matching short-distance reference (same property sentences). Pair-bootst
   tokens, but stays at **0.24 / 0.22 in Pythia-6.9B**. Retention under the s0words knockout is low everywhere (0.06–0.29):
   far from the property, the readout mostly reads the mood words directly (lookback), rather than a summary carried by
   the passage. So the long-range summary hub appears only at 6.9B among the models tested: a scaling result.
-- **Bypass at long distance too:** U retention 0.00–0.13.
-- **Question readout: removing punctuation costs nothing at long distance** (U Δ −0.19 to +0.45, positive in 9 of 13
+- **Bypass at long distance too:** U retention ≈ 0–0.13.
+- **Question readout: removing punctuation costs nothing at long distance** (U Δ −0.19 to +0.45, positive in 10 of 13
   model × level cells), while the matched control C_mid still costs a little (−0.02 to −0.22). N1's "strongest test"
   therefore doesn't show a size trend: at long distance the cost is already gone for small models, on this readout.
 - **Continuation readout: no consistent pattern** (160M −0.90 / −0.16, 2.8B −0.45 / −0.16, 6.9B −0.18 / −0.20; 410M and
