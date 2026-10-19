@@ -40,6 +40,12 @@ don't edit old ones.
   adamtrain/punctuation-summary-info`).
 
 ## Remote: Lambda H100 instance (`ssh lambda`)
+
+**2026-10-19: all remote resources deleted.** After the local mirror (`h100_archive/`) was checksum-verified (0
+differences, 1,143 files on both sides), the instance (AT1, 209.20.159.251) was terminated and the persistent filesystem
+AT1 (`/lambda/nfs/AT1`: project copy, 95 GB model cache, remote venv lived on the instance disk) deleted through the
+Lambda Cloud API. Nothing below this line exists any more; it's kept as a record. The `lambda` entry in `~/.ssh/config`
+now points at nothing and can be removed.
 Persistent storage `/lambda/nfs/AT1` survives instance termination; the home directory and local disk do not. Cleanup
 of the local-disk items is automatic when the instance is terminated.
 

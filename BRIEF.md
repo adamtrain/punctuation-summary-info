@@ -752,6 +752,8 @@ binary property).
   (INSTALL_LOG.md); results are copied into `outputs/` and committed. Then the instance and its persistent filesystem are
   deleted through the Lambda Cloud API. Rerunning anything needs a new GPU and re-downloading the pinned weights
   (`scripts/m6_models.py download`).
+  **Done 2026-10-19 ~10:00 UTC:** mirror verified (0 checksum differences, 1,143 files on both sides); instance
+  terminated, filesystem deleted; the account lists no instances or filesystems.
 - **2026-10-17:** Conditions are rendered as word/punctuation pieces carrying metadata, and tokens are mapped
   to pieces by character offsets. Verified: the mapped token ids equal `to_tokens()` on every pilot rendering,
   and the milestone 1 report reproduced exactly after the refactor.
