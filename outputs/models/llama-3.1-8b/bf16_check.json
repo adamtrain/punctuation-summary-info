@@ -1,0 +1,8 @@
+{
+ "n_texts": 32,
+ "answer_diff_fp32_mean": 4.657176524400711,
+ "max_abs_answer_diff_change": 0.11552238464355469,
+ "mean_abs_answer_diff_change": 0.05426856875419617,
+ "sign_agreement": 1.0,
+ "max_abs_logprob_change": 0.34528446197509766
+}

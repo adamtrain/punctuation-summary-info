@@ -1,0 +1,91 @@
+{
+ "cities_kept": {
+  "France": 27,
+  "Japan": 28
+ },
+ "city_buckets": {
+  "1": {
+   "France": 5,
+   "Japan": 5
+  },
+  "2": {
+   "France": 14,
+   "Japan": 10
+  },
+  "3": {
+   "France": 7,
+   "Japan": 12
+  },
+  "4": {
+   "France": 1,
+   "Japan": 1
+  }
+ },
+ "pairable_per_side": 23,
+ "adjectives_kept": {
+  "good": 5,
+  "bad": 8
+ },
+ "adj_neutral_ref": 3.088493537902832,
+ "cities": {
+  "France": [
+   "Amiens",
+   "Avignon",
+   "Biarritz",
+   "Bordeaux",
+   "Calais",
+   "Cannes",
+   "Chamonix",
+   "Dijon",
+   "Grenoble",
+   "Le Havre",
+   "Lille",
+   "Limoges",
+   "Lourdes",
+   "Lyon",
+   "Marseille",
+   "Metz",
+   "Montpellier",
+   "Nantes",
+   "Paris",
+   "Perpignan",
+   "Reims",
+   "Rennes",
+   "Rouen",
+   "Strasbourg",
+   "Toulon",
+   "Toulouse",
+   "Versailles"
+  ],
+  "Japan": [
+   "Chiba",
+   "Fukuoka",
+   "Hakodate",
+   "Hamamatsu",
+   "Hiroshima",
+   "Kagoshima",
+   "Kamakura",
+   "Kanazawa",
+   "Kawasaki",
+   "Kitakyushu",
+   "Kobe",
+   "Kumamoto",
+   "Kyoto",
+   "Matsuyama",
+   "Nagasaki",
+   "Nagoya",
+   "Nara",
+   "Niigata",
+   "Nikko",
+   "Okayama",
+   "Osaka",
+   "Otaru",
+   "Sapporo",
+   "Sendai",
+   "Shizuoka",
+   "Tokyo",
+   "Yokohama",
+   "Yokosuka"
+  ]
+ }
+}

@@ -1,0 +1,1 @@
+gpt2-items / llama-3.1-8b: 7 files, 113600 renderings, 0 failures, 22000 where joined != whole-text tokens {('question', 'P'): 4400, ('question', 'K'): 4400, ('question', 'C_lo'): 4400, ('question', 'C_mid'): 4400, ('question', 'C_hi'): 4400}; longest {1: 49, 2: 62, 4: 83, 8: 120, 16: 193, 'L1500': 1583, 'L900': 922}

@@ -1,0 +1,35 @@
+{
+ "load": {
+  "load_s": 24.3,
+  "load_peak_gpu_gb": 54.67,
+  "weights_gpu_gb": 54.67
+ },
+ "calib": {
+  "seconds": 171.2,
+  "peak_gpu_gb": 60.04
+ },
+ "behavior": {
+  "seconds": 979.2,
+  "peak_gpu_gb": 60.05
+ },
+ "knockout": {
+  "seconds": 2080.0,
+  "peak_gpu_gb": 60.05
+ },
+ "accept": {
+  "seconds": 73.6,
+  "peak_gpu_gb": 60.05
+ },
+ "patch": {
+  "seconds": 19459.2,
+  "peak_gpu_gb": 60.05
+ },
+ "probe": {
+  "seconds": 228.9,
+  "peak_gpu_gb": 66.69
+ },
+ "long": {
+  "seconds": 19803.2,
+  "peak_gpu_gb": 66.69
+ }
+}

@@ -1,0 +1,313 @@
+=== GPU free, queue 2 starts Sun Oct 18 01:27:51 UTC 2026
+=== /home/ubuntu/venvs/punctuation-summary-info/bin/python scripts/m6_scale.py run pythia-2.8b behavior knockout accept patch probe long
+Loading weights:   0%|          | 0/388 [00:00<?, ?it/s]Loading weights:   9%|▉         | 36/388 [00:00<00:01, 325.29it/s]Loading weights:  19%|█▊        | 72/388 [00:00<00:00, 335.39it/s]Loading weights:  28%|██▊       | 110/388 [00:00<00:00, 347.21it/s]Loading weights:  39%|███▉      | 152/388 [00:00<00:00, 374.69it/s]Loading weights:  50%|█████     | 194/388 [00:00<00:00, 385.53it/s]Loading weights:  62%|██████▏   | 240/388 [00:00<00:00, 410.07it/s]Loading weights:  73%|███████▎  | 284/388 [00:00<00:00, 411.32it/s]Loading weights:  84%|████████▍ | 326/388 [00:00<00:00, 399.81it/s]Loading weights:  97%|█████████▋| 378/388 [00:00<00:00, 426.59it/s]Loading weights: 100%|██████████| 388/388 [00:00<00:00, 399.73it/s]
+Moving model to device:  cuda
+[pythia-2.8b] behavior: P +3.23, U delta -0.25, C_mid delta -0.13
+[pythia-2.8b] step behavior done in 395s
+[pythia-2.8b] knockout mood P: none +3.95, retention 0.41, s0 punct share 0.20; U retention 0.20
+[pythia-2.8b] step knockout done in 861s
+[pythia-2.8b] accept consistent: pair acc 1.000, AUC 1.000, retention 0.41 -> C1 PASS, C2 PASS
+[pythia-2.8b] accept mixed: pair acc 0.983, AUC 0.866, retention 0.42 -> C1 PASS, C2 PASS
+[pythia-2.8b] step accept done in 33s
+[mood_k1_P] 50 pairs, 32 rows; mean clean-corrupted gap +10.12; runtime 187s; peak RSS 38.13 GB
+[mood_k1_U] 50 pairs, 25 rows; mean clean-corrupted gap +10.54; runtime 131s; peak RSS 38.13 GB
+[mood_k1_Ucap] 50 pairs, 25 rows; mean clean-corrupted gap +9.97; runtime 131s; peak RSS 38.13 GB
+[mood_k1_M] 50 pairs, 41 rows; mean clean-corrupted gap +9.99; runtime 198s; peak RSS 38.13 GB
+[mood_k1_K] 50 pairs, 32 rows; mean clean-corrupted gap +10.28; runtime 190s; peak RSS 38.13 GB
+[mood_k1_C_mid] 50 pairs, 32 rows; mean clean-corrupted gap +9.90; runtime 187s; peak RSS 38.13 GB
+[mood_k4_P] 50 pairs, 38 rows; mean clean-corrupted gap +8.05; runtime 337s; peak RSS 38.13 GB
+[mood_k4_U] 50 pairs, 29 rows; mean clean-corrupted gap +8.53; runtime 229s; peak RSS 38.13 GB
+[mood_k4_Ucap] 50 pairs, 29 rows; mean clean-corrupted gap +8.53; runtime 228s; peak RSS 38.13 GB
+[mood_k4_M] 50 pairs, 61 rows; mean clean-corrupted gap +7.64; runtime 379s; peak RSS 38.13 GB
+[mood_k4_K] 50 pairs, 38 rows; mean clean-corrupted gap +8.17; runtime 343s; peak RSS 38.13 GB
+[mood_k4_C_mid] 50 pairs, 38 rows; mean clean-corrupted gap +7.60; runtime 337s; peak RSS 38.13 GB
+[mood_k16_P] 50 pairs, 38 rows; mean clean-corrupted gap +5.25; runtime 846s; peak RSS 38.13 GB
+[mood_k16_U] 50 pairs, 29 rows; mean clean-corrupted gap +4.77; runtime 552s; peak RSS 38.13 GB
+[mood_k16_Ucap] 50 pairs, 29 rows; mean clean-corrupted gap +5.89; runtime 561s; peak RSS 38.13 GB
+[mood_k16_M] 50 pairs, 59 rows; mean clean-corrupted gap +4.60; runtime 978s; peak RSS 38.13 GB
+[mood_k16_K] 50 pairs, 38 rows; mean clean-corrupted gap +6.01; runtime 882s; peak RSS 38.13 GB
+[mood_k16_C_mid] 50 pairs, 38 rows; mean clean-corrupted gap +5.06; runtime 848s; peak RSS 38.13 GB
+[pythia-2.8b] step patch done in 7545s
+[pythia-2.8b] probe activations cached; fitting started in a separate CPU process (log: probes_fit.log)
+[pythia-2.8b] step probe done in 108s
+[W1018 04:00:38.628125541 CUDACachingAllocator.cpp:528] expandable_segments: memory mapping failed with OOM on device 0 while trying to map 20971520 bytes (free: 15007744, total: 85017624576).
+[W1018 04:01:26.613923605 CUDACachingAllocator.cpp:528] expandable_segments: memory mapping failed with OOM on device 0 while trying to map 20971520 bytes (free: 4521984, total: 85017624576).
+[W1018 04:01:28.692738457 CUDACachingAllocator.cpp:528] expandable_segments: memory mapping failed with OOM on device 0 while trying to map 20971520 bytes (free: 4521984, total: 85017624576).
+[W1018 04:01:28.953306590 CUDACachingAllocator.cpp:528] expandable_segments: memory mapping failed with OOM on device 0 while trying to map 20971520 bytes (free: 4521984, total: 85017624576).
+[W1018 04:01:28.087729322 CUDACachingAllocator.cpp:528] expandable_segments: memory mapping failed with OOM on device 0 while trying to map 20971520 bytes (free: 4521984, total: 85017624576).
+[W1018 04:01:29.218370096 CUDACachingAllocator.cpp:528] expandable_segments: memory mapping failed with OOM on device 0 while trying to map 20971520 bytes (free: 6619136, total: 85017624576).
+Traceback (most recent call last):
+  File "/lambda/nfs/AT1/punctuation-summary-info/scripts/m6_scale.py", line 452, in <module>
+    levels = ["L900"] + (["L1500"] if n_ctx >= 2048 else [])
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/lambda/nfs/AT1/punctuation-summary-info/scripts/m6_scale.py", line 441, in run
+    pairs = ladder_pairs(name, "mood")
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/lambda/nfs/AT1/punctuation-summary-info/scripts/m6_scale.py", line 402, in step_long
+  File "/lambda/nfs/AT1/punctuation-summary-info/punctsum/behavior.py", line 75, in score
+    logits = model(toks)
+  File "/home/ubuntu/venvs/punctuation-summary-info/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1783, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/venvs/punctuation-summary-info/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1794, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/home/ubuntu/venvs/punctuation-summary-info/lib/python3.13/site-packages/transformer_lens/model_bridge/transformer_bridge.py", line 2330, in forward
+    result = self._driver.forward(input_ids=input_ids, **kwargs)
+  File "/home/ubuntu/venvs/punctuation-summary-info/lib/python3.13/site-packages/transformer_lens/model_bridge/sources/transformers_driver.py", line 60, in forward
+    raw = self._model(input_ids, **kwargs)
+  File "/home/ubuntu/venvs/punctuation-summary-info/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1783, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/venvs/punctuation-summary-info/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1794, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/home/ubuntu/venvs/punctuation-summary-info/lib/python3.13/site-packages/transformers/utils/generic.py", line 943, in wrapper
+    output = func(self, *args, **kwargs)
+  File "/home/ubuntu/venvs/punctuation-summary-info/lib/python3.13/site-packages/transformers/models/gpt_neox/modeling_gpt_neox.py", line 433, in forward
+    outputs: BaseModelOutputWithPast = self.gpt_neox(
+                                       ~~~~~~~~~~~~~^
+        input_ids,
+        ^^^^^^^^^^
+    ...<5 lines>...
+        **kwargs,
+        ^^^^^^^^^
+    )
+    ^
+  File "/home/ubuntu/venvs/punctuation-summary-info/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1783, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/venvs/punctuation-summary-info/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1794, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/home/ubuntu/venvs/punctuation-summary-info/lib/python3.13/site-packages/transformers/utils/generic.py", line 1081, in wrapper
+    output = func(self, *args, **kwargs)
+  File "/home/ubuntu/venvs/punctuation-summary-info/lib/python3.13/site-packages/transformers/utils/output_capturing.py", line 287, in wrapper
+    outputs = func(self, *args, **kwargs)
+  File "/home/ubuntu/venvs/punctuation-summary-info/lib/python3.13/site-packages/transformers/models/gpt_neox/modeling_gpt_neox.py", line 347, in forward
+    hidden_states = layer(
+        hidden_states,
+    ...<5 lines>...
+        **kwargs,
+    )
+  File "/home/ubuntu/venvs/punctuation-summary-info/lib/python3.13/site-packages/transformer_lens/model_bridge/generalized_components/base.py", line 187, in __call__
+    return super().__call__(*args, **kwargs)
+           ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/venvs/punctuation-summary-info/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1783, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/venvs/punctuation-summary-info/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1794, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/home/ubuntu/venvs/punctuation-summary-info/lib/python3.13/site-packages/transformer_lens/model_bridge/generalized_components/block.py", line 253, in forward
+    output = self.original_component(*args, **filtered_kwargs)
+  File "/home/ubuntu/venvs/punctuation-summary-info/lib/python3.13/site-packages/transformers/modeling_layers.py", line 111, in __call__
+    return super().__call__(*args, **kwargs)
+           ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/venvs/punctuation-summary-info/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1783, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/venvs/punctuation-summary-info/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1889, in _call_impl
+    return inner()
+  File "/home/ubuntu/venvs/punctuation-summary-info/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1837, in inner
+    result = forward_call(*args, **kwargs)
+  File "/home/ubuntu/venvs/punctuation-summary-info/lib/python3.13/site-packages/transformers/models/gpt_neox/modeling_gpt_neox.py", line 249, in forward
+    attn_output, _ = self.attention(
+                     ~~~~~~~~~~~~~~^
+        self.input_layernorm(hidden_states),
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<5 lines>...
+        **kwargs,
+        ^^^^^^^^^
+    )
+    ^
+  File "/home/ubuntu/venvs/punctuation-summary-info/lib/python3.13/site-packages/transformer_lens/model_bridge/generalized_components/base.py", line 187, in __call__
+    return super().__call__(*args, **kwargs)
+           ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/venvs/punctuation-summary-info/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1783, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/venvs/punctuation-summary-info/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1794, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/home/ubuntu/venvs/punctuation-summary-info/lib/python3.13/site-packages/transformer_lens/model_bridge/generalized_components/joint_qkv_attention.py", line 379, in forward
+    output = self._reconstruct_attention(q_output, k_output, v_output, **kwargs)
+  File "/home/ubuntu/venvs/punctuation-summary-info/lib/python3.13/site-packages/transformer_lens/model_bridge/generalized_components/joint_qkv_position_embeddings_attention.py", line 208, in _reconstruct_attention
+    attn_weights = self._softmax_dropout_pattern(attn_scores)
+  File "/home/ubuntu/venvs/punctuation-summary-info/lib/python3.13/site-packages/transformer_lens/model_bridge/generalized_components/attention.py", line 527, in _softmax_dropout_pattern
+    attn_weights = self._scrub_compatibility_pattern_nans(attn_weights)
+  File "/home/ubuntu/venvs/punctuation-summary-info/lib/python3.13/site-packages/transformer_lens/model_bridge/generalized_components/attention.py", line 553, in _scrub_compatibility_pattern_nans
+    pattern = torch.where(torch.isnan(pattern), torch.zeros_like(pattern), pattern)
+torch.OutOfMemoryError: CUDA out of memory. Tried to allocate 1.62 GiB. GPU 0 has a total capacity of 79.18 GiB of which 966.31 MiB is free. Including non-PyTorch memory, this process has 78.23 GiB memory in use. Of the allocated memory 77.42 GiB is allocated by PyTorch, and 226.12 MiB is reserved by PyTorch but unallocated.
+=== queue 3 continues Sun Oct 18 04:01:53 UTC 2026
+=== /home/ubuntu/venvs/punctuation-summary-info/bin/python scripts/m6_scale.py run pythia-6.9b behavior knockout accept patch probe long
+Loading weights:   0%|          | 0/388 [00:00<?, ?it/s]Loading weights:   0%|          | 1/388 [00:00<01:29,  4.31it/s]Loading weights:   6%|▌         | 24/388 [00:00<00:04, 84.46it/s]Loading weights:  10%|▉         | 38/388 [00:00<00:03, 97.38it/s]Loading weights:  14%|█▍        | 56/388 [00:00<00:02, 118.85it/s]Loading weights:  18%|█▊        | 70/388 [00:00<00:02, 124.32it/s]Loading weights:  22%|██▏       | 84/388 [00:00<00:02, 117.74it/s]Loading weights:  25%|██▌       | 98/388 [00:00<00:02, 118.12it/s]Loading weights:  31%|███       | 120/388 [00:01<00:02, 132.10it/s]Loading weights:  35%|███▍      | 134/388 [00:01<00:01, 128.65it/s]Loading weights:  39%|███▉      | 152/388 [00:01<00:01, 140.82it/s]Loading weights:  43%|████▎     | 168/388 [00:01<00:01, 134.84it/s]Loading weights:  47%|████▋     | 182/388 [00:01<00:01, 131.81it/s]Loading weights:  52%|█████▏    | 200/388 [00:01<00:01, 137.86it/s]Loading weights:  56%|█████▌    | 216/388 [00:01<00:01, 131.26it/s]Loading weights:  61%|██████    | 236/388 [00:01<00:01, 130.74it/s]Loading weights:  65%|██████▍   | 252/388 [00:02<00:01, 134.49it/s]Loading weights:  69%|██████▊   | 266/388 [00:02<00:00, 129.03it/s]Loading weights:  72%|███████▏  | 279/388 [00:02<00:00, 128.42it/s]Loading weights:  76%|███████▋  | 296/388 [00:02<00:00, 136.38it/s]Loading weights:  80%|████████  | 312/388 [00:02<00:00, 129.07it/s]Loading weights:  84%|████████▍ | 326/388 [00:02<00:00, 125.31it/s]Loading weights:  90%|████████▉ | 348/388 [00:02<00:00, 127.41it/s]Loading weights:  93%|█████████▎| 362/388 [00:02<00:00, 126.22it/s]Loading weights:  97%|█████████▋| 375/388 [00:03<00:00, 126.16it/s]Loading weights: 100%|██████████| 388/388 [00:03<00:00, 125.32it/s]
+Moving model to device:  cuda
+[pythia-6.9b] behavior: P +4.17, U delta +0.34, C_mid delta -0.22
+[pythia-6.9b] step behavior done in 919s
+[pythia-6.9b] knockout mood P: none +4.61, retention 0.51, s0 punct share 0.41; U retention 0.21
+[pythia-6.9b] step knockout done in 2000s
+[pythia-6.9b] accept consistent: pair acc 1.000, AUC 1.000, retention 0.51 -> C1 PASS, C2 PASS
+[pythia-6.9b] accept mixed: pair acc 0.990, AUC 0.875, retention 0.50 -> C1 PASS, C2 PASS
+[pythia-6.9b] step accept done in 74s
+[mood_k1_P] 50 pairs, 32 rows; mean clean-corrupted gap +11.02; runtime 449s; peak RSS 90.52 GB
+[mood_k1_U] 50 pairs, 25 rows; mean clean-corrupted gap +11.19; runtime 323s; peak RSS 90.52 GB
+[mood_k1_Ucap] 50 pairs, 25 rows; mean clean-corrupted gap +11.09; runtime 323s; peak RSS 90.52 GB
+[mood_k1_M] 50 pairs, 41 rows; mean clean-corrupted gap +10.23; runtime 479s; peak RSS 90.52 GB
+[mood_k1_K] 50 pairs, 32 rows; mean clean-corrupted gap +10.70; runtime 455s; peak RSS 90.52 GB
+[mood_k1_C_mid] 50 pairs, 32 rows; mean clean-corrupted gap +10.61; runtime 449s; peak RSS 90.52 GB
+[mood_k4_P] 50 pairs, 38 rows; mean clean-corrupted gap +9.15; runtime 820s; peak RSS 90.52 GB
+[mood_k4_U] 50 pairs, 29 rows; mean clean-corrupted gap +9.59; runtime 551s; peak RSS 90.52 GB
+[mood_k4_Ucap] 50 pairs, 29 rows; mean clean-corrupted gap +9.70; runtime 551s; peak RSS 90.52 GB
+[mood_k4_M] 50 pairs, 61 rows; mean clean-corrupted gap +7.84; runtime 923s; peak RSS 90.52 GB
+[mood_k4_K] 50 pairs, 38 rows; mean clean-corrupted gap +8.79; runtime 838s; peak RSS 90.52 GB
+[mood_k4_C_mid] 50 pairs, 38 rows; mean clean-corrupted gap +8.55; runtime 822s; peak RSS 90.52 GB
+[mood_k16_P] 50 pairs, 38 rows; mean clean-corrupted gap +6.98; runtime 2040s; peak RSS 90.52 GB
+[mood_k16_U] 50 pairs, 29 rows; mean clean-corrupted gap +6.51; runtime 1328s; peak RSS 90.52 GB
+[mood_k16_Ucap] 50 pairs, 29 rows; mean clean-corrupted gap +7.13; runtime 1337s; peak RSS 90.52 GB
+[mood_k16_M] 50 pairs, 59 rows; mean clean-corrupted gap +5.35; runtime 2346s; peak RSS 90.52 GB
+[mood_k16_K] 50 pairs, 38 rows; mean clean-corrupted gap +7.30; runtime 2077s; peak RSS 90.52 GB
+[mood_k16_C_mid] 50 pairs, 38 rows; mean clean-corrupted gap +6.49; runtime 2038s; peak RSS 90.52 GB
+[pythia-6.9b] step patch done in 18151s
+[pythia-6.9b] probe activations cached; fitting started in a separate CPU process (log: probes_fit.log)
+[pythia-6.9b] step probe done in 216s
+Traceback (most recent call last):
+  File "/lambda/nfs/AT1/punctuation-summary-info/scripts/m6_scale.py", line 508, in <module>
+    run(sys.argv[2], sys.argv[3:] or list(STEPS))
+    ~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/lambda/nfs/AT1/punctuation-summary-info/scripts/m6_scale.py", line 497, in run
+    STEPS[st](model, name, out)
+    ~~~~~~~~~^^^^^^^^^^^^^^^^^^
+  File "/lambda/nfs/AT1/punctuation-summary-info/scripts/m6_scale.py", line 477, in step_long
+    print(f"[{name}] long {lv}: country P {b[f'{lv}|P']['diff'][0]:+.2f}, U delta {b[f'{lv}|U']['delta'][0]:+.2f}, "
+                                           ~^^^^^^^^^^^
+KeyError: 'L900|P'
+=== FAILED: /home/ubuntu/venvs/punctuation-summary-info/bin/python scripts/m6_scale.py run pythia-6.9b behavior knockout accept patch probe long
+=== /home/ubuntu/venvs/punctuation-summary-info/bin/python scripts/m6_scale.py run gpt2 long
+Loading weights:   0%|          | 0/148 [00:00<?, ?it/s]Loading weights:  80%|████████  | 119/148 [00:00<00:00, 1169.41it/s]Loading weights: 100%|██████████| 148/148 [00:00<00:00, 1249.74it/s]
+Moving model to device:  cuda
+Traceback (most recent call last):
+  File "/lambda/nfs/AT1/punctuation-summary-info/scripts/m6_scale.py", line 508, in <module>
+    cmd = sys.argv[1]
+        ^^^^^^^^^^^^^
+  File "/lambda/nfs/AT1/punctuation-summary-info/scripts/m6_scale.py", line 497, in run
+    load_rates(name, out)
+    ~~~~~~~~~~^^^^^^^^^^^
+  File "/lambda/nfs/AT1/punctuation-summary-info/scripts/m6_scale.py", line 477, in step_long
+    for lv in levels:
+    
+KeyError: 'L900|P'
+=== queue 4 continues Sun Oct 18 15:22:26 UTC 2026
+=== /home/ubuntu/venvs/punctuation-summary-info/bin/python scripts/m6_scale.py run gpt-neo-125m long
+Loading weights:   0%|          | 0/160 [00:00<?, ?it/s]Loading weights: 100%|██████████| 160/160 [00:00<00:00, 1749.66it/s]
+/home/ubuntu/venvs/punctuation-summary-info/lib/python3.13/site-packages/transformer_lens/model_bridge/generalized_components/attention.py:888: UserWarning: A hook on attn.attention.hook_attn_scores returned a modified tensor, but this attention delegates its computation to the wrapped HF module, which has already consumed the original values. The edit is discarded and does not affect the model's output.
+  self._fire_post_hoc_hook(
+Moving model to device:  cuda
+attention knockout via 'neo' (full-block logit change 16.54)
+[gpt-neo-125m] long L900: country P +1.76, U delta +0.08, C_mid delta -0.15; mood P retention 0.07, U retention 0.03
+[gpt-neo-125m] long L1500: country P +1.29, U delta +0.19, C_mid delta -0.11; mood P retention 0.06, U retention 0.04
+[gpt-neo-125m] step long done in 1278s
+=== /home/ubuntu/venvs/punctuation-summary-info/bin/python scripts/m6_scale.py run pythia-160m long
+Loading weights:   0%|          | 0/148 [00:00<?, ?it/s]Loading weights:  36%|███▌      | 53/148 [00:00<00:00, 522.84it/s]Loading weights:  73%|███████▎  | 108/148 [00:00<00:00, 538.05it/s]Loading weights: 100%|██████████| 148/148 [00:00<00:00, 583.15it/s]
+Moving model to device:  cuda
+attention knockout via 'hook' (full-block logit change 7.40)
+[pythia-160m] long L900: country P +1.11, U delta -0.12, C_mid delta -0.22; mood P retention 0.20, U retention 0.10
+[pythia-160m] long L1500: country P +0.39, U delta +0.41, C_mid delta -0.11; mood P retention 0.23, U retention 0.10
+[pythia-160m] step long done in 1431s
+=== /home/ubuntu/venvs/punctuation-summary-info/bin/python scripts/m6_scale.py run pythia-410m long
+Loading weights:   0%|          | 0/292 [00:00<?, ?it/s]Loading weights:  21%|██        | 62/292 [00:00<00:00, 590.95it/s]Loading weights:  46%|████▌     | 133/292 [00:00<00:00, 659.09it/s]Loading weights:  68%|██████▊   | 200/292 [00:00<00:00, 653.47it/s]Loading weights:  93%|█████████▎| 272/292 [00:00<00:00, 666.79it/s]Loading weights: 100%|██████████| 292/292 [00:00<00:00, 669.18it/s]
+Moving model to device:  cuda
+attention knockout via 'hook' (full-block logit change 7.82)
+[pythia-410m] long L900: country P +1.24, U delta +0.12, C_mid delta -0.11; mood P retention 0.10, U retention 0.10
+[pythia-410m] long L1500: country P +0.63, U delta +0.19, C_mid delta -0.07; mood P retention 0.09, U retention 0.13
+[pythia-410m] step long done in 2594s
+=== /home/ubuntu/venvs/punctuation-summary-info/bin/python scripts/m6_scale.py run pythia-1.4b long
+Loading weights:   0%|          | 0/292 [00:00<?, ?it/s]Loading weights:   3%|▎         | 8/292 [00:00<00:04, 59.99it/s]Loading weights:  19%|█▉        | 56/292 [00:00<00:00, 275.25it/s]Loading weights:  33%|███▎      | 96/292 [00:00<00:00, 311.67it/s]Loading weights:  48%|████▊     | 140/292 [00:00<00:00, 357.34it/s]Loading weights:  62%|██████▏   | 180/292 [00:00<00:00, 369.26it/s]Loading weights:  78%|███████▊  | 228/292 [00:00<00:00, 403.52it/s]Loading weights:  95%|█████████▍| 276/292 [00:00<00:00, 415.67it/s]Loading weights: 100%|██████████| 292/292 [00:00<00:00, 378.09it/s]
+Moving model to device:  cuda
+attention knockout via 'hook' (full-block logit change 8.22)
+[pythia-1.4b] long L900: country P +0.93, U delta +0.20, C_mid delta -0.08; mood P retention 0.09, U retention 0.04
+[pythia-1.4b] long L1500: country P +0.61, U delta +0.25, C_mid delta -0.02; mood P retention 0.10, U retention 0.05
+[pythia-1.4b] step long done in 5182s
+=== /home/ubuntu/venvs/punctuation-summary-info/bin/python scripts/m6_scale.py run pythia-2.8b long
+Loading weights:   0%|          | 0/388 [00:00<?, ?it/s]Loading weights:   0%|          | 1/388 [00:00<00:44,  8.63it/s]Loading weights:   9%|▉         | 36/388 [00:00<00:01, 186.33it/s]Loading weights:  21%|██        | 80/388 [00:00<00:01, 275.77it/s]Loading weights:  31%|███       | 120/388 [00:00<00:00, 316.08it/s]Loading weights:  43%|████▎     | 168/388 [00:00<00:00, 359.81it/s]Loading weights:  56%|█████▌    | 216/388 [00:00<00:00, 381.69it/s]Loading weights:  66%|██████▌   | 255/388 [00:00<00:00, 369.73it/s]Loading weights:  76%|███████▌  | 293/388 [00:00<00:00, 347.29it/s]Loading weights:  85%|████████▍ | 328/388 [00:01<00:00, 331.49it/s]Loading weights:  93%|█████████▎| 362/388 [00:01<00:00, 292.96it/s]Loading weights: 100%|██████████| 388/388 [00:01<00:00, 312.82it/s]
+Moving model to device:  cuda
+attention knockout via 'hook' (full-block logit change 9.25)
+[pythia-2.8b] long L900: country P +1.46, U delta -0.19, C_mid delta -0.17; mood P retention 0.13, U retention 0.02
+[pythia-2.8b] long L1500: country P +1.15, U delta +0.05, C_mid delta -0.09; mood P retention 0.10, U retention -0.00
+[pythia-2.8b] step long done in 10118s
+=== LADDER2_DONE Sun Oct 18 21:07:01 UTC 2026
+=== /home/ubuntu/venvs/punctuation-summary-info/bin/python scripts/m6_scale.py verify llama-3.1-8b
+Loading weights:   0%|          | 0/291 [00:00<?, ?it/s]Loading weights:   0%|          | 1/291 [00:00<02:32,  1.90it/s]Loading weights:  11%|█         | 31/291 [00:00<00:04, 63.37it/s]Loading weights:  16%|█▌        | 47/291 [00:00<00:02, 82.00it/s]Loading weights:  21%|██▏       | 62/291 [00:00<00:02, 83.90it/s]Loading weights:  26%|██▌       | 76/291 [00:01<00:02, 85.36it/s]Loading weights:  30%|███       | 88/291 [00:01<00:02, 92.29it/s]Loading weights:  34%|███▍      | 100/291 [00:01<00:01, 98.45it/s]Loading weights:  38%|███▊      | 112/291 [00:01<00:01, 92.44it/s]Loading weights:  42%|████▏     | 123/291 [00:01<00:01, 93.31it/s]Loading weights:  46%|████▌     | 134/291 [00:01<00:01, 96.07it/s]Loading weights:  51%|█████     | 148/291 [00:01<00:01, 95.41it/s]Loading weights:  54%|█████▍    | 158/291 [00:02<00:01, 73.18it/s]Loading weights:  57%|█████▋    | 167/291 [00:02<00:01, 68.96it/s]Loading weights:  60%|██████    | 175/291 [00:02<00:01, 67.67it/s]Loading weights:  63%|██████▎   | 184/291 [00:02<00:01, 55.45it/s]Loading weights:  66%|██████▋   | 193/291 [00:02<00:02, 45.98it/s]Loading weights:  69%|██████▉   | 202/291 [00:03<00:02, 41.52it/s]Loading weights:  73%|███████▎  | 211/291 [00:03<00:01, 41.14it/s]Loading weights:  76%|███████▌  | 220/291 [00:03<00:01, 41.88it/s]Loading weights:  79%|███████▊  | 229/291 [00:03<00:01, 37.92it/s]Loading weights:  82%|████████▏ | 238/291 [00:04<00:01, 35.82it/s]Loading weights:  85%|████████▍ | 247/291 [00:04<00:01, 38.40it/s]Loading weights:  88%|████████▊ | 256/291 [00:04<00:00, 39.53it/s]Loading weights:  91%|█████████ | 265/291 [00:04<00:00, 36.84it/s]Loading weights:  94%|█████████▍| 274/291 [00:05<00:00, 35.92it/s]Loading weights:  97%|█████████▋| 283/291 [00:05<00:00, 38.25it/s]Loading weights: 100%|██████████| 291/291 [00:05<00:00, 54.83it/s]
+Moving model to device:  cuda
+Loading weights:   0%|          | 0/291 [00:00<?, ?it/s]Loading weights:   0%|          | 1/291 [00:00<03:12,  1.51it/s]Loading weights:  11%|█         | 32/291 [00:00<00:04, 53.60it/s]Loading weights:  17%|█▋        | 49/291 [00:00<00:03, 67.93it/s]Loading weights:  22%|██▏       | 65/291 [00:01<00:02, 84.70it/s]Loading weights:  27%|██▋       | 79/291 [00:01<00:02, 83.45it/s]Loading weights:  32%|███▏      | 94/291 [00:01<00:02, 88.08it/s]Loading weights:  36%|███▌      | 105/291 [00:01<00:02, 89.40it/s]Loading weights:  40%|███▉      | 116/291 [00:01<00:01, 92.96it/s]Loading weights:  44%|████▍     | 128/291 [00:01<00:01, 96.24it/s]Loading weights:  48%|████▊     | 139/291 [00:01<00:01, 91.39it/s]Loading weights:  52%|█████▏    | 150/291 [00:01<00:01, 93.47it/s]Loading weights:  57%|█████▋    | 166/291 [00:02<00:01, 94.85it/s]Loading weights:  63%|██████▎   | 184/291 [00:02<00:01, 101.34it/s]Loading weights:  67%|██████▋   | 195/291 [00:02<00:00, 100.84it/s]Loading weights:  73%|███████▎  | 211/291 [00:02<00:00, 108.37it/s]Loading weights:  79%|███████▊  | 229/291 [00:02<00:00, 107.13it/s]Loading weights:  85%|████████▍ | 247/291 [00:02<00:00, 109.55it/s]Loading weights:  90%|█████████ | 263/291 [00:02<00:00, 120.15it/s]Loading weights:  95%|█████████▍| 276/291 [00:03<00:00, 109.05it/s]Loading weights: 100%|██████████| 291/291 [00:03<00:00, 91.54it/s] 
+[llama-3.1-8b] {'load_s': 27.0, 'load_peak_gpu_gb': 54.67, 'weights_gpu_gb': 54.67, 'n_texts': 32, 'max_abs_logprob_diff': 0.00010919570922851562, 'max_abs_answer_logit_diff_diff': 5.054473876953125e-05, 'peak_rss_gb': 99.55}
+=== /home/ubuntu/venvs/punctuation-summary-info/bin/python scripts/m6_scale.py bf16check llama-3.1-8b
+Loading weights:   0%|          | 0/291 [00:00<?, ?it/s]Loading weights:   0%|          | 1/291 [00:00<02:47,  1.73it/s]Loading weights:  11%|█         | 31/291 [00:00<00:04, 60.78it/s]Loading weights:  17%|█▋        | 49/291 [00:00<00:03, 72.57it/s]Loading weights:  22%|██▏       | 64/291 [00:00<00:02, 88.24it/s]Loading weights:  27%|██▋       | 79/291 [00:01<00:02, 86.80it/s]Loading weights:  32%|███▏      | 92/291 [00:01<00:02, 94.10it/s]Loading weights:  36%|███▌      | 104/291 [00:01<00:02, 90.83it/s]Loading weights:  40%|███▉      | 115/291 [00:01<00:01, 90.89it/s]Loading weights:  45%|████▍     | 130/291 [00:01<00:01, 94.88it/s]Loading weights:  48%|████▊     | 141/291 [00:01<00:01, 97.04it/s]Loading weights:  54%|█████▍    | 157/291 [00:01<00:01, 96.90it/s]Loading weights:  58%|█████▊    | 168/291 [00:02<00:01, 95.45it/s]Loading weights:  63%|██████▎   | 184/291 [00:02<00:01, 105.78it/s]Loading weights:  67%|██████▋   | 195/291 [00:02<00:00, 106.51it/s]Loading weights:  73%|███████▎  | 211/291 [00:02<00:00, 108.15it/s]Loading weights:  76%|███████▋  | 222/291 [00:02<00:00, 106.83it/s]Loading weights:  82%|████████▏ | 238/291 [00:02<00:00, 110.55it/s]Loading weights:  86%|████████▌ | 250/291 [00:02<00:00, 106.72it/s]Loading weights:  91%|█████████ | 265/291 [00:02<00:00, 115.30it/s]Loading weights:  97%|█████████▋| 282/291 [00:02<00:00, 129.70it/s]Loading weights: 100%|██████████| 291/291 [00:03<00:00, 95.14it/s] 
+Moving model to device:  cuda
+Loading weights:   0%|          | 0/291 [00:00<?, ?it/s]Loading weights:  37%|███▋      | 107/291 [00:00<00:00, 1067.37it/s]Loading weights:  74%|███████▎  | 214/291 [00:00<00:00, 945.35it/s] Loading weights: 100%|██████████| 291/291 [00:00<00:00, 971.10it/s]
+Moving model to device:  cuda
+[llama-3.1-8b] bf16 vs fp32: {'n_texts': 32, 'answer_diff_fp32_mean': 4.657176524400711, 'max_abs_answer_diff_change': 0.11552238464355469, 'mean_abs_answer_diff_change': 0.05426856875419617, 'sign_agreement': 1.0, 'max_abs_logprob_change': 0.34528446197509766}
+=== /home/ubuntu/venvs/punctuation-summary-info/bin/python scripts/m6_scale.py screen llama-3.1-8b
+Loading weights:   0%|          | 0/291 [00:00<?, ?it/s]Loading weights:   0%|          | 1/291 [00:00<02:54,  1.66it/s]Loading weights:  11%|█         | 31/291 [00:00<00:04, 58.76it/s]Loading weights:  17%|█▋        | 49/291 [00:00<00:03, 73.10it/s]Loading weights:  22%|██▏       | 64/291 [00:00<00:02, 88.81it/s]Loading weights:  27%|██▋       | 79/291 [00:01<00:02, 84.36it/s]Loading weights:  32%|███▏      | 94/291 [00:01<00:02, 89.81it/s]Loading weights:  36%|███▋      | 106/291 [00:01<00:02, 91.73it/s]Loading weights:  42%|████▏     | 121/291 [00:01<00:01, 87.67it/s]Loading weights:  48%|████▊     | 139/291 [00:01<00:01, 96.10it/s]Loading weights:  52%|█████▏    | 150/291 [00:01<00:01, 96.59it/s]Loading weights:  55%|█████▌    | 161/291 [00:02<00:01, 96.13it/s]Loading weights:  60%|██████    | 175/291 [00:02<00:01, 99.30it/s]Loading weights:  66%|██████▋   | 193/291 [00:02<00:00, 107.34it/s]Loading weights:  70%|███████   | 204/291 [00:02<00:00, 103.99it/s]Loading weights:  76%|███████▌  | 220/291 [00:02<00:00, 110.44it/s]Loading weights:  80%|███████▉  | 232/291 [00:02<00:00, 112.56it/s]Loading weights:  85%|████████▍ | 247/291 [00:02<00:00, 110.69it/s]Loading weights:  90%|█████████ | 262/291 [00:02<00:00, 119.20it/s]Loading weights:  95%|█████████▍| 275/291 [00:03<00:00, 111.40it/s]Loading weights: 100%|██████████| 291/291 [00:03<00:00, 94.30it/s] 
+Moving model to device:  cuda
+[llama-3.1-8b] {'cities_kept': {'France': 27, 'Japan': 28}, 'city_buckets': {1: {'France': 5, 'Japan': 5}, 2: {'France': 14, 'Japan': 10}, 3: {'France': 7, 'Japan': 12}, 4: {'France': 1, 'Japan': 1}}, 'pairable_per_side': 23, 'adjectives_kept': {'good': 5, 'bad': 8}, 'adj_neutral_ref': 3.088493537902832}
+=== /home/ubuntu/venvs/punctuation-summary-info/bin/python scripts/m6_ladder_items.py llama-3.1-8b llama-3.1-8b
+{'cities': {'France': 27, 'Japan': 28}, 'adjectives': {'good': 20, 'bad': 25}, 'fillers': 64, 'adj_floor': 1.2, 'n_test_adj': 3}
+bar: adjectives [20, 25] (need >= 10), pairable cities per side 23 (need >= 8) -> PASS
+=== /home/ubuntu/venvs/punctuation-summary-info/bin/python scripts/m6_long_pairs.py pairs llama-3.1-8b
+llama-3.1-8b: country L900: 100 pairs
+llama-3.1-8b: country L1500: 100 pairs
+llama-3.1-8b: mood L900: 100 pairs
+llama-3.1-8b: mood L1500: 100 pairs
+=== /home/ubuntu/venvs/punctuation-summary-info/bin/python scripts/m6_token_check.py llama-3.1-8b llama-3.1-8b --long
+llama-3.1-8b / llama-3.1-8b: 4 files, 9600 renderings, 0 failures, 2000 where joined != whole-text tokens {('question', 'P'): 400, ('question', 'K'): 400, ('question', 'C_lo'): 400, ('question', 'C_mid'): 400, ('question', 'C_hi'): 400}; longest {'L1500': 1583, 'L900': 914}
+=== /home/ubuntu/venvs/punctuation-summary-info/bin/python scripts/m6_scale.py run llama-3.1-8b
+Loading weights:   0%|          | 0/291 [00:00<?, ?it/s]Loading weights:   0%|          | 1/291 [00:00<02:42,  1.79it/s]Loading weights:  11%|█         | 31/291 [00:00<00:04, 60.16it/s]Loading weights:  16%|█▌        | 46/291 [00:00<00:03, 76.45it/s]Loading weights:  21%|██        | 60/291 [00:00<00:02, 78.64it/s]Loading weights:  25%|██▍       | 72/291 [00:01<00:02, 87.33it/s]Loading weights:  29%|██▉       | 85/291 [00:01<00:02, 90.87it/s]Loading weights:  33%|███▎      | 97/291 [00:01<00:02, 95.82it/s]Loading weights:  38%|███▊      | 112/291 [00:01<00:01, 93.99it/s]Loading weights:  45%|████▍     | 130/291 [00:01<00:01, 99.33it/s]Loading weights:  48%|████▊     | 141/291 [00:01<00:01, 100.60it/s]Loading weights:  54%|█████▍    | 157/291 [00:01<00:01, 97.66it/s] Loading weights:  59%|█████▉    | 172/291 [00:02<00:01, 107.76it/s]Loading weights:  63%|██████▎   | 184/291 [00:02<00:01, 101.57it/s]Loading weights:  69%|██████▊   | 200/291 [00:02<00:00, 112.39it/s]Loading weights:  73%|███████▎  | 212/291 [00:02<00:00, 98.50it/s] Loading weights:  79%|███████▊  | 229/291 [00:02<00:00, 110.45it/s]Loading weights:  83%|████████▎ | 241/291 [00:02<00:00, 110.13it/s]Loading weights:  88%|████████▊ | 256/291 [00:02<00:00, 107.15it/s]Loading weights:  94%|█████████▍| 274/291 [00:02<00:00, 108.96it/s]Loading weights: 100%|██████████| 291/291 [00:03<00:00, 95.01it/s] 
+Moving model to device:  cuda
+[llama-3.1-8b] calibration: U +0.483 nats/word; rates {'C_lo': 0.0205, 'C_mid': 0.0388, 'C_hi': 0.0639}
+[llama-3.1-8b] step calib done in 171s
+[llama-3.1-8b] behavior: P +5.14, U delta -0.12, C_mid delta -0.24
+[llama-3.1-8b] step behavior done in 979s
+attention knockout via 'hook' (full-block logit change 15.67)
+[llama-3.1-8b] knockout mood P: none +2.79, retention 0.50, s0 punct share 0.33; U retention 0.25
+[llama-3.1-8b] step knockout done in 2080s
+[llama-3.1-8b] accept consistent: pair acc 1.000, AUC 0.997, retention 0.50 -> C1 PASS, C2 PASS
+[llama-3.1-8b] accept mixed: pair acc 0.993, AUC 0.830, retention 0.59 -> C1 PASS, C2 PASS
+[llama-3.1-8b] step accept done in 74s
+[mood_k1_P] 50 pairs, 32 rows; mean clean-corrupted gap +8.57; runtime 487s; peak RSS 99.57 GB
+[mood_k1_U] 50 pairs, 25 rows; mean clean-corrupted gap +9.99; runtime 342s; peak RSS 99.57 GB
+[mood_k1_Ucap] 50 pairs, 25 rows; mean clean-corrupted gap +9.47; runtime 342s; peak RSS 99.57 GB
+[mood_k1_M] 50 pairs, 41 rows; mean clean-corrupted gap +8.98; runtime 513s; peak RSS 99.57 GB
+[mood_k1_K] 50 pairs, 32 rows; mean clean-corrupted gap +8.98; runtime 484s; peak RSS 99.57 GB
+[mood_k1_C_mid] 50 pairs, 32 rows; mean clean-corrupted gap +8.18; runtime 480s; peak RSS 99.57 GB
+[mood_k4_P] 50 pairs, 38 rows; mean clean-corrupted gap +4.69; runtime 873s; peak RSS 99.57 GB
+[mood_k4_U] 50 pairs, 29 rows; mean clean-corrupted gap +6.28; runtime 588s; peak RSS 99.57 GB
+[mood_k4_Ucap] 50 pairs, 29 rows; mean clean-corrupted gap +5.61; runtime 588s; peak RSS 99.57 GB
+[mood_k4_M] 50 pairs, 57 rows; mean clean-corrupted gap +5.56; runtime 973s; peak RSS 99.57 GB
+[mood_k4_K] 50 pairs, 38 rows; mean clean-corrupted gap +4.81; runtime 878s; peak RSS 99.57 GB
+[mood_k4_C_mid] 50 pairs, 38 rows; mean clean-corrupted gap +4.31; runtime 871s; peak RSS 99.57 GB
+[mood_k16_P] 50 pairs, 38 rows; mean clean-corrupted gap +3.74; runtime 2199s; peak RSS 99.57 GB
+[mood_k16_U] 50 pairs, 29 rows; mean clean-corrupted gap +3.09; runtime 1443s; peak RSS 99.57 GB
+[mood_k16_Ucap] 50 pairs, 29 rows; mean clean-corrupted gap +3.09; runtime 1445s; peak RSS 99.57 GB
+[mood_k16_M] 50 pairs, 61 rows; mean clean-corrupted gap +2.42; runtime 2518s; peak RSS 99.57 GB
+[mood_k16_K] 50 pairs, 38 rows; mean clean-corrupted gap +3.68; runtime 2240s; peak RSS 99.57 GB
+[mood_k16_C_mid] 50 pairs, 38 rows; mean clean-corrupted gap +3.29; runtime 2196s; peak RSS 99.57 GB
+[llama-3.1-8b] step patch done in 19459s
+[llama-3.1-8b] probe activations cached; fitting started in a separate CPU process (log: probes_fit.log)
+[llama-3.1-8b] step probe done in 229s
+[llama-3.1-8b] long L900: country P +3.66, U delta +0.38, C_mid delta -0.40; mood P retention 0.36, U retention 0.10
+[llama-3.1-8b] long L1500: country P +3.59, U delta +0.24, C_mid delta -0.31; mood P retention 0.36, U retention 0.01
+[llama-3.1-8b] step long done in 19803s
+=== /home/ubuntu/venvs/punctuation-summary-info/bin/python scripts/m6_scale.py fusedcheck llama-3.1-8b
+Loading weights:   0%|          | 0/291 [00:00<?, ?it/s]Loading weights:   0%|          | 1/291 [00:00<04:11,  1.15it/s]Loading weights:  11%|█▏        | 33/291 [00:00<00:05, 45.70it/s]Loading weights:  18%|█▊        | 51/291 [00:01<00:04, 59.68it/s]Loading weights:  22%|██▏       | 65/291 [00:01<00:03, 72.96it/s]Loading weights:  27%|██▋       | 79/291 [00:01<00:02, 72.66it/s]Loading weights:  32%|███▏      | 94/291 [00:01<00:02, 79.24it/s]Loading weights:  37%|███▋      | 107/291 [00:01<00:02, 89.31it/s]Loading weights:  41%|████      | 119/291 [00:01<00:01, 95.91it/s]Loading weights:  45%|████▌     | 131/291 [00:01<00:01, 88.23it/s]Loading weights:  49%|████▉     | 142/291 [00:02<00:01, 92.27it/s]Loading weights:  53%|█████▎    | 153/291 [00:02<00:01, 87.61it/s]Loading weights:  57%|█████▋    | 166/291 [00:02<00:01, 85.71it/s]Loading weights:  60%|██████    | 176/291 [00:02<00:01, 82.66it/s]Loading weights:  65%|██████▌   | 190/291 [00:02<00:01, 92.97it/s]Loading weights:  69%|██████▉   | 202/291 [00:02<00:00, 89.13it/s]Loading weights:  76%|███████▌  | 220/291 [00:02<00:00, 96.74it/s]Loading weights:  79%|███████▉  | 231/291 [00:03<00:00, 98.81it/s]Loading weights:  85%|████████▍ | 247/291 [00:03<00:00, 101.78it/s]Loading weights:  89%|████████▊ | 258/291 [00:03<00:00, 103.60it/s]Loading weights:  94%|█████████▍| 274/291 [00:03<00:00, 105.17it/s]Loading weights: 100%|██████████| 291/291 [00:03<00:00, 82.51it/s] 
+Moving model to device:  cuda
+[llama-3.1-8b] fused vs split: P +5.27 -> +5.42 (100% differ); U +5.29 -> +5.29 (0% differ); K +5.25 -> +5.34 (100% differ); C_mid +5.03 -> +5.16 (100% differ); U-P split +0.02, fused -0.13
+=== LLAMA_DONE Mon Oct 19 09:14:09 UTC 2026
+=== queue 5 starts Mon Oct 19 09:14:53 UTC 2026
+=== /home/ubuntu/venvs/punctuation-summary-info/bin/python scripts/m6_scale.py run gpt-neo-125m knockout accept
+Loading weights:   0%|          | 0/160 [00:00<?, ?it/s]Loading weights:  56%|█████▋    | 90/160 [00:00<00:00, 898.94it/s]Loading weights: 100%|██████████| 160/160 [00:00<00:00, 963.12it/s]
+/home/ubuntu/venvs/punctuation-summary-info/lib/python3.13/site-packages/transformer_lens/model_bridge/generalized_components/attention.py:888: UserWarning: A hook on attn.attention.hook_attn_scores returned a modified tensor, but this attention delegates its computation to the wrapped HF module, which has already consumed the original values. The edit is discarded and does not affect the model's output.
+  self._fire_post_hoc_hook(
+Moving model to device:  cuda
+attention knockout via 'neo' (full-block logit change 16.54)
+[gpt-neo-125m] knockout mood P: none +2.16, retention 0.17, s0 punct share 0.10; U retention 0.03
+[gpt-neo-125m] step knockout done in 88s
+[gpt-neo-125m] accept consistent: pair acc 1.000, AUC 0.993, retention 0.17 -> C1 PASS, C2 FAIL
+[gpt-neo-125m] accept mixed: pair acc 0.987, AUC 0.749, retention 0.18 -> C1 FAIL, C2 FAIL
+[gpt-neo-125m] step accept done in 4s
+=== QUEUE5_DONE Mon Oct 19 09:16:33 UTC 2026

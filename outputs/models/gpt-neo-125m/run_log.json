@@ -1,6 +1,6 @@
 {
  "load": {
-  "load_s": 4.9,
+  "load_s": 2.0,
   "load_peak_gpu_gb": 0.71,
   "weights_gpu_gb": 0.71
  },
@@ -13,12 +13,12 @@
   "peak_gpu_gb": 18.8
  },
  "knockout": {
-  "seconds": 314.2,
-  "peak_gpu_gb": 19.64
+  "seconds": 88.3,
+  "peak_gpu_gb": 19.63
  },
  "accept": {
-  "seconds": 15.7,
-  "peak_gpu_gb": 19.64
+  "seconds": 3.6,
+  "peak_gpu_gb": 19.63
  },
  "patch": {
   "seconds": 594.9,

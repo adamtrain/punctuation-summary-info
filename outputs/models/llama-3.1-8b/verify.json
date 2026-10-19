@@ -1,0 +1,9 @@
+{
+ "load_s": 27.0,
+ "load_peak_gpu_gb": 54.67,
+ "weights_gpu_gb": 54.67,
+ "n_texts": 32,
+ "max_abs_logprob_diff": 0.00010919570922851562,
+ "max_abs_answer_logit_diff_diff": 5.054473876953125e-05,
+ "peak_rss_gb": 99.55
+}

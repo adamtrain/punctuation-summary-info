@@ -743,6 +743,15 @@ binary property).
   0.09, U retention 0.04. GPT-Neo's long step already ran with the fix. Its standard knockout and acceptance steps (the
   acceptance test's C2 uses the knockout) are rerun by `scripts/m6_queue5.sh` after the queue; the invalid outputs are kept as
   `noop_*` files and are not reported. GPT-Neo's behavior, patching and probes don't use the knockout and are valid.
+- **2026-10-19 [autonomous] (queue complete):** Llama-3.1-8B ran the full protocol + long-distance + `fusedcheck`
+  without failures (verify, bf16 check, screen, items, long pairs, token check on its long items: 0 failures; ids differ
+  only in the predicted question-readout cells). GPT-Neo's knockout and acceptance were rerun with the working knockout
+  (`scripts/m6_queue5.sh`). All GPU work finished 2026-10-19 09:16 UTC.
+- **2026-10-19 [autonomous, authorized by the user in chat] (H100 teardown):** before the instance is terminated, the whole
+  remote project (except the model cache, `.env`, `.git`) is mirrored into `h100_archive/` and checksum-verified
+  (INSTALL_LOG.md); results are copied into `outputs/` and committed. Then the instance and its persistent filesystem are
+  deleted through the Lambda Cloud API. Rerunning anything needs a new GPU and re-downloading the pinned weights
+  (`scripts/m6_models.py download`).
 - **2026-10-17:** Conditions are rendered as word/punctuation pieces carrying metadata, and tokens are mapped
   to pieces by character offsets. Verified: the mapped token ids equal `to_tokens()` on every pilot rendering,
   and the milestone 1 report reproduced exactly after the refactor.
@@ -1226,32 +1235,33 @@ The GPT-2 pipeline (C calibration, behavior, knockout, mood acceptance, all 42 p
 
 GPT-2 results don't depend on the hardware at the precision reported, so Mac and H100 results can be combined.
 
-### 10.14 Scaling: Pythia ladder through 6.9B, GPT-Neo-125M (standard conditions; 2026-10-18)
+### 10.14 Scaling: Pythia ladder through 6.9B, GPT-Neo-125M, Llama-3.1-8B (standard conditions; 2026-10-18/19)
 `scripts/m6_summary.py` builds this table from each model's saved summaries (`outputs/models/summary.md`). k ∈ {1, 4, 16};
-95% pair-bootstrap CIs in brackets; the GPT-2 column is the same driver on GPT-2's items. "—" for GPT-Neo's knockout and
-acceptance rows: the rerun is queued (decision log). Patching layers are actual layer indices (Pythia-6.9B and 2.8B have
-32 layers, 1.4B 24, 410M 24, 160M 12). Long-distance results: Section 10.15.
+95% pair-bootstrap CIs in brackets; the GPT-2 column is the same driver on GPT-2's items. GPT-Neo's knockout and
+acceptance rows are from the rerun with the working knockout (decision log). Patching layers are actual layer indices
+(Pythia-6.9B, 2.8B and Llama-3.1-8B have 32 layers, 1.4B and 410M 24, 160M and the 125M models 12). Llama is discussed in
+10.16; its question-readout values use split readout tokenization (see 10.16 for the effect). Long-distance results: Section 10.15.
 
-| measure | gpt2 | gpt-neo-125m | pythia-160m | pythia-410m | pythia-1.4b | pythia-2.8b | pythia-6.9b |
-|---|---|---|---|---|---|---|---|
-| country P margin (question) | +3.40 | +4.65 | +4.02 | +3.50 | +3.19 | +3.23 | +4.17 |
-| U Δ vs P (pooled) | -0.45 [-0.46, -0.44] | -0.14 [-0.16, -0.13] | -0.26 [-0.28, -0.24] | -0.28 [-0.30, -0.26] | -0.01 [-0.03, +0.01] | -0.25 [-0.27, -0.23] | +0.34 [+0.32, +0.36] |
-| U Δ at k = 1 / 4 / 16 | -0.35 / -0.40 / -0.60 | +0.03 / -0.13 / -0.33 | -0.15 / -0.26 / -0.37 | -0.04 / -0.37 / -0.42 | +0.06 / +0.09 / -0.18 | -0.03 / -0.14 / -0.58 | +0.46 / +0.35 / +0.21 |
-| Ucap Δ | -0.31 | -0.19 | -0.24 | -0.34 | -0.10 | -0.18 | +0.21 |
-| C_mid Δ (matched control) | -0.06 [-0.07, -0.05] | -0.12 [-0.13, -0.10] | -0.17 [-0.20, -0.15] | -0.11 [-0.13, -0.10] | -0.16 [-0.17, -0.14] | -0.13 [-0.14, -0.12] | -0.22 [-0.24, -0.20] |
-| M Δ / K Δ | -0.49 / -0.17 | -0.36 / -0.17 | -1.09 / -0.25 | -0.52 / -0.23 | -0.63 / -0.20 | -0.65 / -0.02 | -0.41 / +0.05 |
-| country continuation readout: U Δ vs P | -0.22 [-0.25, -0.18] | — | -0.75 [-0.81, -0.70] | -0.14 [-0.18, -0.10] | +0.35 [+0.30, +0.41] | -1.27 [-1.34, -1.20] | -0.69 [-0.75, -0.63] |
-| country continuation readout: C_mid Δ | -0.10 [-0.12, -0.08] | — | -0.15 [-0.20, -0.10] | -0.21 [-0.25, -0.17] | -0.19 [-0.24, -0.14] | -0.50 [-0.58, -0.43] | -0.35 [-0.41, -0.28] |
-| mood P margin | +1.77 | — | +3.29 | +3.77 | +3.92 | +3.95 | +4.61 |
-| mood P s0words retention | 0.49 | — | 0.27 | 0.53 | 0.58 | 0.41 | 0.51 |
-| mood s0-punctuation share (P) | 0.39 [0.37, 0.41] | — | 0.09 [0.08, 0.09] | 0.37 [0.35, 0.38] | 0.42 [0.40, 0.43] | 0.20 [0.19, 0.21] | 0.41 [0.40, 0.43] |
-| mood s0-punctuation share (M / K) | 0.17 / 0.35 | — | 0.11 / 0.08 | 0.08 / 0.33 | 0.07 / 0.38 | 0.06 / 0.18 | 0.07 / 0.38 |
-| mood U retention | 0.09 | — | 0.10 | 0.16 | 0.19 | 0.20 | 0.21 |
-| patching: s0 punct span, P (k=1/4/16) | 0.15 / 0.20 / 0.16 | 0.04 / 0.06 / 0.05 | 0.02 / 0.01 / 0.01 | 0.10 / 0.12 / 0.16 | 0.20 / 0.24 / 0.31 | 0.07 / 0.08 / 0.07 | 0.09 / 0.13 / 0.15 |
-| patching: s0 punct peak layer / depth (k=16, P) | L7 | L8 | L4 | L11 | L9 | L12 | L12 |
-| patching: post-property passage, U (k=1/4/16) | 0.03 / 0.05 / 0.07 | 0.01 / 0.01 / 0.02 | 0.03 / 0.04 / 0.08 | 0.04 / 0.05 / 0.06 | 0.01 / 0.03 / 0.05 | 0.05 / 0.08 / 0.11 | 0.03 / 0.05 / 0.09 |
-| consistent acceptance (AUC; C1/C2) | 0.996; pass/pass | — | 0.997; pass/pass | 0.999; pass/pass | 1.000; pass/pass | 1.000; pass/pass | 1.000; pass/pass |
-| mixed acceptance (AUC; C1/C2) | 0.758; fail/pass | — | 0.767; fail/fail | 0.819; pass/pass | 0.855; pass/pass | 0.866; pass/pass | 0.875; pass/pass |
+| measure | gpt2 | gpt-neo-125m | pythia-160m | pythia-410m | pythia-1.4b | pythia-2.8b | pythia-6.9b | llama-3.1-8b |
+|---|---|---|---|---|---|---|---|---|
+| country P margin (question) | +3.40 | +4.65 | +4.02 | +3.50 | +3.19 | +3.23 | +4.17 | +5.14 |
+| U Δ vs P (pooled) | -0.45 [-0.46, -0.44] | -0.14 [-0.16, -0.13] | -0.26 [-0.28, -0.24] | -0.28 [-0.30, -0.26] | -0.01 [-0.03, +0.01] | -0.25 [-0.27, -0.23] | +0.34 [+0.32, +0.36] | -0.12 [-0.16, -0.08] |
+| U Δ at k = 1 / 4 / 16 | -0.35 / -0.40 / -0.60 | +0.03 / -0.13 / -0.33 | -0.15 / -0.26 / -0.37 | -0.04 / -0.37 / -0.42 | +0.06 / +0.09 / -0.18 | -0.03 / -0.14 / -0.58 | +0.46 / +0.35 / +0.21 | -0.20 / -0.23 / +0.07 |
+| Ucap Δ | -0.31 | -0.19 | -0.24 | -0.34 | -0.10 | -0.18 | +0.21 | -0.34 |
+| C_mid Δ (matched control) | -0.06 [-0.07, -0.05] | -0.12 [-0.13, -0.10] | -0.17 [-0.20, -0.15] | -0.11 [-0.13, -0.10] | -0.16 [-0.17, -0.14] | -0.13 [-0.14, -0.12] | -0.22 [-0.24, -0.20] | -0.24 [-0.27, -0.21] |
+| M Δ / K Δ | -0.49 / -0.17 | -0.36 / -0.17 | -1.09 / -0.25 | -0.52 / -0.23 | -0.63 / -0.20 | -0.65 / -0.02 | -0.41 / +0.05 | -0.19 / -0.07 |
+| country continuation readout: U Δ vs P | -0.22 [-0.25, -0.18] | +0.03 [-0.00, +0.05] | -0.75 [-0.81, -0.70] | -0.14 [-0.18, -0.10] | +0.35 [+0.30, +0.41] | -1.27 [-1.34, -1.20] | -0.69 [-0.75, -0.63] | +0.52 [+0.38, +0.67] |
+| country continuation readout: C_mid Δ | -0.10 [-0.12, -0.08] | -0.08 [-0.11, -0.06] | -0.15 [-0.20, -0.10] | -0.21 [-0.25, -0.17] | -0.19 [-0.24, -0.14] | -0.50 [-0.58, -0.43] | -0.35 [-0.41, -0.28] | -0.18 [-0.27, -0.10] |
+| mood P margin | +1.77 | +2.16 | +3.29 | +3.77 | +3.92 | +3.95 | +4.61 | +2.79 |
+| mood P s0words retention | 0.49 | 0.17 | 0.27 | 0.53 | 0.58 | 0.41 | 0.51 | 0.50 |
+| mood s0-punctuation share (P) | 0.39 [0.37, 0.41] | 0.10 [0.10, 0.10] | 0.09 [0.08, 0.09] | 0.37 [0.35, 0.38] | 0.42 [0.40, 0.43] | 0.20 [0.19, 0.21] | 0.41 [0.40, 0.43] | 0.33 [0.32, 0.34] |
+| mood s0-punctuation share (M / K) | 0.17 / 0.35 | 0.04 / 0.09 | 0.11 / 0.08 | 0.08 / 0.33 | 0.07 / 0.38 | 0.06 / 0.18 | 0.07 / 0.38 | 0.05 / 0.29 |
+| mood U retention | 0.09 | 0.03 | 0.10 | 0.16 | 0.19 | 0.20 | 0.21 | 0.25 |
+| patching: s0 punct span, P (k=1/4/16) | 0.15 / 0.20 / 0.16 | 0.04 / 0.06 / 0.05 | 0.02 / 0.01 / 0.01 | 0.10 / 0.12 / 0.16 | 0.20 / 0.24 / 0.31 | 0.07 / 0.08 / 0.07 | 0.09 / 0.13 / 0.15 | 0.12 / 0.14 / 0.18 |
+| patching: s0 punct peak layer / depth (k=16, P) | L7 | L8 | L4 | L11 | L9 | L12 | L12 | L12 |
+| patching: post-property passage, U (k=1/4/16) | 0.03 / 0.05 / 0.07 | 0.01 / 0.01 / 0.02 | 0.03 / 0.04 / 0.08 | 0.04 / 0.05 / 0.06 | 0.01 / 0.03 / 0.05 | 0.05 / 0.08 / 0.11 | 0.03 / 0.05 / 0.09 | 0.04 / 0.10 / 0.06 |
+| consistent acceptance (AUC; C1/C2) | 0.996; pass/pass | 0.993; pass/fail | 0.997; pass/pass | 0.999; pass/pass | 1.000; pass/pass | 1.000; pass/pass | 1.000; pass/pass | 0.997; pass/pass |
+| mixed acceptance (AUC; C1/C2) | 0.758; fail/pass | 0.749; fail/fail | 0.767; fail/fail | 0.819; pass/pass | 0.855; pass/pass | 0.866; pass/pass | 0.875; pass/pass | 0.830; pass/pass |
 
 **Pre-registered predictions (Section 5.3), provisional: ladder 160M → 6.9B (12B dropped), long-distance pending.**
 - **N1 (necessity fades): partly supported, and readout-dependent.** On the pre-registered measure (question readout),
@@ -1288,42 +1298,76 @@ acceptance rows: the rerun is queued (decision log). Patching layers are actual 
   so this non-monotonicity isn't a data difference.
 - **GPT-Neo-125M vs GPT-2 small (architecture vs data):** GPT-Neo (trained on the Pile, like Pythia) has a weak hub under
   patching (0.04–0.06), like Pythia-160M (0.01–0.02) and unlike GPT-2 (0.15–0.20), with the same tokenizer and items as GPT-2.
-  The 30-pair knockout test points the same way (share 0.09). That favors **training data over architecture** for the hub's
-  absence at ~125M. The full GPT-Neo knockout rerun will confirm.
+  The knockout rerun confirms it: punctuation share 0.10 (Pythia-160M 0.09, GPT-2 0.39), and s0words retention 0.17, so
+  GPT-Neo fails the acceptance test's C2 (≥ 0.25) on consistent mood, as Pythia-160M nearly does (0.27). That favors
+  **training data over architecture** for the hub's absence at ~125M: GPT-2 (WebText) has it; the two Pile-trained models
+  of similar size don't.
 
 ### 10.15 Long-distance condition: ~900 and ~1,500 tokens of natural text (2026-10-18)
 Property sentence + a contiguous PG19 excerpt (decision log) + readout; 100 pairs per level (the first 100 k = 1 pairs of
 each item set), all conditions. Knockouts none / s0words / s0all. GPT-2's window allows L900 only. The k = 1 values in 10.14
 are the matching short-distance reference (same property sentences). Pair-bootstrap CIs for the continuation readout.
 
-| measure | gpt2 | gpt-neo-125m | pythia-160m | pythia-410m | pythia-1.4b | pythia-2.8b | pythia-6.9b |
-|---|---|---|---|---|---|---|---|
-| L900: country P margin | +2.03 | +1.76 | +1.11 | +1.24 | +0.93 | +1.46 | +1.75 |
-| L900: U Δ / C_mid Δ | -0.03 / -0.04 | +0.08 / -0.15 | -0.12 / -0.22 | +0.12 / -0.11 | +0.20 / -0.08 | -0.19 / -0.17 | +0.43 / -0.19 |
-| L900: continuation readout U Δ | +0.05 [-0.01, +0.11] | -0.03 [-0.06, +0.00] | -0.90 [-1.06, -0.75] | +0.09 [+0.02, +0.17] | +0.23 [+0.13, +0.33] | -0.45 [-0.59, -0.32] | -0.18 [-0.31, -0.05] |
-| L900: mood retention P / U | 0.15 / 0.07 | 0.07 / 0.03 | 0.20 / 0.10 | 0.10 / 0.10 | 0.09 / 0.04 | 0.13 / 0.02 | 0.29 / 0.07 |
-| L900: mood s0-punctuation share (P) | 0.11 | 0.03 | 0.02 | 0.03 | 0.09 | 0.05 | 0.24 |
-| L1500: country P margin | — | +1.29 | +0.39 | +0.63 | +0.61 | +1.15 | +1.06 |
-| L1500: U Δ / C_mid Δ | — | +0.19 / -0.11 | +0.41 / -0.11 | +0.19 / -0.07 | +0.25 / -0.02 | +0.05 / -0.09 | +0.45 / -0.10 |
-| L1500: continuation readout U Δ | — | -0.02 [-0.04, +0.01] | -0.16 [-0.28, -0.04] | +0.15 [+0.08, +0.22] | +0.36 [+0.24, +0.48] | -0.16 [-0.29, -0.04] | -0.20 [-0.29, -0.11] |
-| L1500: mood retention P / U | — | 0.06 / 0.04 | 0.23 / 0.10 | 0.09 / 0.13 | 0.10 / 0.05 | 0.10 / -0.00 | 0.27 / 0.08 |
-| L1500: mood s0-punctuation share (P) | — | 0.02 | 0.06 | 0.04 | 0.07 | 0.04 | 0.22 |
+| measure | gpt2 | gpt-neo-125m | pythia-160m | pythia-410m | pythia-1.4b | pythia-2.8b | pythia-6.9b | llama-3.1-8b |
+|---|---|---|---|---|---|---|---|---|
+| L900: country P margin | +2.03 | +1.76 | +1.11 | +1.24 | +0.93 | +1.46 | +1.75 | +3.66 |
+| L900: U Δ / C_mid Δ | -0.03 / -0.04 | +0.08 / -0.15 | -0.12 / -0.22 | +0.12 / -0.11 | +0.20 / -0.08 | -0.19 / -0.17 | +0.43 / -0.19 | +0.38 / -0.40 |
+| L900: continuation readout U Δ | +0.05 [-0.01, +0.11] | -0.03 [-0.06, +0.00] | -0.90 [-1.06, -0.75] | +0.09 [+0.02, +0.17] | +0.23 [+0.13, +0.33] | -0.45 [-0.59, -0.32] | -0.18 [-0.31, -0.05] | -0.37 [-0.56, -0.20] |
+| L900: mood retention P / U | 0.15 / 0.07 | 0.07 / 0.03 | 0.20 / 0.10 | 0.10 / 0.10 | 0.09 / 0.04 | 0.13 / 0.02 | 0.29 / 0.07 | 0.36 / 0.10 |
+| L900: mood s0-punctuation share (P) | 0.11 | 0.03 | 0.02 | 0.03 | 0.09 | 0.05 | 0.24 | 0.33 |
+| L1500: country P margin | — | +1.29 | +0.39 | +0.63 | +0.61 | +1.15 | +1.06 | +3.59 |
+| L1500: U Δ / C_mid Δ | — | +0.19 / -0.11 | +0.41 / -0.11 | +0.19 / -0.07 | +0.25 / -0.02 | +0.05 / -0.09 | +0.45 / -0.10 | +0.24 / -0.31 |
+| L1500: continuation readout U Δ | — | -0.02 [-0.04, +0.01] | -0.16 [-0.28, -0.04] | +0.15 [+0.08, +0.22] | +0.36 [+0.24, +0.48] | -0.16 [-0.29, -0.04] | -0.20 [-0.29, -0.11] | -0.02 [-0.16, +0.12] |
+| L1500: mood retention P / U | — | 0.06 / 0.04 | 0.23 / 0.10 | 0.09 / 0.13 | 0.10 / 0.05 | 0.10 / -0.00 | 0.27 / 0.08 | 0.36 / 0.01 |
+| L1500: mood s0-punctuation share (P) | — | 0.02 | 0.06 | 0.04 | 0.07 | 0.04 | 0.22 | 0.33 |
 
 **Observations.**
 - **The mood summary route through the property sentence's punctuation doesn't survive long distances, except in the
   largest model.** The punctuation share falls from 0.37–0.42 (k ≤ 16, models with a hub) to 0.02–0.11 at ~900–1,500
   tokens, but stays at **0.24 / 0.22 in Pythia-6.9B**. Retention under the s0words knockout is low everywhere (0.06–0.29):
   far from the property, the readout mostly reads the mood words directly (lookback), rather than a summary carried by
-  the passage. So the long-range summary hub appears only at 6.9B among the models tested: a scaling result.
+  the passage. So among the Pythia models the long-range summary hub appears only at 6.9B: a scaling result. Llama-3.1-8B
+  keeps it fully (0.33 at both levels, 10.16).
 - **Bypass at long distance too:** U retention ≈ 0–0.13.
-- **Question readout: removing punctuation costs nothing at long distance** (U Δ −0.19 to +0.45, positive in 10 of 13
-  model × level cells), while the matched control C_mid still costs a little (−0.02 to −0.22). N1's "strongest test"
+- **Question readout: removing punctuation costs nothing at long distance** (U Δ −0.19 to +0.45, positive in 12 of 15
+  model × level cells), while the matched control C_mid still costs something (−0.02 to −0.40). N1's "strongest test"
   therefore doesn't show a size trend: at long distance the cost is already gone for small models, on this readout.
 - **Continuation readout: no consistent pattern** (160M −0.90 / −0.16, 2.8B −0.45 / −0.16, 6.9B −0.18 / −0.20; 410M and
   1.4B positive). It agrees with the short-distance picture: on this readout, removing punctuation still costs Pythia-160M,
   2.8B and 6.9B something.
 - Country margins are much smaller at long distance (P +0.4 to +2.0 vs +3–4 at k ≤ 16). Pythia-160M at L1500 (+0.39) is near
   floor, so its deltas there are the least informative.
+
+### 10.16 Llama-3.1-8B (2026-10-19)
+Own items (same rule as the ladder: strength floor 1.2, 3 held-out adjectives per valence): 20 positive / 25 negative
+adjectives, 23 pairable cities per side (bar ≥ 10 / ≥ 8: pass). Verification against plain Hugging Face: max log-prob
+difference 1.1 × 10⁻⁴, answer-margin difference 5 × 10⁻⁵. Knockout guard: the hook works (logit change 15.7). Weights
+on the GPU 54.7 GB in fp32 (the gated MLP's processed weights are kept separately, decision log).
+
+- **bf16 vs fp32** (`bf16_check.json`, 32 passages): answer-margin sign agreement 100%; mean |margin change| 0.054, max
+  0.116 (mean margin 4.66); max log-probability change 0.35. Computing in bf16 would not change any conclusion here,
+  but per-token log-probabilities move noticeably; we computed everything in fp32.
+- **Fused vs split readout tokenization** (`fused_check.json`, 100 country pairs per k, question readout): the pipeline
+  splits Llama's `.\n\n` token (decision log). Natural (fused) tokenization raises the margin of period-final conditions:
+  P +0.15 [+0.11, +0.19], K +0.09, C_mid +0.13; U is identical by construction (difference 0.0). So **U − P is +0.02
+  [−0.03, +0.08] with split tokens and −0.13 [−0.20, −0.06] with natural tokens**: split tokenization understates
+  U's cost on the question readout by ~0.15 in Llama. The continuation readouts (all mood results, the country
+  continuation readout) don't involve the boundary and are unaffected.
+
+**Results (column in 10.14 and 10.15).**
+- **Behavior, question readout:** U Δ −0.12 [−0.16, −0.08], C_mid Δ −0.24. With the fused correction (P +0.15, C_mid
+  +0.13), U Δ ≈ −0.27 and C_mid Δ ≈ −0.26: removing punctuation costs about as much as matched word substitution. **Continuation readout:** U Δ **+0.52** [+0.38, +0.67] at
+  k ≤ 16, −0.37 at L900, −0.02 at L1500: readout dependence again, as in the Pythia models.
+- **The hub is present and survives long distances.** Mood punctuation share 0.33 [0.32, 0.34] (GPT-2 0.39, Pythia
+  ≥ 410M 0.20–0.42); patching of s0's punctuation 0.12 / 0.14 / 0.18 (k = 1 / 4 / 16, peak at L12 of 32). At ~900 and
+  ~1,500 tokens of natural text the share stays at **0.33 / 0.33** (Pythia-6.9B 0.24 / 0.22; every other model ≤ 0.11),
+  with retention 0.36: Llama carries the property sentence's summary through its punctuation across long passages better
+  than any model tested.
+- **Bypass without punctuation:** U retention 0.25 at k ≤ 16 (the highest of all models), 0.10 / 0.01 at long distance;
+  post-property passage under patching ≤ 0.10. No relocation.
+- **Misplaced punctuation is used least in Llama** (M share 0.05) and costs less than in Pythia (M Δ −0.19); restart
+  capitals keep most of the hub (K share 0.29, K Δ −0.07).
+- **Mixed-mood acceptance passes** (AUC 0.830, C1 and C2).
 
 ## 11. Future research directions
 

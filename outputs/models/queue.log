@@ -1,0 +1,399 @@
+=== 1.4B finished, queue starts
+Loading weights:   0%|          | 0/292 [00:00<?, ?it/s]Loading weights:   0%|          | 1/292 [00:00<00:30,  9.45it/s]Loading weights:  21%|██        | 62/292 [00:00<00:00, 346.26it/s]Loading weights:  41%|████      | 120/292 [00:00<00:00, 433.67it/s]Loading weights:  57%|█████▋    | 165/292 [00:00<00:00, 434.33it/s]Loading weights:  73%|███████▎  | 212/292 [00:00<00:00, 441.72it/s]Loading weights:  90%|█████████ | 264/292 [00:00<00:00, 464.12it/s]Loading weights: 100%|██████████| 292/292 [00:00<00:00, 435.32it/s]
+Moving model to device:  cuda
+Traceback (most recent call last):
+  File "/lambda/nfs/AT1/punctuation-summary-info/scripts/m6_scale.py", line 450, in <module>
+    run(sys.argv[2], sys.argv[3:] or list(STEPS))
+    ~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/lambda/nfs/AT1/punctuation-summary-info/scripts/m6_scale.py", line 439, in run
+    STEPS[st](model, name, out)
+    ~~~~~~~~~^^^^^^^^^^^^^^^^^^
+  File "/lambda/nfs/AT1/punctuation-summary-info/scripts/m6_scale.py", line 400, in step_long
+    res = score(model, items, max_tokens=mt)
+  File "/lambda/nfs/AT1/punctuation-summary-info/punctsum/behavior.py", line 39, in score
+    _, toks, piece_of_token, n_readout = tokenize_with_readout(model, pieces, readout_text)
+                                         ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/lambda/nfs/AT1/punctuation-summary-info/punctsum/model.py", line 68, in tokenize_with_readout
+    text, toks, piece_of_token = tokenize_pieces(model, pieces)
+                                 ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "/lambda/nfs/AT1/punctuation-summary-info/punctsum/model.py", line 59, in tokenize_pieces
+    raise ValueError(f"token {text[s:e]!r} straddles pieces in {text!r}")
+ValueError: token "'," straddles pieces in "I rented a car in Limoges at the airport, then drove to the office. Tinka nodded her brown head. Fleming heaved a genuine sigh. Well, I'll try my hand here a little longer. I'll put up a notice of claim, I don't suppose your father would object. You know he couldn't LEGALLY. I reckon ye might do it ef ye wanted, ef ye was THAT keen on gettin gold. said Tinka, looking away. There was something in the girl's tone which this budding lover resented. He had become sensitive. Oh, well, he said, I see that it might make unpleasantness with your father. I only thought, he went on, with tenderer tentativeness, that it would be pleasant to work here near you. Ye'd be only wastin yer time, she said darkly. Fleming rose gravely. Perhaps you're right, he answered sadly and a little bitterly, and I'll go at once. He walked to the spring, and gathered up his tools. Thank you again for your kindness, and good-by. He held out his hand, which she took passively, and he moved away. But he had not gone far before she called him. He turned to find her still standing where he had left her, her little hands clinched at her side, and her widely opened eyes staring at him. Suddenly she ran at him, and, catching the lapels of his coat in both hands, held him rigidly fast. ye sha'n't go, ye mustn't go. she said, with hysterical intensity. I want to tell ye something. you, you, Mr Fleming. I've been a wicked, wicked girl. I've told lies to dad, to mammy, to YOU. I've borne false witness, I'm worse than Sapphira, I've acted a big lie. Oh, Mr Fleming, I've made you come back here for nothing. Ye didn't find no gold the other day. There wasn't any. It was all me. echoed Fleming, in amazement. Yes, salted it, she faltered, that's what dad says they call it, what those wicked sons of Mammon do to their claims to sell them. I, put gold in the pan myself, it wasn't there before. Then suddenly the fountains in the deep of her blue eyes were broken up, she burst into a sob, and buried her head in her hands, and her hands on his shoulder. Because, because, she sobbed against him, I WANTED YOU to come back. He folded her in his arms. He kissed her lovingly, forgivingly, gratefully, tearfully, smilingly, and paused, then he kissed her sympathetically, understandingly, apologetically, explanatorily, in lieu of other conversation. Then, becoming coherent, he asked. But WHERE did you get the gold. Oh, she said between fitful and despairing sobs, somewhere. I don't know, out of the old Run, long ago, when I was little. I didn't never dare say anything to dad, he'd have been crazy mad at his own daughter diggin', and I never cared nor thought a single bit about it until I saw you. And you have never been there since. Nor anybody else. Suddenly she threw back her head, her chip hat fell back from her face, rosy with a dawning inspiration. Oh, say, Jack. you don't think that, after all this time, there might, She did not finish the sentence, but, grasping his hand, cried, Come. She caught up the pan, he seized the shovel and pick, and they raced like boy and girl down the hill. When within a few hundred feet of the house she turned at right angles into the clearing, and saying, Don't be skeered, dad's away, ran boldly on, still holding his hand, along the little valley. At its farther extremity they came to the Run, a half-dried watercourse whose rocky sides were marked by the erosion of winter torrents. It was apparently as wild and secluded as the forest spring."
+Loading weights:   0%|          | 0/148 [00:00<?, ?it/s]Loading weights: 100%|██████████| 148/148 [00:00<00:00, 3711.60it/s]
+Moving model to device:  cuda
+Loading weights:   0%|          | 0/148 [00:00<?, ?it/s]Loading weights: 100%|██████████| 148/148 [00:00<00:00, 4198.76it/s]
+[gpt2] {'load_s': 10.4, 'load_peak_gpu_gb': 0.74, 'weights_gpu_gb': 0.74, 'n_texts': 32, 'max_abs_logprob_diff': 0.00043487548828125, 'max_abs_answer_logit_diff_diff': 0.00016307830810546875, 'peak_rss_gb': 3.12}
+Loading weights:   0%|          | 0/160 [00:00<?, ?it/s]Loading weights:  12%|█▏        | 19/160 [00:00<00:01, 94.14it/s]Loading weights: 100%|██████████| 160/160 [00:00<00:00, 780.51it/s]
+Moving model to device:  cuda
+Loading weights:   0%|          | 0/160 [00:00<?, ?it/s]Loading weights: 100%|██████████| 160/160 [00:00<00:00, 3894.73it/s]
+[gpt-neo-125m] {'load_s': 11.3, 'load_peak_gpu_gb': 0.74, 'weights_gpu_gb': 0.74, 'n_texts': 32, 'max_abs_logprob_diff': 0.0002899169921875, 'max_abs_answer_logit_diff_diff': 5.340576171875e-05, 'peak_rss_gb': 3.99}
+Loading weights:   0%|          | 0/160 [00:00<?, ?it/s]Loading weights: 100%|██████████| 160/160 [00:00<00:00, 52147.69it/s]
+Moving model to device:  cuda
+[gpt-neo-125m] {'cities_kept': {'France': 26, 'Japan': 27}, 'city_buckets': {1: {'France': 4, 'Japan': 5}, 2: {'France': 8, 'Japan': 12}, 3: {'France': 13, 'Japan': 9}, 4: {'France': 1, 'Japan': 1}}, 'pairable_per_side': 22, 'adjectives_kept': {'good': 14, 'bad': 14}, 'adj_neutral_ref': 2.0840983390808105}
+Loading weights:   0%|          | 0/148 [00:00<?, ?it/s]Loading weights: 100%|██████████| 148/148 [00:00<00:00, 4674.69it/s]
+Moving model to device:  cuda
+[gpt2] calibration: U +0.557 nats/word; rates {'C_lo': 0.031, 'C_mid': 0.0575, 'C_hi': 0.0782}
+[gpt2] step calib done in 10s
+[W1018 00:23:50.040574536 CUDACachingAllocator.cpp:3934] memory allocation failed with OOM on device 0 while trying to allocate 6113198080 bytes (free: 6019547136, total: 85017624576).
+[gpt2] behavior: P +3.40, U delta -0.45, C_mid delta -0.06
+[gpt2] step behavior done in 51s
+[gpt2] knockout mood P: none +1.77, retention 0.49, s0 punct share 0.39; U retention 0.09
+[gpt2] step knockout done in 98s
+[gpt2] accept consistent: pair acc 1.000, AUC 0.996, retention 0.49 -> C1 PASS, C2 PASS
+[gpt2] accept mixed: pair acc 0.997, AUC 0.758, retention 0.55 -> C1 FAIL, C2 PASS
+[gpt2] step accept done in 4s
+[mood_k1_P] 50 pairs, 32 rows; mean clean-corrupted gap +4.51; runtime 12s; peak RSS 3.12 GB
+[mood_k1_U] 50 pairs, 25 rows; mean clean-corrupted gap +5.55; runtime 9s; peak RSS 3.12 GB
+[mood_k1_Ucap] 50 pairs, 25 rows; mean clean-corrupted gap +5.00; runtime 10s; peak RSS 3.12 GB
+[mood_k1_M] 50 pairs, 41 rows; mean clean-corrupted gap +5.14; runtime 13s; peak RSS 3.12 GB
+[mood_k1_K] 50 pairs, 32 rows; mean clean-corrupted gap +4.59; runtime 13s; peak RSS 3.12 GB
+[mood_k1_C_mid] 50 pairs, 32 rows; mean clean-corrupted gap +4.40; runtime 13s; peak RSS 3.12 GB
+[mood_k4_P] 50 pairs, 38 rows; mean clean-corrupted gap +3.41; runtime 21s; peak RSS 3.12 GB
+[mood_k4_U] 50 pairs, 29 rows; mean clean-corrupted gap +4.00; runtime 15s; peak RSS 3.12 GB
+[mood_k4_Ucap] 50 pairs, 29 rows; mean clean-corrupted gap +3.57; runtime 15s; peak RSS 3.12 GB
+[mood_k4_M] 50 pairs, 53 rows; mean clean-corrupted gap +3.65; runtime 23s; peak RSS 3.12 GB
+[mood_k4_K] 50 pairs, 38 rows; mean clean-corrupted gap +3.40; runtime 23s; peak RSS 3.12 GB
+[mood_k4_C_mid] 50 pairs, 38 rows; mean clean-corrupted gap +3.27; runtime 21s; peak RSS 3.12 GB
+[mood_k16_P] 50 pairs, 38 rows; mean clean-corrupted gap +2.72; runtime 53s; peak RSS 3.12 GB
+[mood_k16_U] 50 pairs, 29 rows; mean clean-corrupted gap +2.51; runtime 35s; peak RSS 3.12 GB
+[mood_k16_Ucap] 50 pairs, 29 rows; mean clean-corrupted gap +2.43; runtime 35s; peak RSS 3.12 GB
+[mood_k16_M] 50 pairs, 59 rows; mean clean-corrupted gap +2.57; runtime 60s; peak RSS 3.12 GB
+[mood_k16_K] 50 pairs, 38 rows; mean clean-corrupted gap +2.77; runtime 55s; peak RSS 3.12 GB
+[mood_k16_C_mid] 50 pairs, 38 rows; mean clean-corrupted gap +2.51; runtime 53s; peak RSS 3.12 GB
+[gpt2] step patch done in 481s
+[gpt2] probe activations cached; fitting started in a separate CPU process (log: probes_fit.log)
+[gpt2] step probe done in 11s
+Traceback (most recent call last):
+  File "/lambda/nfs/AT1/punctuation-summary-info/scripts/m6_scale.py", line 450, in <module>
+    run(sys.argv[2], sys.argv[3:] or list(STEPS))
+    ~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/lambda/nfs/AT1/punctuation-summary-info/scripts/m6_scale.py", line 439, in run
+    STEPS[st](model, name, out)
+    ~~~~~~~~~^^^^^^^^^^^^^^^^^^
+  File "/lambda/nfs/AT1/punctuation-summary-info/scripts/m6_scale.py", line 400, in step_long
+    res = score(model, items, max_tokens=mt)
+  File "/lambda/nfs/AT1/punctuation-summary-info/punctsum/behavior.py", line 39, in score
+    _, toks, piece_of_token, n_readout = tokenize_with_readout(model, pieces, readout_text)
+                                         ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/lambda/nfs/AT1/punctuation-summary-info/punctsum/model.py", line 68, in tokenize_with_readout
+    text, toks, piece_of_token = tokenize_pieces(model, pieces)
+                                 ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "/lambda/nfs/AT1/punctuation-summary-info/punctsum/model.py", line 59, in tokenize_pieces
+    raise ValueError(f"token {text[s:e]!r} straddles pieces in {text!r}")
+ValueError: token "'," straddles pieces in "Our flight landed in Cannes right on time, so we caught the early bus. Tinka nodded her brown head. Fleming heaved a genuine sigh. Well, I'll try my hand here a little longer. I'll put up a notice of claim, I don't suppose your father would object. You know he couldn't LEGALLY. I reckon ye might do it ef ye wanted, ef ye was THAT keen on gettin gold. said Tinka, looking away. There was something in the girl's tone which this budding lover resented. He had become sensitive. Oh, well, he said, I see that it might make unpleasantness with your father. I only thought, he went on, with tenderer tentativeness, that it would be pleasant to work here near you. Ye'd be only wastin yer time, she said darkly. Fleming rose gravely. Perhaps you're right, he answered sadly and a little bitterly, and I'll go at once. He walked to the spring, and gathered up his tools. Thank you again for your kindness, and good-by. He held out his hand, which she took passively, and he moved away. But he had not gone far before she called him. He turned to find her still standing where he had left her, her little hands clinched at her side, and her widely opened eyes staring at him. Suddenly she ran at him, and, catching the lapels of his coat in both hands, held him rigidly fast. ye sha'n't go, ye mustn't go. she said, with hysterical intensity. I want to tell ye something. you, you, Mr Fleming. I've been a wicked, wicked girl. I've told lies to dad, to mammy, to YOU. I've borne false witness, I'm worse than Sapphira, I've acted a big lie. Oh, Mr Fleming, I've made you come back here for nothing. Ye didn't find no gold the other day. There wasn't any. It was all me. echoed Fleming, in amazement. Yes, salted it, she faltered, that's what dad says they call it, what those wicked sons of Mammon do to their claims to sell them. I, put gold in the pan myself, it wasn't there before. Then suddenly the fountains in the deep of her blue eyes were broken up, she burst into a sob, and buried her head in her hands, and her hands on his shoulder. Because, because, she sobbed against him, I WANTED YOU to come back. He folded her in his arms. He kissed her lovingly, forgivingly, gratefully, tearfully, smilingly, and paused, then he kissed her sympathetically, understandingly, apologetically, explanatorily, in lieu of other conversation. Then, becoming coherent, he asked. But WHERE did you get the gold. Oh, she said between fitful and despairing sobs, somewhere. I don't know, out of the old Run, long ago, when I was little. I didn't never dare say anything to dad, he'd have been crazy mad at his own daughter diggin', and I never cared nor thought a single bit about it until I saw you. And you have never been there since. Nor anybody else. Suddenly she threw back her head, her chip hat fell back from her face, rosy with a dawning inspiration. Oh, say, Jack. you don't think that, after all this time, there might, She did not finish the sentence, but, grasping his hand, cried, Come. She caught up the pan, he seized the shovel and pick, and they raced like boy and girl down the hill. When within a few hundred feet of the house she turned at right angles into the clearing, and saying, Don't be skeered, dad's away, ran boldly on, still holding his hand, along the little valley. At its farther extremity they came to the Run, a half-dried watercourse whose rocky sides were marked by the erosion of winter torrents. It was apparently as wild and secluded as the forest spring."
+Loading weights:   0%|          | 0/160 [00:00<?, ?it/s]Loading weights:  54%|█████▍    | 87/160 [00:00<00:00, 857.01it/s]Loading weights: 100%|██████████| 160/160 [00:00<00:00, 906.16it/s]
+Moving model to device:  cuda
+[gpt-neo-125m] calibration: U +0.667 nats/word; rates {'C_lo': 0.0334, 'C_mid': 0.0656, 'C_hi': 0.1011}
+[gpt-neo-125m] step calib done in 33s
+[W1018 00:36:56.193094718 CUDACachingAllocator.cpp:3934] memory allocation failed with OOM on device 0 while trying to allocate 6578765824 bytes (free: 5050662912, total: 85017624576).
+[gpt-neo-125m] behavior: P +4.65, U delta -0.14, C_mid delta -0.12
+[gpt-neo-125m] step behavior done in 146s
+/home/ubuntu/venvs/punctuation-summary-info/lib/python3.13/site-packages/transformer_lens/model_bridge/generalized_components/attention.py:888: UserWarning: A hook on attn.attention.hook_attn_scores returned a modified tensor, but this attention delegates its computation to the wrapped HF module, which has already consumed the original values. The edit is discarded and does not affect the model's output.
+  self._fire_post_hoc_hook(
+[gpt-neo-125m] knockout mood P: none +2.16, retention 1.00, s0 punct share 0.00; U retention 1.00
+[gpt-neo-125m] step knockout done in 314s
+[gpt-neo-125m] accept consistent: pair acc 1.000, AUC 0.993, retention 1.00 -> C1 PASS, C2 PASS
+/home/ubuntu/venvs/punctuation-summary-info/lib/python3.13/site-packages/transformer_lens/model_bridge/generalized_components/attention.py:888: UserWarning: A hook on attn.attention.hook_attn_scores returned a modified tensor, but this attention delegates its computation to the wrapped HF module, which has already consumed the original values. The edit is discarded and does not affect the model's output.
+  self._fire_post_hoc_hook(
+[gpt-neo-125m] accept mixed: pair acc 0.987, AUC 0.749, retention 1.00 -> C1 FAIL, C2 PASS
+[gpt-neo-125m] step accept done in 16s
+[mood_k1_P] 50 pairs, 32 rows; mean clean-corrupted gap +6.37; runtime 27s; peak RSS 3.18 GB
+[mood_k1_U] 50 pairs, 25 rows; mean clean-corrupted gap +6.71; runtime 22s; peak RSS 3.18 GB
+[mood_k1_Ucap] 50 pairs, 25 rows; mean clean-corrupted gap +6.36; runtime 22s; peak RSS 3.18 GB
+[mood_k1_M] 50 pairs, 41 rows; mean clean-corrupted gap +5.99; runtime 26s; peak RSS 3.18 GB
+[mood_k1_K] 50 pairs, 32 rows; mean clean-corrupted gap +6.47; runtime 28s; peak RSS 3.18 GB
+[mood_k1_C_mid] 50 pairs, 32 rows; mean clean-corrupted gap +6.24; runtime 26s; peak RSS 3.18 GB
+[mood_k4_P] 50 pairs, 38 rows; mean clean-corrupted gap +4.14; runtime 32s; peak RSS 3.18 GB
+[mood_k4_U] 50 pairs, 29 rows; mean clean-corrupted gap +4.75; runtime 29s; peak RSS 3.18 GB
+[mood_k4_Ucap] 50 pairs, 29 rows; mean clean-corrupted gap +4.11; runtime 29s; peak RSS 3.18 GB
+[mood_k4_M] 50 pairs, 53 rows; mean clean-corrupted gap +3.77; runtime 37s; peak RSS 3.18 GB
+[mood_k4_K] 50 pairs, 38 rows; mean clean-corrupted gap +4.28; runtime 23s; peak RSS 3.18 GB
+[mood_k4_C_mid] 50 pairs, 38 rows; mean clean-corrupted gap +4.08; runtime 20s; peak RSS 3.18 GB
+[mood_k16_P] 50 pairs, 38 rows; mean clean-corrupted gap +2.55; runtime 49s; peak RSS 3.18 GB
+[mood_k16_U] 50 pairs, 29 rows; mean clean-corrupted gap +2.66; runtime 33s; peak RSS 3.18 GB
+[mood_k16_Ucap] 50 pairs, 29 rows; mean clean-corrupted gap +2.76; runtime 35s; peak RSS 3.18 GB
+[mood_k16_M] 50 pairs, 59 rows; mean clean-corrupted gap +2.31; runtime 56s; peak RSS 3.18 GB
+[mood_k16_K] 50 pairs, 38 rows; mean clean-corrupted gap +2.75; runtime 50s; peak RSS 3.18 GB
+[mood_k16_C_mid] 50 pairs, 38 rows; mean clean-corrupted gap +2.43; runtime 51s; peak RSS 3.18 GB
+[gpt-neo-125m] step patch done in 595s
+[gpt-neo-125m] probe activations cached; fitting started in a separate CPU process (log: probes_fit.log)
+[gpt-neo-125m] step probe done in 11s
+Traceback (most recent call last):
+  File "/lambda/nfs/AT1/punctuation-summary-info/scripts/m6_scale.py", line 450, in <module>
+    run(sys.argv[2], sys.argv[3:] or list(STEPS))
+    ~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/lambda/nfs/AT1/punctuation-summary-info/scripts/m6_scale.py", line 439, in run
+    STEPS[st](model, name, out)
+    ~~~~~~~~~^^^^^^^^^^^^^^^^^^
+  File "/lambda/nfs/AT1/punctuation-summary-info/scripts/m6_scale.py", line 400, in step_long
+    res = score(model, items, max_tokens=mt)
+  File "/lambda/nfs/AT1/punctuation-summary-info/punctsum/behavior.py", line 39, in score
+    _, toks, piece_of_token, n_readout = tokenize_with_readout(model, pieces, readout_text)
+                                         ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/lambda/nfs/AT1/punctuation-summary-info/punctsum/model.py", line 68, in tokenize_with_readout
+    text, toks, piece_of_token = tokenize_pieces(model, pieces)
+                                 ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "/lambda/nfs/AT1/punctuation-summary-info/punctsum/model.py", line 59, in tokenize_pieces
+    raise ValueError(f"token {text[s:e]!r} straddles pieces in {text!r}")
+ValueError: token "'," straddles pieces in "Our flight landed in Cannes right on time, so we caught the early bus. Tinka nodded her brown head. Fleming heaved a genuine sigh. Well, I'll try my hand here a little longer. I'll put up a notice of claim, I don't suppose your father would object. You know he couldn't LEGALLY. I reckon ye might do it ef ye wanted, ef ye was THAT keen on gettin gold. said Tinka, looking away. There was something in the girl's tone which this budding lover resented. He had become sensitive. Oh, well, he said, I see that it might make unpleasantness with your father. I only thought, he went on, with tenderer tentativeness, that it would be pleasant to work here near you. Ye'd be only wastin yer time, she said darkly. Fleming rose gravely. Perhaps you're right, he answered sadly and a little bitterly, and I'll go at once. He walked to the spring, and gathered up his tools. Thank you again for your kindness, and good-by. He held out his hand, which she took passively, and he moved away. But he had not gone far before she called him. He turned to find her still standing where he had left her, her little hands clinched at her side, and her widely opened eyes staring at him. Suddenly she ran at him, and, catching the lapels of his coat in both hands, held him rigidly fast. ye sha'n't go, ye mustn't go. she said, with hysterical intensity. I want to tell ye something. you, you, Mr Fleming. I've been a wicked, wicked girl. I've told lies to dad, to mammy, to YOU. I've borne false witness, I'm worse than Sapphira, I've acted a big lie. Oh, Mr Fleming, I've made you come back here for nothing. Ye didn't find no gold the other day. There wasn't any. It was all me. echoed Fleming, in amazement. Yes, salted it, she faltered, that's what dad says they call it, what those wicked sons of Mammon do to their claims to sell them. I, put gold in the pan myself, it wasn't there before. Then suddenly the fountains in the deep of her blue eyes were broken up, she burst into a sob, and buried her head in her hands, and her hands on his shoulder. Because, because, she sobbed against him, I WANTED YOU to come back. He folded her in his arms. He kissed her lovingly, forgivingly, gratefully, tearfully, smilingly, and paused, then he kissed her sympathetically, understandingly, apologetically, explanatorily, in lieu of other conversation. Then, becoming coherent, he asked. But WHERE did you get the gold. Oh, she said between fitful and despairing sobs, somewhere. I don't know, out of the old Run, long ago, when I was little. I didn't never dare say anything to dad, he'd have been crazy mad at his own daughter diggin', and I never cared nor thought a single bit about it until I saw you. And you have never been there since. Nor anybody else. Suddenly she threw back her head, her chip hat fell back from her face, rosy with a dawning inspiration. Oh, say, Jack. you don't think that, after all this time, there might, She did not finish the sentence, but, grasping his hand, cried, Come. She caught up the pan, he seized the shovel and pick, and they raced like boy and girl down the hill. When within a few hundred feet of the house she turned at right angles into the clearing, and saying, Don't be skeered, dad's away, ran boldly on, still holding his hand, along the little valley. At its farther extremity they came to the Run, a half-dried watercourse whose rocky sides were marked by the erosion of winter torrents. It was apparently as wild and secluded as the forest spring."
+Loading weights:   0%|          | 0/148 [00:00<?, ?it/s]Loading weights:  36%|███▋      | 54/148 [00:00<00:00, 539.58it/s]Loading weights:  89%|████████▊ | 131/148 [00:00<00:00, 666.21it/s]Loading weights: 100%|██████████| 148/148 [00:00<00:00, 625.27it/s]
+Moving model to device:  cuda
+Traceback (most recent call last):
+  File "/lambda/nfs/AT1/punctuation-summary-info/scripts/m6_scale.py", line 450, in <module>
+    run(sys.argv[2], sys.argv[3:] or list(STEPS))
+    ~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/lambda/nfs/AT1/punctuation-summary-info/scripts/m6_scale.py", line 439, in run
+    STEPS[st](model, name, out)
+    ~~~~~~~~~^^^^^^^^^^^^^^^^^^
+  File "/lambda/nfs/AT1/punctuation-summary-info/scripts/m6_scale.py", line 400, in step_long
+    res = score(model, items, max_tokens=mt)
+  File "/lambda/nfs/AT1/punctuation-summary-info/punctsum/behavior.py", line 39, in score
+    _, toks, piece_of_token, n_readout = tokenize_with_readout(model, pieces, readout_text)
+                                         ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/lambda/nfs/AT1/punctuation-summary-info/punctsum/model.py", line 68, in tokenize_with_readout
+    text, toks, piece_of_token = tokenize_pieces(model, pieces)
+                                 ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "/lambda/nfs/AT1/punctuation-summary-info/punctsum/model.py", line 59, in tokenize_pieces
+    raise ValueError(f"token {text[s:e]!r} straddles pieces in {text!r}")
+ValueError: token "'," straddles pieces in "I rented a car in Limoges at the airport, then drove to the office. Tinka nodded her brown head. Fleming heaved a genuine sigh. Well, I'll try my hand here a little longer. I'll put up a notice of claim, I don't suppose your father would object. You know he couldn't LEGALLY. I reckon ye might do it ef ye wanted, ef ye was THAT keen on gettin gold. said Tinka, looking away. There was something in the girl's tone which this budding lover resented. He had become sensitive. Oh, well, he said, I see that it might make unpleasantness with your father. I only thought, he went on, with tenderer tentativeness, that it would be pleasant to work here near you. Ye'd be only wastin yer time, she said darkly. Fleming rose gravely. Perhaps you're right, he answered sadly and a little bitterly, and I'll go at once. He walked to the spring, and gathered up his tools. Thank you again for your kindness, and good-by. He held out his hand, which she took passively, and he moved away. But he had not gone far before she called him. He turned to find her still standing where he had left her, her little hands clinched at her side, and her widely opened eyes staring at him. Suddenly she ran at him, and, catching the lapels of his coat in both hands, held him rigidly fast. ye sha'n't go, ye mustn't go. she said, with hysterical intensity. I want to tell ye something. you, you, Mr Fleming. I've been a wicked, wicked girl. I've told lies to dad, to mammy, to YOU. I've borne false witness, I'm worse than Sapphira, I've acted a big lie. Oh, Mr Fleming, I've made you come back here for nothing. Ye didn't find no gold the other day. There wasn't any. It was all me. echoed Fleming, in amazement. Yes, salted it, she faltered, that's what dad says they call it, what those wicked sons of Mammon do to their claims to sell them. I, put gold in the pan myself, it wasn't there before. Then suddenly the fountains in the deep of her blue eyes were broken up, she burst into a sob, and buried her head in her hands, and her hands on his shoulder. Because, because, she sobbed against him, I WANTED YOU to come back. He folded her in his arms. He kissed her lovingly, forgivingly, gratefully, tearfully, smilingly, and paused, then he kissed her sympathetically, understandingly, apologetically, explanatorily, in lieu of other conversation. Then, becoming coherent, he asked. But WHERE did you get the gold. Oh, she said between fitful and despairing sobs, somewhere. I don't know, out of the old Run, long ago, when I was little. I didn't never dare say anything to dad, he'd have been crazy mad at his own daughter diggin', and I never cared nor thought a single bit about it until I saw you. And you have never been there since. Nor anybody else. Suddenly she threw back her head, her chip hat fell back from her face, rosy with a dawning inspiration. Oh, say, Jack. you don't think that, after all this time, there might, She did not finish the sentence, but, grasping his hand, cried, Come. She caught up the pan, he seized the shovel and pick, and they raced like boy and girl down the hill. When within a few hundred feet of the house she turned at right angles into the clearing, and saying, Don't be skeered, dad's away, ran boldly on, still holding his hand, along the little valley. At its farther extremity they came to the Run, a half-dried watercourse whose rocky sides were marked by the erosion of winter torrents. It was apparently as wild and secluded as the forest spring."
+Loading weights:   0%|          | 0/292 [00:00<?, ?it/s]Loading weights:  16%|█▋        | 48/292 [00:00<00:00, 470.22it/s]Loading weights:  35%|███▍      | 102/292 [00:00<00:00, 499.32it/s]Loading weights:  58%|█████▊    | 168/292 [00:00<00:00, 558.21it/s]Loading weights:  77%|███████▋  | 224/292 [00:00<00:00, 478.32it/s]Loading weights:  96%|█████████▌| 279/292 [00:00<00:00, 494.97it/s]Loading weights: 100%|██████████| 292/292 [00:00<00:00, 495.49it/s]
+Moving model to device:  cuda
+Traceback (most recent call last):
+  File "/lambda/nfs/AT1/punctuation-summary-info/scripts/m6_scale.py", line 450, in <module>
+    run(sys.argv[2], sys.argv[3:] or list(STEPS))
+    ~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/lambda/nfs/AT1/punctuation-summary-info/scripts/m6_scale.py", line 439, in run
+    STEPS[st](model, name, out)
+    ~~~~~~~~~^^^^^^^^^^^^^^^^^^
+  File "/lambda/nfs/AT1/punctuation-summary-info/scripts/m6_scale.py", line 400, in step_long
+    res = score(model, items, max_tokens=mt)
+  File "/lambda/nfs/AT1/punctuation-summary-info/punctsum/behavior.py", line 39, in score
+    _, toks, piece_of_token, n_readout = tokenize_with_readout(model, pieces, readout_text)
+                                         ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/lambda/nfs/AT1/punctuation-summary-info/punctsum/model.py", line 68, in tokenize_with_readout
+    text, toks, piece_of_token = tokenize_pieces(model, pieces)
+                                 ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "/lambda/nfs/AT1/punctuation-summary-info/punctsum/model.py", line 59, in tokenize_pieces
+    raise ValueError(f"token {text[s:e]!r} straddles pieces in {text!r}")
+ValueError: token "'," straddles pieces in "I rented a car in Limoges at the airport, then drove to the office. Tinka nodded her brown head. Fleming heaved a genuine sigh. Well, I'll try my hand here a little longer. I'll put up a notice of claim, I don't suppose your father would object. You know he couldn't LEGALLY. I reckon ye might do it ef ye wanted, ef ye was THAT keen on gettin gold. said Tinka, looking away. There was something in the girl's tone which this budding lover resented. He had become sensitive. Oh, well, he said, I see that it might make unpleasantness with your father. I only thought, he went on, with tenderer tentativeness, that it would be pleasant to work here near you. Ye'd be only wastin yer time, she said darkly. Fleming rose gravely. Perhaps you're right, he answered sadly and a little bitterly, and I'll go at once. He walked to the spring, and gathered up his tools. Thank you again for your kindness, and good-by. He held out his hand, which she took passively, and he moved away. But he had not gone far before she called him. He turned to find her still standing where he had left her, her little hands clinched at her side, and her widely opened eyes staring at him. Suddenly she ran at him, and, catching the lapels of his coat in both hands, held him rigidly fast. ye sha'n't go, ye mustn't go. she said, with hysterical intensity. I want to tell ye something. you, you, Mr Fleming. I've been a wicked, wicked girl. I've told lies to dad, to mammy, to YOU. I've borne false witness, I'm worse than Sapphira, I've acted a big lie. Oh, Mr Fleming, I've made you come back here for nothing. Ye didn't find no gold the other day. There wasn't any. It was all me. echoed Fleming, in amazement. Yes, salted it, she faltered, that's what dad says they call it, what those wicked sons of Mammon do to their claims to sell them. I, put gold in the pan myself, it wasn't there before. Then suddenly the fountains in the deep of her blue eyes were broken up, she burst into a sob, and buried her head in her hands, and her hands on his shoulder. Because, because, she sobbed against him, I WANTED YOU to come back. He folded her in his arms. He kissed her lovingly, forgivingly, gratefully, tearfully, smilingly, and paused, then he kissed her sympathetically, understandingly, apologetically, explanatorily, in lieu of other conversation. Then, becoming coherent, he asked. But WHERE did you get the gold. Oh, she said between fitful and despairing sobs, somewhere. I don't know, out of the old Run, long ago, when I was little. I didn't never dare say anything to dad, he'd have been crazy mad at his own daughter diggin', and I never cared nor thought a single bit about it until I saw you. And you have never been there since. Nor anybody else. Suddenly she threw back her head, her chip hat fell back from her face, rosy with a dawning inspiration. Oh, say, Jack. you don't think that, after all this time, there might, She did not finish the sentence, but, grasping his hand, cried, Come. She caught up the pan, he seized the shovel and pick, and they raced like boy and girl down the hill. When within a few hundred feet of the house she turned at right angles into the clearing, and saying, Don't be skeered, dad's away, ran boldly on, still holding his hand, along the little valley. At its farther extremity they came to the Run, a half-dried watercourse whose rocky sides were marked by the erosion of winter torrents. It was apparently as wild and secluded as the forest spring."
+Loading weights:   0%|          | 0/388 [00:00<?, ?it/s]Loading weights:   0%|          | 1/388 [00:00<00:42,  9.09it/s]Loading weights:   9%|▉         | 36/388 [00:00<00:01, 190.30it/s]Loading weights:  14%|█▍        | 56/388 [00:00<00:01, 179.74it/s]Loading weights:  22%|██▏       | 84/388 [00:00<00:01, 199.98it/s]Loading weights:  27%|██▋       | 104/388 [00:00<00:01, 199.49it/s]Loading weights:  32%|███▏      | 124/388 [00:00<00:01, 191.75it/s]Loading weights:  40%|████      | 156/388 [00:00<00:01, 221.24it/s]Loading weights:  46%|████▌     | 179/388 [00:00<00:00, 223.50it/s]Loading weights:  52%|█████▏    | 202/388 [00:01<00:00, 217.09it/s]Loading weights:  59%|█████▉    | 228/388 [00:01<00:00, 221.87it/s]Loading weights:  65%|██████▌   | 254/388 [00:01<00:00, 231.01it/s]Loading weights:  72%|███████▏  | 278/388 [00:01<00:00, 228.49it/s]Loading weights:  79%|███████▉  | 308/388 [00:01<00:00, 222.13it/s]Loading weights:  86%|████████▌ | 332/388 [00:01<00:00, 223.88it/s]Loading weights:  92%|█████████▏| 356/388 [00:01<00:00, 226.62it/s]Loading weights:  98%|█████████▊| 380/388 [00:01<00:00, 226.98it/s]Loading weights: 100%|██████████| 388/388 [00:01<00:00, 215.01it/s]
+Moving model to device:  cuda
+[pythia-2.8b] calibration: U +0.467 nats/word; rates {'C_lo': 0.0195, 'C_mid': 0.0385, 'C_hi': 0.0641}
+[pythia-2.8b] step calib done in 84s
+[W1018 00:58:27.968394495 CUDACachingAllocator.cpp:3934] memory allocation failed with OOM on device 0 while trying to allocate 5540675584 bytes (free: 1806368768, total: 85017624576).
+[W1018 01:01:40.480377295 CUDACachingAllocator.cpp:3934] memory allocation failed with OOM on device 0 while trying to allocate 6054477824 bytes (free: 214630400, total: 85017624576).
+[W1018 01:01:43.791053754 CUDACachingAllocator.cpp:3934] memory allocation failed with OOM on device 0 while trying to allocate 6054477824 bytes (free: 363528192, total: 85017624576).
+[W1018 01:01:47.462463902 CUDACachingAllocator.cpp:3934] memory allocation failed with OOM on device 0 while trying to allocate 6027214848 bytes (free: 5841289216, total: 85017624576).
+[W1018 01:01:54.550309988 CUDACachingAllocator.cpp:3934] memory allocation failed with OOM on device 0 while trying to allocate 1342177280 bytes (free: 925564928, total: 85017624576).
+[W1018 01:01:57.015425537 CUDACachingAllocator.cpp:3934] memory allocation failed with OOM on device 0 while trying to allocate 1342177280 bytes (free: 927662080, total: 85017624576).
+Traceback (most recent call last):
+  File "/lambda/nfs/AT1/punctuation-summary-info/scripts/m6_scale.py", line 450, in <module>
+    run(sys.argv[2], sys.argv[3:] or list(STEPS))
+    ~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/lambda/nfs/AT1/punctuation-summary-info/scripts/m6_scale.py", line 439, in run
+    STEPS[st](model, name, out)
+    ~~~~~~~~~^^^^^^^^^^^^^^^^^^
+  File "/lambda/nfs/AT1/punctuation-summary-info/scripts/m6_scale.py", line 251, in step_behavior
+    res = score(model, items, max_tokens=max_tokens_for(model))
+  File "/lambda/nfs/AT1/punctuation-summary-info/punctsum/behavior.py", line 75, in score
+    logits = model(toks)
+  File "/home/ubuntu/venvs/punctuation-summary-info/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1783, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/venvs/punctuation-summary-info/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1794, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/home/ubuntu/venvs/punctuation-summary-info/lib/python3.13/site-packages/transformer_lens/model_bridge/transformer_bridge.py", line 2330, in forward
+    result = self._driver.forward(input_ids=input_ids, **kwargs)
+  File "/home/ubuntu/venvs/punctuation-summary-info/lib/python3.13/site-packages/transformer_lens/model_bridge/sources/transformers_driver.py", line 60, in forward
+    raw = self._model(input_ids, **kwargs)
+  File "/home/ubuntu/venvs/punctuation-summary-info/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1783, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/venvs/punctuation-summary-info/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1794, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/home/ubuntu/venvs/punctuation-summary-info/lib/python3.13/site-packages/transformers/utils/generic.py", line 943, in wrapper
+    output = func(self, *args, **kwargs)
+  File "/home/ubuntu/venvs/punctuation-summary-info/lib/python3.13/site-packages/transformers/models/gpt_neox/modeling_gpt_neox.py", line 433, in forward
+    outputs: BaseModelOutputWithPast = self.gpt_neox(
+                                       ~~~~~~~~~~~~~^
+        input_ids,
+        ^^^^^^^^^^
+    ...<5 lines>...
+        **kwargs,
+        ^^^^^^^^^
+    )
+    ^
+  File "/home/ubuntu/venvs/punctuation-summary-info/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1783, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/venvs/punctuation-summary-info/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1794, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/home/ubuntu/venvs/punctuation-summary-info/lib/python3.13/site-packages/transformers/utils/generic.py", line 1081, in wrapper
+    output = func(self, *args, **kwargs)
+  File "/home/ubuntu/venvs/punctuation-summary-info/lib/python3.13/site-packages/transformers/utils/output_capturing.py", line 287, in wrapper
+    outputs = func(self, *args, **kwargs)
+  File "/home/ubuntu/venvs/punctuation-summary-info/lib/python3.13/site-packages/transformers/models/gpt_neox/modeling_gpt_neox.py", line 347, in forward
+    hidden_states = layer(
+        hidden_states,
+    ...<5 lines>...
+        **kwargs,
+    )
+  File "/home/ubuntu/venvs/punctuation-summary-info/lib/python3.13/site-packages/transformer_lens/model_bridge/generalized_components/base.py", line 187, in __call__
+    return super().__call__(*args, **kwargs)
+           ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/venvs/punctuation-summary-info/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1783, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/venvs/punctuation-summary-info/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1794, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/home/ubuntu/venvs/punctuation-summary-info/lib/python3.13/site-packages/transformer_lens/model_bridge/generalized_components/block.py", line 253, in forward
+    output = self.original_component(*args, **filtered_kwargs)
+  File "/home/ubuntu/venvs/punctuation-summary-info/lib/python3.13/site-packages/transformers/modeling_layers.py", line 111, in __call__
+    return super().__call__(*args, **kwargs)
+           ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/venvs/punctuation-summary-info/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1783, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/venvs/punctuation-summary-info/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1889, in _call_impl
+    return inner()
+  File "/home/ubuntu/venvs/punctuation-summary-info/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1837, in inner
+    result = forward_call(*args, **kwargs)
+  File "/home/ubuntu/venvs/punctuation-summary-info/lib/python3.13/site-packages/transformers/models/gpt_neox/modeling_gpt_neox.py", line 261, in forward
+    mlp_output = self.mlp(self.post_attention_layernorm(hidden_states))
+  File "/home/ubuntu/venvs/punctuation-summary-info/lib/python3.13/site-packages/transformer_lens/model_bridge/generalized_components/base.py", line 187, in __call__
+    return super().__call__(*args, **kwargs)
+           ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/venvs/punctuation-summary-info/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1783, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/venvs/punctuation-summary-info/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1794, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/home/ubuntu/venvs/punctuation-summary-info/lib/python3.13/site-packages/transformer_lens/model_bridge/generalized_components/mlp.py", line 136, in forward
+    output = original_component(*new_args, **kwargs)
+  File "/home/ubuntu/venvs/punctuation-summary-info/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1783, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/venvs/punctuation-summary-info/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1794, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/home/ubuntu/venvs/punctuation-summary-info/lib/python3.13/site-packages/transformers/models/gpt_neox/modeling_gpt_neox.py", line 46, in forward
+    hidden_states = self.act(hidden_states)
+  File "/home/ubuntu/venvs/punctuation-summary-info/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1783, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/venvs/punctuation-summary-info/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1794, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/home/ubuntu/venvs/punctuation-summary-info/lib/python3.13/site-packages/transformers/activations.py", line 89, in forward
+    return self.act(input)
+           ~~~~~~~~^^^^^^^
+torch.OutOfMemoryError: CUDA out of memory. Tried to allocate 1.25 GiB. GPU 0 has a total capacity of 79.18 GiB of which 884.69 MiB is free. Process 12591 has 7.07 GiB memory in use. Including non-PyTorch memory, this process has 71.23 GiB memory in use. Of the allocated memory 61.20 GiB is allocated by PyTorch, and 9.45 GiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://docs.pytorch.org/docs/stable/notes/cuda.html#optimizing-memory-usage-with-pytorch-cuda-alloc-conf)
+Loading weights:   0%|          | 0/388 [00:00<?, ?it/s]Loading weights:   0%|          | 1/388 [00:00<02:54,  2.22it/s]Loading weights:   2%|▏         | 8/388 [00:00<00:24, 15.64it/s]Loading weights:   8%|▊         | 32/388 [00:00<00:05, 60.95it/s]Loading weights:  11%|█▏        | 44/388 [00:00<00:04, 74.42it/s]Loading weights:  14%|█▍        | 56/388 [00:00<00:03, 83.72it/s]Loading weights:  18%|█▊        | 68/388 [00:01<00:03, 85.96it/s]Loading weights:  21%|██        | 80/388 [00:01<00:03, 93.66it/s]Loading weights:  24%|██▎       | 92/388 [00:01<00:03, 97.94it/s]Loading weights:  27%|██▋       | 104/388 [00:01<00:02, 100.21it/s]Loading weights:  31%|███       | 120/388 [00:01<00:02, 107.01it/s]Loading weights:  34%|███▍      | 132/388 [00:01<00:02, 97.85it/s] Loading weights:  38%|███▊      | 146/388 [00:01<00:02, 98.10it/s]Loading weights:  43%|████▎     | 168/388 [00:02<00:01, 114.31it/s]Loading weights:  47%|████▋     | 182/388 [00:02<00:01, 114.73it/s]Loading weights:  52%|█████▏    | 200/388 [00:02<00:01, 126.61it/s]Loading weights:  56%|█████▌    | 216/388 [00:02<00:01, 126.31it/s]Loading weights:  59%|█████▉    | 229/388 [00:02<00:01, 122.51it/s]Loading weights:  62%|██████▏   | 242/388 [00:02<00:01, 115.90it/s]Loading weights:  67%|██████▋   | 260/388 [00:02<00:00, 128.07it/s]Loading weights:  71%|███████   | 276/388 [00:02<00:00, 123.94it/s]Loading weights:  75%|███████▍  | 290/388 [00:03<00:00, 116.50it/s]Loading weights:  80%|████████  | 312/388 [00:03<00:00, 127.60it/s]Loading weights:  84%|████████▍ | 326/388 [00:03<00:00, 123.73it/s]Loading weights:  90%|████████▉ | 348/388 [00:03<00:00, 135.42it/s]Loading weights:  93%|█████████▎| 362/388 [00:03<00:00, 133.46it/s]Loading weights:  97%|█████████▋| 376/388 [00:03<00:00, 134.92it/s]Loading weights: 100%|██████████| 388/388 [00:03<00:00, 105.88it/s]
+[W1018 01:04:54.763696777 CUDACachingAllocator.cpp:3934] memory allocation failed with OOM on device 0 while trying to allocate 2627731456 bytes (free: 2074804224, total: 85017624576).
+[W1018 01:05:11.117811590 CUDACachingAllocator.cpp:3934] memory allocation failed with OOM on device 0 while trying to allocate 2724200448 bytes (free: 336265216, total: 85017624576).
+Moving model to device:  cuda
+[pythia-6.9b] calibration: U +0.491 nats/word; rates {'C_lo': 0.02, 'C_mid': 0.0396, 'C_hi': 0.0661}
+[pythia-6.9b] step calib done in 169s
+[W1018 01:06:31.192400427 CUDACachingAllocator.cpp:3934] memory allocation failed with OOM on device 0 while trying to allocate 3303014400 bytes (free: 2768961536, total: 85017624576).
+[W1018 01:06:50.037608656 CUDACachingAllocator.cpp:3934] memory allocation failed with OOM on device 0 while trying to allocate 3305111552 bytes (free: 1305149440, total: 85017624576).
+[W1018 01:12:37.790154252 CUDACachingAllocator.cpp:3934] memory allocation failed with OOM on device 0 while trying to allocate 1067450368 bytes (free: 736821248, total: 85017624576).
+[W1018 01:12:41.909618465 CUDACachingAllocator.cpp:3934] memory allocation failed with OOM on device 0 while trying to allocate 1067450368 bytes (free: 738918400, total: 85017624576).
+Traceback (most recent call last):
+  File "/lambda/nfs/AT1/punctuation-summary-info/scripts/m6_scale.py", line 450, in <module>
+    run(sys.argv[2], sys.argv[3:] or list(STEPS))
+    ~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/lambda/nfs/AT1/punctuation-summary-info/scripts/m6_scale.py", line 439, in run
+    STEPS[st](model, name, out)
+    ~~~~~~~~~^^^^^^^^^^^^^^^^^^
+  File "/lambda/nfs/AT1/punctuation-summary-info/scripts/m6_scale.py", line 251, in step_behavior
+    res = score(model, items, max_tokens=max_tokens_for(model))
+  File "/lambda/nfs/AT1/punctuation-summary-info/punctsum/behavior.py", line 75, in score
+    logits = model(toks)
+  File "/home/ubuntu/venvs/punctuation-summary-info/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1783, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/venvs/punctuation-summary-info/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1794, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/home/ubuntu/venvs/punctuation-summary-info/lib/python3.13/site-packages/transformer_lens/model_bridge/transformer_bridge.py", line 2330, in forward
+    result = self._driver.forward(input_ids=input_ids, **kwargs)
+  File "/home/ubuntu/venvs/punctuation-summary-info/lib/python3.13/site-packages/transformer_lens/model_bridge/sources/transformers_driver.py", line 60, in forward
+    raw = self._model(input_ids, **kwargs)
+  File "/home/ubuntu/venvs/punctuation-summary-info/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1783, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/venvs/punctuation-summary-info/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1794, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/home/ubuntu/venvs/punctuation-summary-info/lib/python3.13/site-packages/transformers/utils/generic.py", line 943, in wrapper
+    output = func(self, *args, **kwargs)
+  File "/home/ubuntu/venvs/punctuation-summary-info/lib/python3.13/site-packages/transformers/models/gpt_neox/modeling_gpt_neox.py", line 433, in forward
+    outputs: BaseModelOutputWithPast = self.gpt_neox(
+                                       ~~~~~~~~~~~~~^
+        input_ids,
+        ^^^^^^^^^^
+    ...<5 lines>...
+        **kwargs,
+        ^^^^^^^^^
+    )
+    ^
+  File "/home/ubuntu/venvs/punctuation-summary-info/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1783, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/venvs/punctuation-summary-info/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1794, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/home/ubuntu/venvs/punctuation-summary-info/lib/python3.13/site-packages/transformers/utils/generic.py", line 1081, in wrapper
+    output = func(self, *args, **kwargs)
+  File "/home/ubuntu/venvs/punctuation-summary-info/lib/python3.13/site-packages/transformers/utils/output_capturing.py", line 287, in wrapper
+    outputs = func(self, *args, **kwargs)
+  File "/home/ubuntu/venvs/punctuation-summary-info/lib/python3.13/site-packages/transformers/models/gpt_neox/modeling_gpt_neox.py", line 347, in forward
+    hidden_states = layer(
+        hidden_states,
+    ...<5 lines>...
+        **kwargs,
+    )
+  File "/home/ubuntu/venvs/punctuation-summary-info/lib/python3.13/site-packages/transformer_lens/model_bridge/generalized_components/base.py", line 187, in __call__
+    return super().__call__(*args, **kwargs)
+           ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/venvs/punctuation-summary-info/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1783, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/venvs/punctuation-summary-info/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1794, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/home/ubuntu/venvs/punctuation-summary-info/lib/python3.13/site-packages/transformer_lens/model_bridge/generalized_components/block.py", line 253, in forward
+    output = self.original_component(*args, **filtered_kwargs)
+  File "/home/ubuntu/venvs/punctuation-summary-info/lib/python3.13/site-packages/transformers/modeling_layers.py", line 111, in __call__
+    return super().__call__(*args, **kwargs)
+           ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/venvs/punctuation-summary-info/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1783, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/venvs/punctuation-summary-info/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1889, in _call_impl
+    return inner()
+  File "/home/ubuntu/venvs/punctuation-summary-info/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1837, in inner
+    result = forward_call(*args, **kwargs)
+  File "/home/ubuntu/venvs/punctuation-summary-info/lib/python3.13/site-packages/transformers/models/gpt_neox/modeling_gpt_neox.py", line 261, in forward
+    mlp_output = self.mlp(self.post_attention_layernorm(hidden_states))
+  File "/home/ubuntu/venvs/punctuation-summary-info/lib/python3.13/site-packages/transformer_lens/model_bridge/generalized_components/base.py", line 187, in __call__
+    return super().__call__(*args, **kwargs)
+           ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/venvs/punctuation-summary-info/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1783, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/venvs/punctuation-summary-info/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1794, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/home/ubuntu/venvs/punctuation-summary-info/lib/python3.13/site-packages/transformer_lens/model_bridge/generalized_components/mlp.py", line 136, in forward
+    output = original_component(*new_args, **kwargs)
+  File "/home/ubuntu/venvs/punctuation-summary-info/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1783, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/venvs/punctuation-summary-info/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1794, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/home/ubuntu/venvs/punctuation-summary-info/lib/python3.13/site-packages/transformers/models/gpt_neox/modeling_gpt_neox.py", line 46, in forward
+    hidden_states = self.act(hidden_states)
+  File "/home/ubuntu/venvs/punctuation-summary-info/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1783, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/venvs/punctuation-summary-info/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1794, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/home/ubuntu/venvs/punctuation-summary-info/lib/python3.13/site-packages/transformers/activations.py", line 89, in forward
+    return self.act(input)
+           ~~~~~~~~^^^^^^^
+torch.OutOfMemoryError: CUDA out of memory. Tried to allocate 1018.00 MiB. GPU 0 has a total capacity of 79.18 GiB of which 704.69 MiB is free. Process 12591 has 7.07 GiB memory in use. Including non-PyTorch memory, this process has 71.40 GiB memory in use. Of the allocated memory 60.24 GiB is allocated by PyTorch, and 10.58 GiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://docs.pytorch.org/docs/stable/notes/cuda.html#optimizing-memory-usage-with-pytorch-cuda-alloc-conf)
+=== QUEUE_DONE
