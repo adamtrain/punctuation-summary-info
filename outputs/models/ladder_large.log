@@ -1,0 +1,33 @@
+Loading weights:   0%|          | 0/292 [00:00<?, ?it/s]Loading weights:   0%|          | 1/292 [00:00<00:40,  7.19it/s]Loading weights:  16%|█▋        | 48/292 [00:00<00:01, 227.97it/s]Loading weights:  34%|███▎      | 98/292 [00:00<00:00, 332.16it/s]Loading weights:  49%|████▉     | 144/292 [00:00<00:00, 373.91it/s]Loading weights:  68%|██████▊   | 198/292 [00:00<00:00, 427.80it/s]Loading weights:  86%|████████▋ | 252/292 [00:00<00:00, 460.76it/s]Loading weights: 100%|██████████| 292/292 [00:00<00:00, 400.61it/s]
+Moving model to device:  cuda
+[pythia-1.4b] calibration: U +0.545 nats/word; rates {'C_lo': 0.0245, 'C_mid': 0.0471, 'C_hi': 0.0707}
+[pythia-1.4b] step calib done in 36s
+[W1017 23:02:22.665331182 CUDACachingAllocator.cpp:3934] memory allocation failed with OOM on device 0 while trying to allocate 6054477824 bytes (free: 2890203136, total: 85017624576).
+[pythia-1.4b] behavior: P +3.19, U delta -0.01, C_mid delta -0.16
+[pythia-1.4b] step behavior done in 211s
+[pythia-1.4b] knockout mood P: none +3.92, retention 0.58, s0 punct share 0.42; U retention 0.19
+[pythia-1.4b] step knockout done in 599s
+[pythia-1.4b] accept consistent: pair acc 1.000, AUC 1.000, retention 0.58 -> C1 PASS, C2 PASS
+[pythia-1.4b] accept mixed: pair acc 0.983, AUC 0.855, retention 0.63 -> C1 PASS, C2 PASS
+[pythia-1.4b] step accept done in 25s
+[mood_k1_P] 50 pairs, 32 rows; mean clean-corrupted gap +8.98; runtime 115s; peak RSS 19.95 GB
+[mood_k1_U] 50 pairs, 25 rows; mean clean-corrupted gap +9.73; runtime 78s; peak RSS 19.95 GB
+[mood_k1_Ucap] 50 pairs, 25 rows; mean clean-corrupted gap +9.54; runtime 83s; peak RSS 19.95 GB
+[mood_k1_M] 50 pairs, 41 rows; mean clean-corrupted gap +9.28; runtime 125s; peak RSS 19.95 GB
+[mood_k1_K] 50 pairs, 32 rows; mean clean-corrupted gap +8.64; runtime 115s; peak RSS 19.95 GB
+[mood_k1_C_mid] 50 pairs, 32 rows; mean clean-corrupted gap +8.56; runtime 118s; peak RSS 19.95 GB
+[mood_k4_P] 50 pairs, 38 rows; mean clean-corrupted gap +7.82; runtime 203s; peak RSS 19.95 GB
+[mood_k4_U] 50 pairs, 29 rows; mean clean-corrupted gap +8.89; runtime 118s; peak RSS 19.95 GB
+[mood_k4_Ucap] 50 pairs, 29 rows; mean clean-corrupted gap +8.84; runtime 118s; peak RSS 19.95 GB
+[mood_k4_M] 50 pairs, 61 rows; mean clean-corrupted gap +8.33; runtime 195s; peak RSS 19.95 GB
+[mood_k4_K] 50 pairs, 38 rows; mean clean-corrupted gap +7.66; runtime 177s; peak RSS 19.95 GB
+[mood_k4_C_mid] 50 pairs, 38 rows; mean clean-corrupted gap +7.58; runtime 173s; peak RSS 19.95 GB
+[mood_k16_P] 50 pairs, 38 rows; mean clean-corrupted gap +6.36; runtime 428s; peak RSS 19.95 GB
+[mood_k16_U] 50 pairs, 29 rows; mean clean-corrupted gap +6.53; runtime 280s; peak RSS 19.95 GB
+[mood_k16_Ucap] 50 pairs, 29 rows; mean clean-corrupted gap +7.11; runtime 282s; peak RSS 19.95 GB
+[mood_k16_M] 50 pairs, 59 rows; mean clean-corrupted gap +5.88; runtime 494s; peak RSS 19.95 GB
+[mood_k16_K] 50 pairs, 38 rows; mean clean-corrupted gap +6.29; runtime 436s; peak RSS 19.95 GB
+[mood_k16_C_mid] 50 pairs, 38 rows; mean clean-corrupted gap +5.96; runtime 426s; peak RSS 19.95 GB
+[pythia-1.4b] step patch done in 3966s
+[pythia-1.4b] probe activations cached; fitting started in a separate CPU process (log: probes_fit.log)
+[pythia-1.4b] step probe done in 58s

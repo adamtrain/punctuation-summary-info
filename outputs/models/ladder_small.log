@@ -1,0 +1,72 @@
+Loading weights:   0%|          | 0/148 [00:00<?, ?it/s]Loading weights:  45%|████▌     | 67/148 [00:00<00:00, 657.53it/s]Loading weights: 100%|██████████| 148/148 [00:00<00:00, 787.69it/s]
+Moving model to device:  cuda
+[pythia-160m] calibration: U +0.639 nats/word; rates {'C_lo': 0.0341, 'C_mid': 0.0683, 'C_hi': 0.1034}
+[pythia-160m] step calib done in 13s
+[W1017 22:11:42.085811904 CUDACachingAllocator.cpp:3934] memory allocation failed with OOM on device 0 while trying to allocate 6054477824 bytes (free: 3263496192, total: 85017624576).
+[pythia-160m] behavior: P +4.02, U delta -0.26, C_mid delta -0.17
+[pythia-160m] step behavior done in 48s
+[pythia-160m] knockout mood P: none +3.29, retention 0.27, s0 punct share 0.09; U retention 0.10
+[pythia-160m] step knockout done in 96s
+[pythia-160m] accept consistent: pair acc 1.000, AUC 0.997, retention 0.27 -> C1 PASS, C2 PASS
+[pythia-160m] accept mixed: pair acc 0.997, AUC 0.767, retention 0.22 -> C1 FAIL, C2 FAIL
+[pythia-160m] step accept done in 4s
+[mood_k1_P] 50 pairs, 32 rows; mean clean-corrupted gap +8.19; runtime 12s; peak RSS 3.20 GB
+[mood_k1_U] 50 pairs, 25 rows; mean clean-corrupted gap +7.94; runtime 9s; peak RSS 3.20 GB
+[mood_k1_Ucap] 50 pairs, 25 rows; mean clean-corrupted gap +7.55; runtime 9s; peak RSS 3.20 GB
+[mood_k1_M] 50 pairs, 41 rows; mean clean-corrupted gap +7.86; runtime 13s; peak RSS 3.20 GB
+[mood_k1_K] 50 pairs, 32 rows; mean clean-corrupted gap +8.06; runtime 13s; peak RSS 3.20 GB
+[mood_k1_C_mid] 50 pairs, 32 rows; mean clean-corrupted gap +7.88; runtime 13s; peak RSS 3.20 GB
+[mood_k4_P] 50 pairs, 38 rows; mean clean-corrupted gap +7.01; runtime 20s; peak RSS 3.20 GB
+[mood_k4_U] 50 pairs, 29 rows; mean clean-corrupted gap +7.23; runtime 15s; peak RSS 3.20 GB
+[mood_k4_Ucap] 50 pairs, 29 rows; mean clean-corrupted gap +6.41; runtime 15s; peak RSS 3.20 GB
+[mood_k4_M] 50 pairs, 61 rows; mean clean-corrupted gap +6.71; runtime 23s; peak RSS 3.20 GB
+[mood_k4_K] 50 pairs, 38 rows; mean clean-corrupted gap +6.92; runtime 21s; peak RSS 3.20 GB
+[mood_k4_C_mid] 50 pairs, 38 rows; mean clean-corrupted gap +6.69; runtime 21s; peak RSS 3.20 GB
+[mood_k16_P] 50 pairs, 38 rows; mean clean-corrupted gap +4.59; runtime 49s; peak RSS 3.20 GB
+[mood_k16_U] 50 pairs, 29 rows; mean clean-corrupted gap +5.53; runtime 33s; peak RSS 3.20 GB
+[mood_k16_Ucap] 50 pairs, 29 rows; mean clean-corrupted gap +4.63; runtime 33s; peak RSS 3.20 GB
+[mood_k16_M] 50 pairs, 59 rows; mean clean-corrupted gap +4.53; runtime 57s; peak RSS 3.20 GB
+[mood_k16_K] 50 pairs, 38 rows; mean clean-corrupted gap +4.59; runtime 51s; peak RSS 3.20 GB
+[mood_k16_C_mid] 50 pairs, 38 rows; mean clean-corrupted gap +4.37; runtime 50s; peak RSS 3.20 GB
+[pythia-160m] step patch done in 458s
+[mood_k16_P] activations (800, 32, 13, 768) (0.51 GB) at 7s
+[mood_k16_P] null p95 range 0.500..0.625; significant cells 378/416; runtime 107s; peak RSS 3.50 GB
+[mood_k16_U] activations (800, 25, 13, 768) (0.40 GB) at 5s
+[mood_k16_U] null p95 range 0.500..0.625; significant cells 299/325; runtime 87s; peak RSS 3.50 GB
+[pythia-160m] step probe done in 194s
+Loading weights:   0%|          | 0/292 [00:00<?, ?it/s]Loading weights:  21%|██        | 60/292 [00:00<00:00, 597.46it/s]Loading weights:  46%|████▌     | 134/292 [00:00<00:00, 621.29it/s]Loading weights:  71%|███████   | 206/292 [00:00<00:00, 658.78it/s]Loading weights:  93%|█████████▎| 272/292 [00:00<00:00, 639.57it/s]Loading weights: 100%|██████████| 292/292 [00:00<00:00, 653.10it/s]
+Moving model to device:  cuda
+[pythia-410m] calibration: U +0.529 nats/word; rates {'C_lo': 0.0244, 'C_mid': 0.0472, 'C_hi': 0.0712}
+[pythia-410m] step calib done in 19s
+[W1017 22:25:53.976890248 CUDACachingAllocator.cpp:3934] memory allocation failed with OOM on device 0 while trying to allocate 6585057280 bytes (free: 100990976, total: 85017624576).
+[pythia-410m] behavior: P +3.50, U delta -0.28, C_mid delta -0.11
+[pythia-410m] step behavior done in 84s
+[pythia-410m] knockout mood P: none +3.77, retention 0.53, s0 punct share 0.37; U retention 0.16
+[pythia-410m] step knockout done in 176s
+[pythia-410m] accept consistent: pair acc 1.000, AUC 0.999, retention 0.53 -> C1 PASS, C2 PASS
+[pythia-410m] accept mixed: pair acc 0.997, AUC 0.819, retention 0.62 -> C1 PASS, C2 PASS
+[pythia-410m] step accept done in 8s
+[mood_k1_P] 50 pairs, 32 rows; mean clean-corrupted gap +9.03; runtime 31s; peak RSS 6.53 GB
+[mood_k1_U] 50 pairs, 25 rows; mean clean-corrupted gap +9.33; runtime 24s; peak RSS 6.53 GB
+[mood_k1_Ucap] 50 pairs, 25 rows; mean clean-corrupted gap +8.95; runtime 25s; peak RSS 6.53 GB
+[mood_k1_M] 50 pairs, 41 rows; mean clean-corrupted gap +8.77; runtime 34s; peak RSS 6.53 GB
+[mood_k1_K] 50 pairs, 32 rows; mean clean-corrupted gap +8.73; runtime 32s; peak RSS 6.53 GB
+[mood_k1_C_mid] 50 pairs, 32 rows; mean clean-corrupted gap +8.79; runtime 32s; peak RSS 6.53 GB
+[mood_k4_P] 50 pairs, 38 rows; mean clean-corrupted gap +7.84; runtime 55s; peak RSS 6.53 GB
+[mood_k4_U] 50 pairs, 29 rows; mean clean-corrupted gap +8.42; runtime 38s; peak RSS 6.53 GB
+[mood_k4_Ucap] 50 pairs, 29 rows; mean clean-corrupted gap +8.39; runtime 38s; peak RSS 6.53 GB
+[mood_k4_M] 50 pairs, 61 rows; mean clean-corrupted gap +7.80; runtime 61s; peak RSS 6.53 GB
+[mood_k4_K] 50 pairs, 38 rows; mean clean-corrupted gap +7.87; runtime 55s; peak RSS 6.53 GB
+[mood_k4_C_mid] 50 pairs, 38 rows; mean clean-corrupted gap +7.73; runtime 55s; peak RSS 6.53 GB
+[mood_k16_P] 50 pairs, 38 rows; mean clean-corrupted gap +5.71; runtime 134s; peak RSS 6.53 GB
+[mood_k16_U] 50 pairs, 29 rows; mean clean-corrupted gap +5.58; runtime 89s; peak RSS 6.53 GB
+[mood_k16_Ucap] 50 pairs, 29 rows; mean clean-corrupted gap +6.83; runtime 89s; peak RSS 6.53 GB
+[mood_k16_M] 50 pairs, 59 rows; mean clean-corrupted gap +5.30; runtime 155s; peak RSS 6.53 GB
+[mood_k16_K] 50 pairs, 38 rows; mean clean-corrupted gap +5.81; runtime 140s; peak RSS 6.53 GB
+[mood_k16_C_mid] 50 pairs, 38 rows; mean clean-corrupted gap +5.46; runtime 136s; peak RSS 6.53 GB
+[pythia-410m] step patch done in 1224s
+[mood_k16_P] activations (800, 32, 25, 1024) (1.31 GB) at 15s
+[mood_k16_P] null p95 range 0.500..0.625; significant cells 764/800; runtime 250s; peak RSS 8.08 GB
+[mood_k16_U] activations (800, 25, 25, 1024) (1.02 GB) at 11s
+[mood_k16_U] null p95 range 0.500..0.625; significant cells 598/625; runtime 191s; peak RSS 8.08 GB
+[pythia-410m] step probe done in 441s

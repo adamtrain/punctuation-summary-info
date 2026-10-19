@@ -1,0 +1,66 @@
+gpt2          gpt2                         rev 607a30d783 gated=False safetensors    0.5 GB  (.bin    0.5 GB)
+gpt-neo-125m  EleutherAI/gpt-neo-125m      rev 21def0189f gated=False safetensors    0.5 GB  (.bin    0.5 GB)
+pythia-160m   EleutherAI/pythia-160m       rev 50f5173d93 gated=False safetensors    0.4 GB  (.bin    0.4 GB)
+pythia-410m   EleutherAI/pythia-410m       rev 9879c9b5f8 gated=False safetensors    0.9 GB  (.bin    0.9 GB)
+pythia-1.4b   EleutherAI/pythia-1.4b       rev fedc38a16e gated=False safetensors    2.9 GB  (.bin    2.9 GB)
+pythia-2.8b   EleutherAI/pythia-2.8b       rev 2a259cdd96 gated=False safetensors    5.7 GB  (.bin    5.7 GB)
+pythia-6.9b   EleutherAI/pythia-6.9b       rev c0e3eee36d gated=False safetensors   13.8 GB  (.bin   13.8 GB)
+pythia-12b    EleutherAI/pythia-12b        rev bb1e3e710c gated=False safetensors   23.8 GB  (.bin   23.8 GB)
+llama-3.1-8b  meta-llama/Llama-3.1-8B      rev d04e592bb4 gated=True  safetensors   16.1 GB  (.bin    0.0 GB)
+gemma-2-9b    google/gemma-2-9b            rev 33c1930284 gated=True  safetensors   37.0 GB  (.bin    0.0 GB)
+gemma-2-27b   google/gemma-2-27b           rev 938270f527 gated=True  safetensors  108.9 GB  (.bin    0.0 GB)
+Fetching 14 files:   0%|          | 0/14 [00:00<?, ?it/s]Fetching 14 files:  57%|█████▋    | 8/14 [00:00<00:00, 42.68it/s]Fetching 14 files:  93%|█████████▎| 13/14 [00:00<00:00, 29.86it/s]Fetching 14 files: 100%|██████████| 14/14 [00:00<00:00, 33.57it/s]
+downloaded gpt2 @ 607a30d783 (0.55 GB)
+Fetching 8 files:   0%|          | 0/8 [00:00<?, ?it/s]Fetching 8 files:  12%|█▎        | 1/8 [00:00<00:02,  2.90it/s]Fetching 8 files:  62%|██████▎   | 5/8 [00:00<00:00, 12.37it/s]Fetching 8 files: 100%|██████████| 8/8 [00:04<00:00,  1.36it/s]Fetching 8 files: 100%|██████████| 8/8 [00:04<00:00,  1.65it/s]
+downloaded gpt-neo-125m @ 21def0189f (0.53 GB)
+Loading weights:   0%|          | 0/148 [00:00<?, ?it/s]Loading weights: 100%|██████████| 148/148 [00:00<00:00, 2745.97it/s]
+[W1017 23:15:04.540984632 CUDACachingAllocator.cpp:3934] memory allocation failed with OOM on device 0 while trying to allocate 20971520 bytes (free: 20054016, total: 85017624576).
+[W1017 23:15:04.541683966 CUDACachingAllocator.cpp:3934] memory allocation failed with OOM on device 0 while trying to allocate 20971520 bytes (free: 20054016, total: 85017624576).
+Moving model to device:  cuda
+Traceback (most recent call last):
+  File "/lambda/nfs/AT1/punctuation-summary-info/scripts/m6_scale.py", line 425, in <module>
+    {"verify": verify, "screen": screen, "fitprobes": fit_probes}[cmd](n)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^
+  File "/home/ubuntu/venvs/punctuation-summary-info/lib/python3.13/site-packages/torch/utils/_contextlib.py", line 124, in decorate_context
+    return func(*args, **kwargs)
+  File "/lambda/nfs/AT1/punctuation-summary-info/scripts/m6_scale.py", line 100, in verify
+    model, mem = load_model(name)
+                 ~~~~~~~~~~^^^^^^
+  File "/lambda/nfs/AT1/punctuation-summary-info/scripts/m6_scale.py", line 67, in load_model
+    model = load(MODELS[name], revision=revision(name), stage_on_cpu=True)  # same path for every scaling model
+  File "/lambda/nfs/AT1/punctuation-summary-info/punctsum/model.py", line 39, in load
+    model = model.to(target)
+  File "/home/ubuntu/venvs/punctuation-summary-info/lib/python3.13/site-packages/transformer_lens/model_bridge/transformer_bridge.py", line 4222, in to
+    move_to_and_update_config(self, target_device, print_details)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/venvs/punctuation-summary-info/lib/python3.13/site-packages/transformer_lens/utilities/devices.py", line 191, in move_to_and_update_config
+    return nn.Module.to(model, device_or_dtype)  # type: ignore
+           ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/ubuntu/venvs/punctuation-summary-info/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1388, in to
+    return self._apply(convert)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "/home/ubuntu/venvs/punctuation-summary-info/lib/python3.13/site-packages/torch/nn/modules/module.py", line 933, in _apply
+    module._apply(fn)
+    ~~~~~~~~~~~~~^^^^
+  File "/home/ubuntu/venvs/punctuation-summary-info/lib/python3.13/site-packages/torch/nn/modules/module.py", line 933, in _apply
+    module._apply(fn)
+    ~~~~~~~~~~~~~^^^^
+  File "/home/ubuntu/venvs/punctuation-summary-info/lib/python3.13/site-packages/torch/nn/modules/module.py", line 933, in _apply
+    module._apply(fn)
+    ~~~~~~~~~~~~~^^^^
+  [Previous line repeated 3 more times]
+  File "/home/ubuntu/venvs/punctuation-summary-info/lib/python3.13/site-packages/torch/nn/modules/module.py", line 966, in _apply
+    param_applied = fn(param)
+  File "/home/ubuntu/venvs/punctuation-summary-info/lib/python3.13/site-packages/torch/nn/modules/module.py", line 1374, in convert
+    return t.to(
+           ~~~~^
+        device,
+        ^^^^^^^
+        dtype if t.is_floating_point() or t.is_complex() else None,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        non_blocking,
+        ^^^^^^^^^^^^^
+    )
+    ^
+torch.OutOfMemoryError: CUDA out of memory. Tried to allocate 20.00 MiB. GPU 0 has a total capacity of 79.18 GiB of which 19.12 MiB is free. Process 11327 has 71.38 GiB memory in use. Process 11751 has 7.13 GiB memory in use. Including non-PyTorch memory, this process has 640.00 MiB memory in use. Of the allocated memory 184.80 MiB is allocated by PyTorch, and 5.20 MiB is reserved by PyTorch but unallocated. If reserved but unallocated memory is large try setting PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True to avoid fragmentation.  See documentation for Memory Management  (https://docs.pytorch.org/docs/stable/notes/cuda.html#optimizing-memory-usage-with-pytorch-cuda-alloc-conf)
+QUEUE_DONE

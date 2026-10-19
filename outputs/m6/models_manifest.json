@@ -79,5 +79,23 @@
   "safetensors_gb": 108.91,
   "bin_gb": 0.0,
   "local_path": "/lambda/nfs/AT1/punctuation-summary-info/.hf_cache/hub/models--google--gemma-2-27b/snapshots/938270f5272feb02779b55c2bb2fffdd0f53ff0c"
+ },
+ "gpt2": {
+  "repo": "gpt2",
+  "ok": true,
+  "revision": "607a30d783dfa663caf39e06633721c8d4cfcd7e",
+  "gated": false,
+  "safetensors_gb": 0.55,
+  "bin_gb": 0.55,
+  "local_path": "/lambda/nfs/AT1/punctuation-summary-info/.hf_cache/hub/models--gpt2/snapshots/607a30d783dfa663caf39e06633721c8d4cfcd7e"
+ },
+ "gpt-neo-125m": {
+  "repo": "EleutherAI/gpt-neo-125m",
+  "ok": true,
+  "revision": "21def0189f5705e2521767faed922f1f15e7d7db",
+  "gated": false,
+  "safetensors_gb": 0.53,
+  "bin_gb": 0.53,
+  "local_path": "/lambda/nfs/AT1/punctuation-summary-info/.hf_cache/hub/models--EleutherAI--gpt-neo-125m/snapshots/21def0189f5705e2521767faed922f1f15e7d7db"
  }
 }
