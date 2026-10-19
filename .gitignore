@@ -13,3 +13,4 @@ outputs/**/acts/
 
 # Downloaded corpora (re-downloadable; see INSTALL_LOG.md)
 data/
+h100_archive/

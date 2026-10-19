@@ -88,6 +88,14 @@ of the local-disk items is automatic when the instance is terminated.
 - **What:** `gpt2` at revision 607a30d783 (0.55 GB) and `EleutherAI/gpt-neo-125m` at revision 21def0189f (0.53 GB), via
   `scripts/m6_models.py download`, into the project's model cache on the persistent share.
 
+### 2026-10-19: local mirror of the H100 project (local machine)
+- **What:** before the instance is terminated, the whole remote project (`/lambda/nfs/AT1/punctuation-summary-info`) except
+  the model cache (`.hf_cache`, re-downloadable at the pinned revisions), `.env` and `.git` is mirrored with rsync into
+  `h100_archive/` (git-ignored; ~60 GB, mostly probe activation caches `outputs/models/*/probes/acts/`). Results needed
+  for the brief are also copied into `outputs/` and committed. The remote copies of `outputs/m2`, `m2b` and `m3` were
+  overwritten by the GPT-2 hardware rerun, so they exist only in the mirror; the Mac originals in `outputs/` are canonical.
+- **Cleanup:** `rm -rf h100_archive` (activations can be regenerated on a GPU with `scripts/m6_scale.py run <model> probe`).
+
 ## Not installed (deliberately)
 - No Homebrew packages, no global pip installs, no Jupyter (so far).
 - No Hugging Face login or token stored yet. Gemma (milestone 6) will need `HF_TOKEN`; record it here
@@ -95,6 +103,6 @@ of the local-disk items is automatic when the instance is terminated.
 
 ## Full cleanup (everything this experiment added)
 ```bash
-rm -rf .venv .hf_cache
+rm -rf .venv .hf_cache h100_archive data/pg19_test
 uv cache prune
 ```
