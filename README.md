@@ -1,5 +1,7 @@
 # Where does summary information go when punctuation is removed?
 
+Write-up: [Without punctuation, language models go back to the source](https://words.rat.foo/p/without-punctuation-language-models)
+
 Language models use punctuation tokens as summary points: attention collects the gist of a clause onto the comma or
 period that ends it, and later tokens read it from there (the "summarization motif", Tigges et al. 2023). This project
 removes punctuation from the **input** and asks where that information goes: does it move to another position, spread
