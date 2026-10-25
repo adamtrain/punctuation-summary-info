@@ -5,17 +5,24 @@ period that ends it, and later tokens read it from there (the "summarization mot
 removes punctuation from the **input** and asks where that information goes: does it move to another position, spread
 out, or get lost?
 
-Short answer: none of those. Without punctuation the model doesn't build the summary at all and reads the source words
-directly instead ("bypass"), often with no loss in accuracy. Tested on GPT-2 small, GPT-Neo-125M, Pythia
-160M–6.9B and Llama-3.1-8B with attention knockout, activation patching and linear probes.
+Short answer: mostly none of those. Without punctuation no single position takes over, and the readout reads the source
+words directly instead ("bypass"); the information is still decodable further along, it just isn't read from there. The
+larger Pythia models show a thin route spread across the passage. Over a few sentences removing punctuation costs little,
+and how much depends on how the question is asked; over ~900–1,500 tokens it costs the larger models more (Llama-3.1-8B
+loses more than half its mood margin). Tested on GPT-2 small, GPT-Neo-125M, Pythia 160M–6.9B and Llama-3.1-8B with
+attention knockout, activation patching and linear probes.
 
 ## Where to look
 
 - **[`BRIEF.md`](BRIEF.md)** is the lab notebook: design (§3–4), validity risks (§6), the pre-registered predictions for
   the scaling runs (§5.3), a dated decision log (§9) and every result with its numbers (§10). Start with §10.11
-  (GPT-2, final), §10.14 (all models) and §10.15 (long-distance).
+  (GPT-2, final), §10.14 (all models), §10.15 (long-distance) and §10.17 (post-hoc analyses for the write-up).
+  It is a working notebook, kept as it was written: the project was run with Claude Code, which is why it opens with
+  context for Claude and why some decision-log entries are marked [autonomous]; literature notes marked [verify] were
+  not checked against the papers.
 - **[`outputs/models/summary.md`](outputs/models/summary.md)** has one table with every headline number for all eight
-  models, with 95% bootstrap CIs.
+  models, with 95% bootstrap CIs. **[`outputs/models/posthoc.md`](outputs/models/posthoc.md)** adds the long-distance
+  margins by condition, per-model patching detail and the punctuation-only knockout.
 - **[`INSTALL_LOG.md`](INSTALL_LOG.md)** records the environment, model downloads and the (now deleted) cloud GPU.
 
 ## Layout

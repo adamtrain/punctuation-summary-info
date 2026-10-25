@@ -112,3 +112,12 @@ of the local-disk items is automatic when the instance is terminated.
 rm -rf .venv .hf_cache h100_archive data/pg19_test
 uv cache prune
 ```
+
+### 2026-10-25: local caches deleted (local machine)
+- **What:** at the user's request, deleted `h100_archive/` (58 GB: the H100 mirror, mostly probe activation caches),
+  `.hf_cache/` (0.5 GB), `outputs/m3/acts/` (18 GB), `data/pg19_test/` (42 MB) and `.venv/` (1.1 GB). Before deleting the
+  mirror, every non-activation file in it was compared byte for byte with the repo: all are committed (H100 reruns under
+  `outputs/gpt2_h100/`) or in git history, except 42 heatmap PNGs from the H100 probe rerun, whose CSV/JSON data is
+  committed. uv's shared cache `~/.cache/uv` was left alone (other projects use it).
+- **To rebuild:** `uv sync --frozen`; weights via `scripts/m6_models.py download`; PG19 per the 2026-10-17 entry;
+  activations by rerunning the probe step.

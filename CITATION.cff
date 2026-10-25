@@ -1,0 +1,17 @@
+cff-version: 1.2.0
+message: "If you use this code or data, please cite it as below."
+title: "Where does summary information go when punctuation is removed?"
+authors:
+  - family-names: Train
+    given-names: Adam
+repository-code: "https://github.com/adamtrain/punctuation-summary-info"
+license:
+  - MIT
+  - CC-BY-4.0
+date-released: 2026-10-25
+keywords:
+  - mechanistic interpretability
+  - punctuation
+  - summarization motif
+  - activation patching
+  - attention knockout
