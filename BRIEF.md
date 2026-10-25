@@ -1371,6 +1371,76 @@ on the GPU 54.7 GB in fp32 (the gated MLP's processed weights are kept separatel
   capitals keep most of the hub (K share 0.29, K Δ −0.07).
 - **Mixed-mood acceptance passes** (AUC 0.830, C1 and C2).
 
+### 10.17 Post-hoc analyses for the write-up (2026-10-25)
+Computed from each model's saved outputs while drafting the blog post; nothing was rerun on a model.
+`scripts/m6_posthoc.py` → `outputs/models/posthoc.md` (full tables) and `posthoc.json`. Long-distance deltas use the same
+pair bootstrap as the pipeline (2,000 resamples, 100 pairs per level). Sanity check: the extracted GPT-2 patching values
+match Section 10.9 (e.g. P post-property passage 0.21 at k=4).
+
+**Long-distance mood margins (no knockout), change from P [95% CI].** Pythia ladder and Llama at ~900 tokens (L900);
+full table, including L1500 and GPT-2/GPT-Neo, in `posthoc.md`:
+
+| model | P margin | U − P | M − P | K − P | C_mid − P |
+|---|---|---|---|---|---|
+| pythia-160m | 0.23 | +0.16 [+0.13, +0.21] | −0.02 [−0.03, −0.00] | −0.02 [−0.03, −0.01] | +0.02 [+0.00, +0.03] |
+| pythia-410m | 0.23 | +0.06 [+0.04, +0.09] | +0.00 [−0.02, +0.03] | +0.01 [−0.00, +0.02] | +0.01 [−0.00, +0.02] |
+| pythia-1.4b | 0.31 | +0.00 [−0.06, +0.05] | −0.02 [−0.08, +0.03] | +0.06 [+0.02, +0.10] | +0.01 [−0.01, +0.03] |
+| pythia-2.8b | 0.41 | −0.10 [−0.17, −0.04] | −0.02 [−0.08, +0.04] | +0.10 [+0.06, +0.15] | −0.00 [−0.04, +0.02] |
+| pythia-6.9b | 0.55 | −0.18 [−0.29, −0.08] | −0.17 [−0.28, −0.08] | +0.09 [+0.04, +0.15] | +0.02 [−0.01, +0.05] |
+| llama-3.1-8b | 1.70 | −0.94 [−1.16, −0.72] | −0.94 [−1.16, −0.73] | +0.07 [−0.05, +0.19] | −0.46 [−0.61, −0.32] |
+
+- **Size trend.** Across the Pythia ladder, U − P at L900 goes +0.16, +0.06, 0.00, −0.10, −0.18 with size, and the same
+  order holds at L1500 (+0.12, +0.04, −0.01, −0.03, −0.16). Small models gain margin without punctuation at long range;
+  the largest lose it. Llama loses 55% at L900 and 58% at L1500, about twice the matched control's loss.
+- **Misplaced punctuation equals none in the two models with a long-range hub.** In Pythia-6.9B and Llama (long-range
+  punctuation share 0.22–0.33, Section 10.15), M costs as much as U at both levels (Llama L1500: M −0.85, U −0.81), and
+  stray capitals (K) cost nothing or raise the margin. In Pythia-2.8B, whose long-range share is 0.04–0.05, U hurts
+  (−24% at L900) but M doesn't.
+- **Caveat for interpretation.** Hub survival and size are collinear here (the two models with a long-range hub are the
+  two largest), and U and M alter the whole ~900–1,500-token excerpt, not just the property sentence, so this doesn't
+  isolate the property sentence's hub. Most models other than Llama are near floor at this range (P margin ≤ 0.55),
+  and two things may favor U: the mood readout (" and overall the whole experience was") follows the passage's final period
+  in P but continues U's text naturally, and U passages are 10–15% shorter.
+
+**Mood patching: best single position and post-property passage (best layer), k = 16.** Full table (k = 1, 4, 16; P, U,
+U-cap) in `posthoc.md`:
+
+| model | P best position | U best position | P passage | U passage | U-cap passage |
+|---|---|---|---|---|---|
+| gpt2 | 0.117 (s0 period) | 0.055 | 0.180 | 0.074 | 0.084 |
+| pythia-410m | 0.119 (s0 period) | 0.010 | 0.157 | 0.062 | 0.059 |
+| pythia-1.4b | 0.203 (s0 period) | 0.026 | 0.167 | 0.046 | 0.079 |
+| pythia-2.8b | 0.066 (next sentence's first word) | 0.033 | 0.098 | 0.107 | 0.195 |
+| pythia-6.9b | 0.081 (s0 period) | 0.026 | 0.105 | 0.089 | 0.110 |
+| llama-3.1-8b | 0.078 (s0 period) | 0.028 | 0.107 | 0.057 | 0.102 |
+
+- **No single position takes over in any model:** U's best position is ≤ 0.055 everywhere (≤ 0.04 from Pythia-410M up).
+- **A spread-out route in the larger Pythia models at k = 16:** the whole post-property passage carries about as much
+  in U as in P in Pythia-2.8B (0.107 vs 0.098) and Pythia-6.9B (0.089 vs 0.105), with no position standing out. At k = 4
+  it is lower (0.080 vs 0.110; 0.046 vs 0.096). This is the closest thing to the diffusion hypothesis in the data.
+- **Pythia-2.8B's boundary summary sits on the next sentence's first word,** not on the period (period ≈ 0.001 at every k;
+  first word 0.06–0.08). With sentence-start capitals kept (U-cap), that word carries even more (0.11–0.12), and
+  U-cap's passage route exceeds P's (0.195 vs 0.098 at k = 16). Real capitals partly substitute for punctuation
+  internally, most in this model.
+- **Words after the missing commas** (k = 4, best layer, P → U): Llama "the" after comma 1 0.003 → 0.021 and "and" after
+  comma 2 0.022 → 0.040; Pythia-2.8B 0.000 → 0.027 and 0.026 → 0.033. Elsewhere the change is ≤ 0.01. Small, but the only
+  relocation-like signal at a single position.
+- **Adjective reliance in U** (`prop_mid`, k = 16, P → U) rises clearly only in GPT-2 (0.33 → 0.52) and Llama (0.17 →
+  0.24); in the Pythia models it is flat or lower. The evidence for direct reading in the larger models is the
+  knockout (U retention ≤ 0.25), not a rise in adjective patching.
+
+**Punctuation-only knockout, mood (readout sees only BOS and punctuation), margin as a fraction of the condition's
+no-knockout margin:**
+
+| | gpt2 | gpt-neo | p-160m | p-410m | p-1.4b | p-2.8b | p-6.9b | llama |
+|---|---|---|---|---|---|---|---|---|
+| P | 0.24 | 0.13 | 0.20 | 0.51 | 0.60 | 0.34 | 0.51 | 0.65 |
+| M | 0.23 | 0.09 | 0.22 | 0.24 | 0.24 | 0.16 | 0.23 | 0.26 |
+
+- Misplaced marks carry as much as correct ones only in GPT-2 and Pythia-160M. From 410M up, correctly placed
+  punctuation alone carries 34–65% of the margin and misplaced punctuation 16–26%, less than half as much in absolute
+  terms (e.g. Llama 0.74 vs 1.80 logits). The Section 10.7 statement that M's punctonly matches P's holds for GPT-2 only.
+
 ## 11. Future research directions
 
 ### 11.1 Behavioral eval: do dictation-style stray capitals hurt large models? (deferred 2026-10-17)
